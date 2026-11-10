@@ -1,0 +1,84 @@
+{
+  "base": "acc1aa0bfd4bd575dcb0f76c35ccf12b660a1ab9",
+  "scope": "core native transport only; no shell helper proposal",
+  "source_excerpts": [
+    {
+      "path": "src/desktop/view/window/Window.cpp",
+      "first_line": 101,
+      "last_line": 115,
+      "whole_file_sha256": "bf8ae59ea2cb30e22be48a4e4d42d484fec3f6a15a11a07dc8676459e824d3a6",
+      "source": "//\n\nPHLWINDOW CWindow::create(UP<IWindowBackend> backend) {\n    if (!backend)\n        return nullptr;\n\n    PHLWINDOW pWindow = SP<CWindow>(new CWindow(std::move(backend)));\n\n    pWindow->m_self = pWindow;\n    pWindow->m_backend->attach(pWindow);\n    pWindow->initialize();\n    pWindow->attachBackendListeners();\n\n    return pWindow;\n}"
+    },
+    {
+      "path": "src/desktop/view/window/Window.cpp",
+      "first_line": 135,
+      "last_line": 147,
+      "whole_file_sha256": "bf8ae59ea2cb30e22be48a4e4d42d484fec3f6a15a11a07dc8676459e824d3a6",
+      "source": "void CWindow::attachBackendListeners() {\n    m_backendListeners.map               = m_backend->m_events.map.listen([this] { mapWindow(); });\n    m_backendListeners.unmap             = m_backend->m_events.unmap.listen([this] { unmapWindow(); });\n    m_backendListeners.commit            = m_backend->m_events.commit.listen([this](bool initial) { commitWindow(initial); });\n    m_backendListeners.destroy           = m_backend->m_events.destroy.listen([this] { destroyWindow(); });\n    m_backendListeners.surfaceChanged    = m_backend->m_events.surfaceChanged.listen([this](const auto& surface) { onSurfaceChanged(surface); });\n    m_backendListeners.metadataChanged   = m_backend->m_events.metadataChanged.listen([this](const auto& metadata) { onUpdateMeta(metadata); });\n    m_backendListeners.stateRequest      = m_backend->m_events.stateRequest.listen([this](const auto& request) { onUpdateState(request); });\n    m_backendListeners.configureRequest  = m_backend->m_events.configureRequest.listen([this](const auto& box) { onConfigureRequest(box); });\n    m_backendListeners.geometryChanged   = m_backend->m_events.geometryChanged.listen([this](const auto& box) { onGeometryChanged(box); });\n    m_backendListeners.activationRequest = m_backend->m_events.activationRequest.listen([this] { onActivationRequest(); });\n    m_backendListeners.moveRequest       = m_backend->m_events.moveRequest.listen([this] { onMoveRequest(); });\n    m_backendListeners.resizeRequest     = m_backend->m_events.resizeRequest.listen([this](eBackendResizeEdge edge) { onResizeRequest(edge); });"
+    },
+    {
+      "path": "src/desktop/view/window/Window.cpp",
+      "first_line": 835,
+      "last_line": 858,
+      "whole_file_sha256": "bf8ae59ea2cb30e22be48a4e4d42d484fec3f6a15a11a07dc8676459e824d3a6",
+      "source": "        Desktop::windowState()->raise(m_self.lock());\n\n    Desktop::focusState()->fullWindowFocus(m_self.lock(), FOCUS_REASON_DESKTOP_STATE_CHANGE);\n    warpCursor();\n}\n\nvoid CWindow::onUpdateState(const SBackendStateRequest& request) {\n    requestClientFullscreen({\n        .fullscreen        = request.fullscreen,\n        .maximized         = request.maximized,\n        .fullscreenMonitor = request.fullscreenMonitor,\n        .origin            = SClientFullscreenRequest::ORIGIN_BACKEND,\n    });\n\n    if (request.minimized.has_value() && mapped()) {\n        const bool MINIMIZED = request.minimized.value();\n        IPC::Socket2::sock()->postEvent({.event = \"minimized\", .data = std::format(\"{:x},{}\", rc<uintptr_t>(this), MINIMIZED ? 1 : 0)});\n        Event::bus()->m_events.window.minimize.emit(m_self.lock(), MINIMIZED);\n    }\n}\n\nvoid CWindow::requestClientFullscreen(const SClientFullscreenRequest& request) {\n    // a client re-asserting fullscreen every frame (notably gamescope) would snap the window back the instant\n    // the drag handler pulls it out of fullscreen, so ignore the request while this window is being dragged."
+    },
+    {
+      "path": "src/desktop/view/window/WindowBackend.hpp",
+      "first_line": 74,
+      "last_line": 82,
+      "whole_file_sha256": "8d62cff3801e062204373906a8b2edaafc10fd2937d42f6f2e662910856c09a9",
+      "source": "    struct SBackendStateRequest {\n        std::optional<bool>      fullscreen;\n        std::optional<MONITORID> fullscreenMonitor;\n        std::optional<bool>      maximized;\n        std::optional<bool>      minimized;\n    };\n\n    struct SBackendClientID {\n        eBackendType type = eBackendType::WINDOW_BACKEND_WAYLAND;"
+    },
+    {
+      "path": "src/desktop/view/window/WaylandBackend.cpp",
+      "first_line": 165,
+      "last_line": 190,
+      "whole_file_sha256": "d70dd6d39d517ffc3dc7f6c915a68dcd4d7bde8ba4a011d48bca23a48fd1e840",
+      "source": "    if (TOPLEVEL) {\n        m_listeners.metadata   = TOPLEVEL->m_events.metadataChanged.listen([this] { updateMetadata(true); });\n        m_listeners.state      = TOPLEVEL->m_events.stateChanged.listen([this] {\n            const auto RESOURCE = m_resource.lock();\n            const auto TOPLEVEL = RESOURCE ? RESOURCE->m_toplevel.lock() : nullptr;\n            if (!TOPLEVEL)\n                return;\n\n            updateTraits(true);\n\n            // This is tricky, but we essentially check if the app requested any type of maximize.\n            // If it did, we send the inverse of our internal state.\n            // This is because apps are always \"maximized\" under Hyprland + Wayland, check setMaximized().\n            const auto REQUESTED_MAXIMIZE = TOPLEVEL->m_state.requestsMaximize.has_value();\n            auto       requestsMaximize   = std::optional<bool>{std::nullopt};\n            if (REQUESTED_MAXIMIZE)\n                requestsMaximize = !Fullscreen::controller()->isFullscreen(m_window.lock(), Fullscreen::FSMODE_MAXIMIZED);\n\n            m_events.stateRequest.emit({\n                .fullscreen        = TOPLEVEL->m_state.requestsFullscreen,\n                .fullscreenMonitor = TOPLEVEL->m_state.requestsFullscreenMonitor,\n                .maximized         = requestsMaximize,\n                .minimized         = TOPLEVEL->m_state.requestsMinimize,\n            });\n        });\n        m_listeners.sizeLimits = TOPLEVEL->m_events.sizeLimitsChanged.listen([this] {"
+    },
+    {
+      "path": "src/desktop/view/window/X11Backend.cpp",
+      "first_line": 180,
+      "last_line": 204,
+      "whole_file_sha256": "c1c167e5d1bca4ad7c920dce2191b08f9791ba606d0e83462ec6a9a3b71cd138",
+      "source": "        m_listeners = {};\n        m_events.destroy.emit();\n    });\n    m_listeners.resourceChange = surface->m_events.resourceChange.listen([this] {\n        updateSurface(true);\n        updateMetadata(true);\n        updateTraits(true);\n    });\n    m_listeners.state          = surface->m_events.stateChanged.listen([this] {\n        const auto SURFACE = m_xwaylandSurface.lock();\n        if (!SURFACE)\n            return;\n\n        const SBackendStateRequest REQUEST = {\n            .fullscreen = SURFACE->m_state.requestsFullscreen,\n            .maximized  = SURFACE->m_state.requestsMaximize,\n            .minimized  = SURFACE->m_state.requestsMinimize,\n        };\n\n        SURFACE->m_state.requestsFullscreen.reset();\n        SURFACE->m_state.requestsMaximize.reset();\n        SURFACE->m_state.requestsMinimize.reset();\n\n        updateTraits(true);\n        m_events.stateRequest.emit(REQUEST);"
+    },
+    {
+      "path": "src/protocols/XDGShell.cpp",
+      "first_line": 298,
+      "last_line": 310,
+      "whole_file_sha256": "c7e433685e8cf50b6a6fb282e89808802c9a7d969b7dadf655e55952c43f8858",
+      "source": "        m_state.requestsFullscreen.reset();\n    });\n\n    m_resource->setSetMinimized([this](CXdgToplevel* r) {\n        m_state.requestsMinimize = true;\n        m_events.stateChanged.emit();\n        m_state.requestsMinimize.reset();\n    });\n\n    m_resource->setSetParent([this](CXdgToplevel* r, wl_resource* parentR) {\n        auto newp = parentR ? CXDGToplevelResource::fromResource(parentR) : nullptr;\n        setNewParent(newp);\n    });"
+    },
+    {
+      "path": "src/event/EventBus.hpp",
+      "first_line": 102,
+      "last_line": 112,
+      "whole_file_sha256": "0fecc4e921a44cb14e5afed9cefca744e00afbb9707ceb8e337f53a554fa1128",
+      "source": "                Event<PHLWINDOW, Desktop::eFocusReason>                    active;\n                Event<PHLWINDOW>                                           urgent;\n                Event<PHLWINDOW>                                           title;\n                Event<PHLWINDOW>                                           class_;\n                Event<PHLWINDOW>                                           pin;\n                Event<PHLWINDOW>                                           fullscreen;\n                Event<PHLWINDOW, bool>                                     minimize;\n                Event<PHLWINDOW>                                           floating;\n                Event<PHLWINDOW, const Desktop::View::SWindowStateUpdate&> updateState;\n                Event<PHLWINDOW>                                           updateRules;\n                Event<PHLWINDOW, PHLWORKSPACE>                             moveToWorkspace;"
+    },
+    {
+      "path": "src/config/lua/LuaEventHandler.cpp",
+      "first_line": 92,
+      "last_line": 104,
+      "whole_file_sha256": "f637b324d86a9dbafa8ee36468b4d627d177046b11fb85a187d181343724307b",
+      "source": "        });\n    }));\n    m_listeners.push_back(\n        bus()->m_events.window.bell.listen([this](PHLWINDOW w, Event::SCallbackInfo&) { dispatch(\"window.bell\", 1, [&](lua_State* L) { CLuaWindow::push(L, w); }); }));\n    m_listeners.push_back(bus()->m_events.window.minimize.listen([this](PHLWINDOW w, bool s) {\n        dispatch(\"window.minimize\", 2, [&](lua_State* L) {\n            CLuaWindow::push(L, w);\n            lua_pushboolean(L, s);\n        });\n    }));\n\n    m_listeners.push_back(bus()->m_events.layer.opened.listen([this](PHLLS ls) { dispatch(\"layer.opened\", 1, [&](lua_State* L) { CLuaLayerSurface::push(L, ls); }); }));\n    m_listeners.push_back(bus()->m_events.layer.closed.listen([this](PHLLS ls) { dispatch(\"layer.closed\", 1, [&](lua_State* L) { CLuaLayerSurface::push(L, ls); }); }));"
+    },
+    {
+      "path": "src/protocols/ForeignToplevelWlr.cpp",
+      "first_line": 83,
+      "last_line": 110,
+      "whole_file_sha256": "5a941829ece69a70399d16de3938812cbef7c14fd827ea27fd1bdb52508a6c58",
+      "source": "    });\n\n    m_resource->setSetMinimized([this](CZwlrForeignToplevelHandleV1* p) {\n        const auto PWINDOW = m_window.lock();\n\n        if UNLIKELY (!PWINDOW)\n            return;\n\n        if UNLIKELY (!PWINDOW->mapped())\n            return;\n\n        IPC::Socket2::sock()->postEvent({.event = \"minimized\", .data = std::format(\"{:x},1\", rc<uintptr_t>(PWINDOW.get()))});\n        Event::bus()->m_events.window.minimize.emit(PWINDOW, true);\n    });\n\n    m_resource->setUnsetMinimized([this](CZwlrForeignToplevelHandleV1* p) {\n        const auto PWINDOW = m_window.lock();\n\n        if UNLIKELY (!PWINDOW)\n            return;\n\n        if UNLIKELY (!PWINDOW->mapped())\n            return;\n\n        IPC::Socket2::sock()->postEvent({.event = \"minimized\", .data = std::format(\"{:x},0\", rc<uintptr_t>(PWINDOW.get()))});\n        Event::bus()->m_events.window.minimize.emit(PWINDOW, false);\n    });\n"
+    },
+    {
+      "path": "src/ipc/s2/S2.hpp",
+      "first_line": 1,
+      "last_line": 85,
+      "whole_file_sha256": "849b1907089d13ed1f754369dc70397c37b093879222da2bbad07c379beae483",
+      "source": "#pragma once\n\n#include <string>\n\n#include \"../../helpers/memory/Memory.hpp\"\n\nnamespace IPC::Socket2 {\n    struct SEvent {\n        std::string event;\n        std::string data;\n    };\n\n    class IImplementation;\n\n    class CSocket2 {\n      public:\n        CSocket2();\n        ~CSocket2() = default;\n\n        void postEvent(SEvent&& event);\n\n      private:\n        UP<IImplementation> m_impl;\n    };\n\n    UP<CSocket2>& sock();\n};"
+    }
+  ],
+  "note": "Window.cpp excerpt is proposed V4; all other source excerpts are unchanged exact-base context. Existing create initializes m_self before attaching backend/listeners. Requests use optional<bool>; native protocol resets its optional after synchronous stateChanged dispatch."
+}

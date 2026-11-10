@@ -1,0 +1,27 @@
+{
+  "license_patch_sha256": "1eced190edde2fc191ed501abebb8ecef03a3eaa621ae7d78033995bedf788d9",
+  "frozen_runtime_patch_sha256": "76bd47b54904eee81af57af075084e0c4b3247f0359f8ab301323a8ec23f3a56",
+  "candidate_and_original_hashes_verified": true,
+  "all10_executable_asts_equal_excluding_module_docstrings": true,
+  "changed_docstring_metadata_files": [
+    "tests/benchmark_memory_queries.py",
+    "tests/probe_vulkan_budget.py",
+    "tests/test_comfy_vulkan_unet.py",
+    "tests/test_review_regressions.py"
+  ],
+  "internal_docstring_consumers_found": 0,
+  "help_metadata_scope": "No __doc__/getdoc/doctest reads appear inside these10sources; argparse descriptions/help are unchanged explicit constants or absent. External pydoc/introspection can observe changed SPDX docstrings. No bit-for-bit runtime metadata identity is claimed.",
+  "sanity_checks": [
+    {
+      "script": "test_memory_accounting.py",
+      "exit_code": 0,
+      "scope": "existing CPU-only source/AST regression sanity check on exact complete corrected package"
+    },
+    {
+      "script": "test_review_regressions.py",
+      "exit_code": 0,
+      "scope": "existing CPU-only source/AST regression sanity check on exact complete corrected package"
+    }
+  ],
+  "not_a_relicensing_of_dependencies": true
+}

@@ -1,0 +1,179 @@
+--- a/src/api/backend.cpp
++++ b/src/api/backend.cpp
+@@ -66,8 +66,14 @@
+     });
+ 
+     m.def("_memory_usage", [](int64_t device_index) -> uint64_t {
+-        return VulkanContext::Instance().GetDeviceContext(static_cast<c10::DeviceIndex>(device_index))->memoryUsage();
++        return VulkanContext::Instance().GetDeviceContext(static_cast<c10::DeviceIndex>(device_index))->memoryReserved();
+     });
++
++    m.def("_memory_cached", [](int64_t device_index) -> uint64_t {
++        DeviceContext* device = VulkanContext::Instance().GetDeviceContext(static_cast<c10::DeviceIndex>(device_index));
++        device->flush();
++        return device->cache.cachedBytes(MemoryUsage::DEVICE_ONLY);
++    }, py::call_guard<py::gil_scoped_release>());
+ 
+     m.def("_mem_get_info", [](int64_t device_index) -> std::pair<uint64_t, uint64_t> {
+         DeviceContext* device = VulkanContext::Instance().GetDeviceContext(static_cast<c10::DeviceIndex>(device_index));
+--- a/src/vulkan/cache.cpp
++++ b/src/vulkan/cache.cpp
+@@ -110,6 +110,14 @@
+     BufferPool& pool = poolFor(buffer->usage());
+     pool.lru.push_back(buffer);
+     pool.by_size[buffer->size()].push_back(std::prev(pool.lru.end()));
++}
++
++size_t VulkanCache::cachedBytes(MemoryUsage usage)
++{
++    std::lock_guard<std::mutex> lock(mutex_);
++    size_t bytes = 0;
++    for (const auto& [size, buffers] : poolFor(usage).by_size) bytes += size * buffers.size();
++    return bytes;
+ }
+ 
+ bool VulkanCache::releaseOldestBuffer(MemoryUsage usage)
+--- a/src/vulkan/cache.h
++++ b/src/vulkan/cache.h
+@@ -50,6 +50,7 @@
+     static size_t roundBufferSize(size_t size);
+     VulkanBuffer* allocateBuffer(size_t size, MemoryUsage usage);
+     void deleteBuffer(VulkanBuffer* buffer);
++    size_t cachedBytes(MemoryUsage usage);
+     bool releaseOldestBuffer(MemoryUsage usage);
+     void releaseBuffers();
+ 
+--- a/src/vulkan/device_context.cpp
++++ b/src/vulkan/device_context.cpp
+@@ -56,6 +56,13 @@
+     return budgets[vram_heap_index].usage;
+ }
+ 
++size_t DeviceContext::memoryReserved()
++{
++    VmaBudget budgets[VK_MAX_MEMORY_HEAPS];
++    vmaGetHeapBudgets(allocator, budgets);
++    return budgets[vram_heap_index].statistics.blockBytes;
++}
++
+ size_t DeviceContext::memoryTotal()
+ {
+     const VkPhysicalDeviceMemoryProperties* props = nullptr;
+--- a/src/vulkan/device_context.h
++++ b/src/vulkan/device_context.h
+@@ -55,6 +55,7 @@
+ 
+     size_t memoryBudget();
+     size_t memoryUsage();
++    size_t memoryReserved();
+     size_t memoryTotal();
+     size_t memoryFree();
+     bool releaseCachedBuffers(size_t size, MemoryUsage usage);
+--- /dev/null
++++ b/tests/test_allocator_cache.py
+@@ -0,0 +1,92 @@
++"""Real, small-buffer API checks. Run against an isolated patched backend overlay.
++SPDX-License-Identifier: MIT
++"""
++import gc,json,os,select,subprocess,sys,time,statistics
++from pathlib import Path
++import torch
++import torchvulkan
++
++N=32*1024*1024
++
++def sample():
++    cached=torchvulkan.memory_cached()
++    return dict(allocated=torchvulkan.memory_allocated(),reserved=torchvulkan.memory_reserved(),cached=cached,driver_free=torchvulkan.mem_get_info()[0])
++
++def peer_process():
++    peer_tensor=torch.empty((2*N)//4,device='vulkan',dtype=torch.float32)
++    peer_tensor.fill_(2)
++    torchvulkan.synchronize()
++    print(json.dumps(sample()),flush=True)
++    sys.stdin.readline()
++    del peer_tensor;gc.collect();torchvulkan.empty_cache()
++    return
++def run_checks():
++    assert torchvulkan.is_available(), 'Vulkan unavailable'
++    assert hasattr(torchvulkan, 'memory_cached'), 'Proposed memory_cached API missing'
++    assert 'allocator_unused_bytes.all.current' not in torchvulkan.memory_stats(), 'Unproven arena capacity must not be exposed'
++    torchvulkan.empty_cache();gc.collect()
++    result={'before':sample()}
++    tensor=torch.empty(N//4,device='vulkan',dtype=torch.float32)
++    tensor.fill_(1);torchvulkan.synchronize()
++    result['active32']=sample()
++    assert result['active32']['allocated']>=N
++    del tensor;gc.collect();torchvulkan.synchronize()
++    result['cached32']=sample()
++    assert result['cached32']['allocated']<=result['active32']['allocated']-N
++    assert result['cached32']['cached']>=N
++
++    available=None
++    if sys.platform.startswith('linux'):
++        lines=Path('/proc/meminfo').read_text().splitlines()
++        available=next(int(x.split()[1])*1024 for x in lines if x.startswith('MemAvailable:'))
++    if os.name != 'posix' or available is None or available<1536*1024*1024:
++        result['peer']='skipped:POSIX/Linux available-memory guard'
++    else:
++        peer=None
++        try:
++            before=sample()
++            peer=subprocess.Popen([sys.executable,str(Path(__file__).resolve()),'--peer'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,text=True)
++            ready,_,_=select.select([peer.stdout],[],[],20)
++            assert ready,'Peer startup timeout'
++            line=peer.stdout.readline()
++            assert line,'Peer exited before producing a memory sample'
++            result['peer']=json.loads(line)
++            result['during_peer']=sample()
++            assert result['during_peer']['reserved']==before['reserved'],'Other process changed our allocator-reserved counter'
++            assert result['during_peer']['cached']==before['cached'],'Other process changed our reusable buffer counter'
++        finally:
++            if peer:
++                if peer.poll() is None:
++                    peer.stdin.write('exit\n');peer.stdin.flush()
++                    try:peer.wait(timeout=10)
++                    except subprocess.TimeoutExpired:peer.kill();peer.wait()
++                if peer.stdin:peer.stdin.close()
++                if peer.stdout:peer.stdout.close()
++
++    torchvulkan.empty_cache();gc.collect()
++    result['after_empty_cache']=sample()
++    assert result['after_empty_cache']['cached']==0
++    for name,query in [('memory_cached',torchvulkan.memory_cached),('memory_stats',torchvulkan.memory_stats)]:
++        batches=[]
++        for _ in range(7):
++            start=time.perf_counter_ns()
++            for _ in range(10000):query()
++            batches.append((time.perf_counter_ns()-start)/10000)
++        result[name+'_idle_ns_per_call']={'median':statistics.median(batches),'min':min(batches),'max':max(batches),'batches':7,'calls_per_batch':10000}
++    result['scope']='32MiB own buffer plus optional64MiB separate-process buffer; no model downloads'
++    return result
++
++
++def test_allocator_cache():
++    import pytest
++    if not torchvulkan.is_available():
++        pytest.skip("No usable Vulkan device")
++    run_checks()
++
++
++
++if __name__ == "__main__":
++    if "--peer" in sys.argv:
++        peer_process()
++    else:
++        print(json.dumps(run_checks(), indent=2))
+--- a/torchvulkan/__init__.py
++++ b/torchvulkan/__init__.py
+@@ -67,6 +67,10 @@
+ 
+ def memory_reserved(device=None) -> int:
+     return _C._memory_usage(_device_index(device))
++
++def memory_cached(device=None) -> int:
++    """Synchronize this device and return bytes in its reusable device-buffer cache."""
++    return _C._memory_cached(_device_index(device))
+ 
+ def mem_get_info(device=None) -> tuple:
+     return _C._mem_get_info(_device_index(device))

@@ -1,0 +1,108 @@
+{
+  "source": "https://raw.githubusercontent.com/immich-app/immich/v3.3.5/open-api/immich-openapi-specs.json",
+  "version": "v3.3.5",
+  "request": {
+    "route": "POST /search/metadata",
+    "properties": {
+      "cursor": {
+        "description": "Cursor for the next page of results",
+        "minLength": 1,
+        "type": "string",
+        "x-immich-history": [
+          {
+            "version": "v3.2.0",
+            "state": "Added"
+          }
+        ]
+      },
+      "filter": {
+        "$ref": "#/components/schemas/SearchFilter",
+        "x-immich-history": [
+          {
+            "version": "v3.2.0",
+            "state": "Added"
+          }
+        ]
+      },
+      "orderBy": {
+        "$ref": "#/components/schemas/SearchOrder",
+        "x-immich-history": [
+          {
+            "version": "v3.2.0",
+            "state": "Added"
+          }
+        ]
+      },
+      "size": {
+        "default": 250,
+        "description": "Number of results to return",
+        "maximum": 1000,
+        "minimum": 1,
+        "type": "integer"
+      },
+      "withExif": {
+        "description": "Include EXIF data in response",
+        "type": "boolean"
+      }
+    },
+    "filterProperties": {
+      "albumIds": {
+        "$ref": "#/components/schemas/IdsFilter"
+      },
+      "isFavorite": {
+        "$ref": "#/components/schemas/BoolFilter"
+      },
+      "visibility": {
+        "$ref": "#/components/schemas/EnumFilterAssetVisibility"
+      }
+    },
+    "orderBy": {
+      "properties": {
+        "direction": {
+          "$ref": "#/components/schemas/AssetOrder",
+          "default": "desc"
+        },
+        "field": {
+          "$ref": "#/components/schemas/SearchOrderField",
+          "default": "fileCreatedAt"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "response": {
+    "properties": {
+      "items": {
+        "items": {
+          "$ref": "#/components/schemas/AssetResponseDto"
+        },
+        "type": "array"
+      },
+      "nextCursor": {
+        "description": "Cursor for the next page of results",
+        "nullable": true,
+        "type": "string",
+        "x-immich-history": [
+          {
+            "version": "v3.2.0",
+            "state": "Added"
+          }
+        ]
+      }
+    },
+    "assetId": {
+      "description": "Asset ID",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$",
+      "type": "string"
+    },
+    "albumId": {
+      "description": "Album ID",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$",
+      "type": "string"
+    }
+  },
+  "response_schema_name": "SearchAssetResponseDto",
+  "response_scope": "Nested assets response only; complete HTTP envelope is documented in openapi-v3.3.5-response-envelope.json"
+}

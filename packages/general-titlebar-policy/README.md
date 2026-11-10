@@ -1,0 +1,9 @@
+# Explicit titlebar policy example
+
+Unknown applications keep Omarchy controls. This Lua example lets users opt exact application classes out only after verifying that their windows provide usable native controls. It is a manual registry with an empty safe default; it does not implement automatic detection. Application preferences, versions and dialogs can vary within a class, so class-wide opt-outs need deliberate verification. Load this example in the Omarchy configuration context where `o.window` and `hl.plugin` are available, after plugins initialize. No live installation is included.
+
+Codex assisted Tommy Johnsen with this new MIT-licensed example and tests. Claude Code identified earlier registry-validation and escaping concerns; Codex reproduced and corrected them. Claude Code, Grok Build and Google Gemini subsequently reported no blocking static findings on the exact production digest in REVIEW-PROVENANCE.json. Actual model metadata and review digests are preserved there. These are review contributions, not model approval, certification or release approval. Private logs are excluded.
+
+Run `python3 tests/run.py`. Dependencies: Lua, luac, a C++17 compiler, pkg-config and RE2 development files. Tests check safe defaults, exact-true registry values, malformed input and literal UTF-8/regex matching using the actual RE2 library. The test runner builds only under ignored tests/build. Actual hyprbars load-order and visible per-window control behavior remain runtime release gates. Do not infer automatic controls capability from decoration protocol preference alone.
+
+This is clean example staging rather than an Omarchy source checkout. Placement in an upstream configuration/documentation template still needs maintainer coordination. Source is unchanged from the reviewed R2 candidate; README, provenance, license packaging and test runner are supplemental material. No commit, push or publication has occurred.

@@ -1,0 +1,4 @@
+PASS actual ComfyUI UNet: (1, 4, 8, 8), max error 0.00000060, 0.014s
+Vulkan memory: 9233760256 3268577433
+{"synchronizing": {"median_seconds": 0.009639208999942639, "free_memory_queries": 96, "runs": 12}, "static_counter_control": {"median_seconds": 0.009602461000213225, "free_memory_queries": 96, "runs": 12}, "scope": "tiny8x8 random UNet, split attention; static snapshot is a benchmark-only control, not a proposed API or capacity correctness proof"}
+ComfyUI Vulkan integration checks passed without downloaded models or CPU operator fallback.

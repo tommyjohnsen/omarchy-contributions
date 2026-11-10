@@ -1,0 +1,93 @@
+{
+  "revision": "v7",
+  "grok_v4_actual_review": {
+    "request_sha256": "61f3203bcce0fb0937105b0c2b84afbe2c0d433e2e4ccf927a2327cb25cb10f9",
+    "response_sha256": "cc985001b71cbe50c9f70c0f7d94330355b71edb722efae45884169573c5a325",
+    "review_text_sha256": "596d46b37cafc58f4300e0c62a23551f5b769ed649a26fc5c81c9ca833bdb29c",
+    "reported_models": [
+      "grok-4.7-build"
+    ],
+    "visible_response_contains_two_drafts": true,
+    "count_actual_review": 1,
+    "provider_tests_executed": false
+  },
+  "already_fixed_in_v5": [
+    "locked/duplicate key refusal and saved key readback",
+    "graphical unit/reset-failed",
+    "bounded PAGE probe beyond first3 zeros"
+  ],
+  "v6_confirmed_fixes": [
+    "bounded child mounted-leaf responsiveness probe and absolute readiness loop",
+    "deferred authenticated restart for disconnected exact-own active mount",
+    "unloadable/empty existing key fails rather than prompting",
+    "complete pinned HTTP response envelope context",
+    "exact upstream license bytes included in review/shipment"
+  ],
+  "disputed": [
+    {
+      "claim": "umask022 changes mkdir0700 to0755",
+      "disposition": "False: umask only removes permission bits; executed actual fixture stays0700."
+    },
+    {
+      "claim": "Trio file-handle allocation races after worker await",
+      "disposition": "False on single Trio event loop: no await/checkpoint between counter read/increment/store; executed two simultaneously completing opens have distinct correct handles."
+    },
+    {
+      "claim": "pinned HTTP search response is flat items/nextCursor",
+      "disposition": "Excerpt denoted nested schema; full official SearchResponseDto wrapper confirms assets.items. Production parser retained."
+    },
+    {
+      "claim": "full license body missing from package",
+      "disposition": "Body existed in package but omitted from review prompt; V6 includes exact fresh upstream bytes in review coverage. Previous copy differed only by final blank line."
+    }
+  ],
+  "human_release_approval": false,
+  "base_v6_review": "all6 actual responses recorded in BASE-REVIEWS.json; desktop findings need incremental closure",
+  "v7_measured_change": [
+    "exactLF/ASCII-space mountinfo parser",
+    "readiness is observation-only and retries transient errors to deadline",
+    "bounded parent-only canonicalization supports Pictures symlinks without parent-thread leaf calls",
+    "document actual PAGE250 and system-site-packages venv"
+  ],
+  "exact_v7_delta_review": "ready for dispatch",
+  "unsupported_new_claim": "Single read loses mountinfo prefix: actual open returns BufferedReader; short-read fixture verifies aggregation to EOF. No source read-loop rewrite needed.",
+  "v6_desktop_closure": [
+    {
+      "reports": [
+        "Claude1",
+        "Grok1"
+      ],
+      "issue": "Readiness calls recovery and fails transient startup",
+      "disposition": "wait_until_ready observes only record/probe; retries stale/EIO/timeout to deadline; tests forbid recovery/unmount."
+    },
+    {
+      "reports": [
+        "Claude2"
+      ],
+      "issue": "Default venv hides system GI",
+      "disposition": "Document system-site-packages interpreter for bothhelper/daemon; fresh temporary GI/Secret import executed."
+    },
+    {
+      "reports": [
+        "Claude3",
+        "GrokPAGE"
+      ],
+      "issue": "README PAGE100 versus actual250",
+      "disposition": "Corrected README250; unchanged source constant bound to exact base."
+    },
+    {
+      "reports": [
+        "Grok2-short-read"
+      ],
+      "issue": "Single read allegedly drops seq_file prefix",
+      "disposition": "Disputed: file opened as BufferedReader; actual short-read RawIOBase fixture demonstrates accumulation throughEOF. Cap remains."
+    },
+    {
+      "reports": [
+        "Grok2-parent-symlink"
+      ],
+      "issue": "Intermediate Pictures alias misses lexical mount identity and bypasses bounded probe",
+      "disposition": "Parent-only resolution in bounded isolated child; actual hung mount below alias returns0.183s with no helperleaflisting."
+    }
+  ]
+}

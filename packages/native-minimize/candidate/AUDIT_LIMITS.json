@@ -1,0 +1,15 @@
+{
+  "latest_strict_x11_attempt": "incomplete; no XCB client launched",
+  "binary_sha256": "d61d3844729494fac0f0a72345f54792d4fb84c1d12cad588f264ed587394813",
+  "cases_executed": 0,
+  "error": "RuntimeError('Timeout: nested DISPLAY')",
+  "measured_nested_output": [
+    {
+      "name": "WAYLAND-1",
+      "backend": "wayland"
+    }
+  ],
+  "parent_ipc_mutation_performed": false,
+  "unready_runner_included_in_release": false,
+  "no_further_launches": true
+}

@@ -1,0 +1,36 @@
+--- a/shell/plugins/dock/DockWindow.qml
++++ b/shell/plugins/dock/DockWindow.qml
+@@ -485,6 +485,22 @@
+       window.closeMenu()
+       if (event.button === Qt.MiddleButton) window.dock.launch(appSlot.modelData)
+       else window.dock.activate(appSlot.modelData)
++    }
++
++    PanelToolTip {
++      id: appNameTip
++      parent: window.contentItem
++      visible: appSlot.hovered && window.contentShown && !window.menuOpen && !appSlot.pressed && appNameTip.text !== ""
++      text: {
++        var entry = window.dock ? window.dock.entryFor(appSlot.modelData) : null
++        var name = (entry && window.dock.appLibrary ? window.dock.appLibrary.entryName(entry) : "")
++          || (entry && (entry.name || entry.id)) || appSlot.key || ""
++        return String(name || "").replace(/[\u0000-\u001F\u007F]+/g, " ").trim().slice(0, 120).replace(/[\uD800-\uDBFF]$/, "")
++      }
++      width: Math.min(implicitWidth, Style.space(280))
++      // Coordinate mapping alone is not a binding dependency on a moved slot.
++      x: { appNameTip.visible; body.x; body.y; appSlot.x; appSlot.y; return window.popupX(appSlot, appNameTip) }
++      y: { appNameTip.visible; body.x; body.y; appSlot.x; appSlot.y; return window.popupY(appSlot, appNameTip) }
+     }
+ 
+     // Running apps are drawn in full, pinned ones that are not running faded,
+--- a/shell/Ui/PanelToolTip.qml
++++ b/shell/Ui/PanelToolTip.qml
+@@ -43,7 +43,7 @@
+     font.family: root.fontFamily
+     font.pixelSize: root.fontSize
+     // Wraps only once an instance caps the tooltip's width.
+-    wrapMode: Text.WordWrap
++    wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+     leftPadding: Border.left(root.panelBorderSpec) + Style.spacing.controlPaddingX
+     rightPadding: Border.right(root.panelBorderSpec) + Style.spacing.controlPaddingX
+     topPadding: Border.top(root.panelBorderSpec) + Style.spacing.controlPaddingY

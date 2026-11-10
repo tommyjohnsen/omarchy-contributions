@@ -1,0 +1,116 @@
+{
+  "Dock.qml": {
+    "sha256": "6c0a6d09e20eb287a23b31a56135e71694d22b370aad885169f9f59898453b2b",
+    "excerpts": [
+      {
+        "start_line": 1,
+        "end_line": 23,
+        "text": "import QtQuick\nimport Quickshell\nimport Quickshell.Hyprland\nimport Quickshell.Io\nimport qs.Commons\nimport \"DockModel.js\" as DockModel\n\n// An app dock that shows on floating workspaces. A floating workspace has no\n// tiles to hand the apps out, so the dock gives back a place to find them:\n// pinned apps, running apps, and a grid of every app.\nItem {\n  id: root\n\n  property var shell: null\n  property var manifest: null\n\n  readonly property var appLibrary: shell ? shell.appLibrary : null\n  readonly property var dockConfig: shell && shell.shellConfig && shell.shellConfig.dock ? shell.shellConfig.dock : ({})\n  readonly property var defaultDockConfig: shell && shell.defaultsConfig && shell.defaultsConfig.dock ? shell.defaultsConfig.dock : ({})\n  readonly property string position: DockModel.normalizePosition(dockConfig.position)\n  readonly property bool vertical: DockModel.isVertical(position)\n  readonly property bool autohide: dockConfig.autohide === true\n"
+      },
+      {
+        "start_line": 47,
+        "end_line": 85,
+        "text": "  function entryForAppId(appId) {\n    var entry = DesktopEntries.heuristicLookup(appId)\n    if (entry) return entry\n    var id = DockModel.claimingEntryId(appId, root.terminalEntries)\n    return id ? DesktopEntries.byId(id) : null\n  }\n\n  // A pinned app that is not installed has nothing to launch, so it is left\n  // out until it is. Windows are matched to the desktop entry that claims them.\n  readonly property var items: {\n    var appsRevision = DesktopEntries.applications.values.length\n    var pinned = (root.pendingPins || DockModel.pinnedIds(dockConfig, defaultDockConfig)).filter(function(id) {\n      return !!DesktopEntries.byId(id)\n    })\n\n    var windows = []\n    var toplevels = Hyprland.toplevels.values\n    for (var i = 0; i < toplevels.length; i++) {\n      var toplevel = toplevels[i].wayland\n      if (!toplevel || !toplevel.appId || toplevel.parent) continue\n      var entry = root.entryForAppId(toplevel.appId)\n      var workspace = toplevels[i].workspace\n      windows.push({\n        key: entry ? entry.id : toplevel.appId,\n        hasEntry: !!entry && !entry.noDisplay,\n        workspaceId: workspace ? workspace.id : -1,\n        minimized: !!workspace && DockModel.isMinimizedWorkspace(workspace.name),\n        address: toplevels[i].address,\n        toplevel: toplevel\n      })\n    }\n\n    return DockModel.orderItems(DockModel.buildItems(pinned, windows), root.order)\n  }\n\n  readonly property var itemsByKey: {\n    var byKey = {}\n    for (var i = 0; i < root.items.length; i++) byKey[root.items[i].key] = root.items[i]\n    return byKey"
+      },
+      {
+        "start_line": 150,
+        "end_line": 153,
+        "text": "  function entryFor(item) {\n    return item ? DesktopEntries.byId(item.key) : null\n  }\n"
+      }
+    ]
+  },
+  "DockWindow.qml": {
+    "sha256": "498c6e7287d656ec5eca7d9a93669d4355452b5bae40db68e930d036df09c8d0",
+    "excerpts": [
+      {
+        "start_line": 1,
+        "end_line": 14,
+        "text": "import QtQuick\nimport Quickshell\nimport Quickshell.Hyprland\nimport Quickshell.Wayland\nimport qs.Commons\nimport qs.Commons as Commons\nimport qs.Ui\nimport \"DockModel.js\" as DockModel\n\n// One screen's dock. It stays mapped and only hides its contents, so switching\n// to a floating workspace does not wait on a fresh layer surface. While hidden the\n// mask is empty and clicks fall through to the windows below.\nPanelWindow {\n  id: window"
+      },
+      {
+        "start_line": 176,
+        "end_line": 193,
+        "text": "  function popupX(slot, popup) {\n    if (!slot) return 0\n    var center = slot.mapToItem(window.contentItem, slot.width / 2, 0).x\n    if (window.position === \"left\") return body.x + body.width + window.gap\n    if (window.position === \"right\") return body.x - window.gap - popup.width\n    return Math.max(window.gap, Math.min(window.width - popup.width - window.gap, center - popup.width / 2))\n  }\n\n  function popupY(slot, popup) {\n    if (!slot) return 0\n    var center = slot.mapToItem(window.contentItem, 0, slot.height / 2).y\n    if (window.position === \"top\") return body.y + body.height + window.gap\n    if (window.position === \"bottom\") return body.y - window.gap - popup.height\n    return Math.max(window.gap, Math.min(window.height - popup.height - window.gap, center - popup.height / 2))\n  }\n\n  color: \"transparent\"\n  WlrLayershell.namespace: \"omarchy-dock\""
+      },
+      {
+        "start_line": 320,
+        "end_line": 330,
+        "text": "  component Slot: Item {\n    id: slot\n\n    // Only the dragged icon is lifted while a drag is on; none of the others\n    // pop as it passes over them.\n    property bool hovered: mouse.containsMouse && !window.hoverStale && !window.dragging\n    property bool pressed: mouse.pressed\n    property alias mouse: mouse\n\n    width: window.slotSize\n    height: window.slotSize"
+      },
+      {
+        "start_line": 398,
+        "end_line": 406,
+        "text": "\n  component AppSlot: Slot {\n    id: appSlot\n\n    required property int index\n    required property string key\n    readonly property var modelData: window.dock ? window.dock.itemFor(key) : null\n    readonly property bool launching: !!window.dock && window.dock.isLaunching(key)\n    readonly property bool lifted: window.dragIndex === index"
+      }
+    ]
+  },
+  "DockModel.js": {
+    "sha256": "d7d1dbb871e3fc2eff454775750811b80f54259ab51ca4e5653ac7f589285c87",
+    "excerpts": [
+      {
+        "start_line": 14,
+        "end_line": 34,
+        "text": "}\n\nfunction normalizeId(value) {\n  var id = String(value || \"\").trim()\n  if (id.slice(-8) === \".desktop\") id = id.slice(0, -8)\n  return id\n}\n\nfunction pinnedIds(dockConfig, defaultsConfig) {\n  var source = dockConfig && Array.isArray(dockConfig.pinned) ? dockConfig.pinned\n    : (defaultsConfig && Array.isArray(defaultsConfig.pinned) ? defaultsConfig.pinned : [])\n  var ids = []\n  for (var i = 0; i < source.length; i++) {\n    var id = normalizeId(source[i])\n    if (id && ids.indexOf(id) === -1) ids.push(id)\n  }\n  return ids\n}\n\n// Only app windows on regular workspaces belong in the dock. Helpers without a\n// visible desktop entry, such as the agent window, and anything parked on a"
+      }
+    ]
+  },
+  "PanelToolTip.qml": {
+    "sha256": "20632427fd51cca794d7447f19622b12420f6327d18f0b880bf4b7862389c17f",
+    "excerpts": [
+      {
+        "start_line": 1,
+        "end_line": 52,
+        "text": "import QtQuick\nimport QtQuick.Controls\nimport qs.Commons\nimport qs.Commons as Commons\n\n// Styled wrapper around Qt Quick Controls ToolTip. Drop-in: declare inside\n// the hovered item and bind `visible` to the hover state, e.g.\n//   PanelToolTip {\n//     visible: mouse.containsMouse\n//     text: \"Forget network\"\n//   }\n//\n// Defaults pull from [tooltip] in shell.toml via Commons.Color.tooltip.*. Override\n// the panel* properties per-instance only when you need a tooltip that\n// intentionally diverges from the theme.\n//\n// Property names are prefixed `panel*` to avoid clashing with ToolTip's\n// built-in `background`/`font` properties.\nToolTip {\n  id: root\n\n  property color panelForeground: Commons.Color.tooltip.text\n  property color panelBackground: Commons.Color.tooltip.background\n  property color panelBorder: Commons.Color.tooltip.border\n  property string fontFamily: Style.font.family\n  property real fontSize: Style.font.bodySmall\n\n  readonly property var panelBorderSpec: Border.localOrSurfaceSpec(\"tooltip\", \"border\", panelBorder, Commons.Color.tooltip.border, Style.normalBorderWidth)\n\n  delay: 400\n  padding: 0\n\n  background: BorderSurface {\n    color: root.panelBackground\n    borderSpec: root.panelBorderSpec\n    radius: Style.cornerRadius\n  }\n\n  contentItem: Text {\n    textFormat: Text.PlainText\n    text: root.text\n    color: root.panelForeground\n    font.family: root.fontFamily\n    font.pixelSize: root.fontSize\n    // Wraps only once an instance caps the tooltip's width.\n    wrapMode: Text.WordWrap\n    leftPadding: Border.left(root.panelBorderSpec) + Style.spacing.controlPaddingX\n    rightPadding: Border.right(root.panelBorderSpec) + Style.spacing.controlPaddingX\n    topPadding: Border.top(root.panelBorderSpec) + Style.spacing.controlPaddingY\n    bottomPadding: Border.bottom(root.panelBorderSpec) + Style.spacing.controlPaddingY\n  }\n}"
+      }
+    ]
+  },
+  "AppLibrary.qml": {
+    "sha256": "97bc3d6c7271f6026248fafe8e81d2e12fc345a3ba76538fa3ea501d52d3048d",
+    "excerpts": [
+      {
+        "start_line": 39,
+        "text": "  function entryName(entry) {\n    return AppSearch.entryName(entry)\n  }\n\n  function entrySubtext(entry) {\n    return AppSearch.entrySubtext(entry)\n  }\n\n  function isHiddenEntry(entry) {\n    var id = String((entry && entry.id) || \"\")\n    return root.configuredHiddenEntryIds[id] === true || root.desktopHiddenEntryIds[id] === true\n  }"
+      }
+    ]
+  },
+  "AppSearch.js": {
+    "sha256": "bbc4965f7b46932bd7127b5d921b977679f2a892e6bd9672f29049d340821bd7",
+    "excerpts": [
+      {
+        "start_line": 1,
+        "end_line": 3,
+        "text": "function entryName(entry) {\n  return String((entry && entry.name) || (entry && entry.id) || \"\")\n}"
+      }
+    ]
+  },
+  "DockWindow-state": {
+    "sha256": "498c6e7287d656ec5eca7d9a93669d4355452b5bae40db68e930d036df09c8d0",
+    "excerpts": [
+      {
+        "start_line": 42,
+        "end_line": 64,
+        "text": "  // edge, and stays while the pointer, a menu, or a drag still needs it. A\n  // maximized window hides the dock the same way, so it can still be called up.\n  readonly property bool autohide: !!dock && (dock.autohide || fullscreenMode === 1)\n  property bool revealed: false\n  readonly property bool menuOpen: menuItem !== null || settingsMenu\n  readonly property bool tucked: autohide && !(revealed || menuOpen || dragging || insertIndex >= 0)\n  readonly property bool contentShown: shown && !tucked\n\n  readonly property int gap: Style.spacing.xs\n  readonly property int iconSize: Math.round(36 * Style.fontScale)\n  // Each app has a square slot with its icon in the middle, and the slots run\n  // straight to the edge of the dock.\n  readonly property int iconInset: Style.spacing.md\n  readonly property int slotSize: iconSize + iconInset * 2\n  // A pinned app that is not running is drawn faded.\n  readonly property real idleOpacity: 0.7\n  // Room inward of the dock for its menus: the tallest, the apps button's,\n  // has five rows.\n  readonly property int popupRoom: Style.spacing.popupRowHeight * 5 + Style.spacing.sm * 2 + Style.normalBorderWidth * 2 + gap * 2\n  // Icons pop away from the screen edge.\n  readonly property int popOrigin: position === \"top\" ? Item.Top\n    : position === \"left\" ? Item.Left\n    : position === \"right\" ? Item.Right"
+      },
+      {
+        "start_line": 260,
+        "end_line": 291,
+        "text": "    LayoutMirroring.enabled: false\n    LayoutMirroring.childrenInherit: true\n\n    width: slots.implicitWidth\n    height: slots.implicitHeight\n    // How far the dock is tucked past its edge. Auto-hide slides it, but only\n    // while the dock is on screen: arriving on a floating workspace shows it\n    // where it belongs at once.\n    property real tuck: window.tucked ? window.slotSize + window.gap : 0\n\n    // Tucking away is quicker than coming back. A gentler curve than\n    // Style.easeOut, which crosses the short slide in a frame or two.\n    Behavior on tuck {\n      id: tuckMotion\n      enabled: window.shown\n      NumberAnimation {\n        duration: Style.duration(tuckMotion.targetValue > 0 ? 120 : 180)\n        easing.type: Easing.OutCubic\n      }\n    }\n\n    x: window.position === \"left\" ? window.gap - tuck\n      : window.position === \"right\" ? window.width - width - window.gap + tuck\n      : Math.round((window.width - width) / 2)\n    y: window.position === \"top\" ? window.gap - tuck\n      : window.position === \"bottom\" ? window.height - height - window.gap + tuck\n      : Math.round((window.height - height) / 2)\n    // Switching between tiled and floating workspaces shows and hides the dock\n    // at once, with nothing to watch in between. Hidden by opacity rather than\n    // visibility, so the icons keep their textures and are drawn on the first\n    // frame back instead of being uploaded again.\n    opacity: window.shown ? 1 : 0"
+      },
+      {
+        "start_line": 398,
+        "end_line": 428,
+        "text": "\n  component AppSlot: Slot {\n    id: appSlot\n\n    required property int index\n    required property string key\n    readonly property var modelData: window.dock ? window.dock.itemFor(key) : null\n    readonly property bool launching: !!window.dock && window.dock.isLaunching(key)\n    readonly property bool lifted: window.dragIndex === index\n    property point pressPoint\n    property bool dragged: false\n    readonly property int windowCount: modelData ? modelData.windows.length : 0\n    property real pulse: 1\n\n    // Slots between where the dragged app was and where it would land step\n    // aside to make room; the dragged one follows the pointer.\n    readonly property real shift: window.insertIndex >= 0 ? (index >= window.insertIndex ? 1 : -1) * window.slotSize / 2\n      : !window.dragging ? 0\n      : lifted ? window.dragOffset\n      : (window.dragIndex < index && index <= window.dropIndex) ? -window.slotSize\n      : (window.dropIndex <= index && index < window.dragIndex) ? window.slotSize\n      : 0\n    property real displayedShift: shift\n\n    // Only while dragging: once the drop reorders the slots, they are already\n    // where they were shown.\n    Behavior on displayedShift {\n      enabled: window.animateShifts && ((window.dragging && !appSlot.lifted) || window.insertIndex >= 0)\n      NumberAnimation { duration: Style.duration(150); easing.type: Easing.Bezier; easing.bezierCurve: Style.easeOut }\n    }\n"
+      }
+    ]
+  },
+  "Style.space": {
+    "sha256": "65758e4935a225984d88afee65e740bae99e335d608d12befdbe5ec5e2e57f90",
+    "excerpts": [
+      {
+        "start_line": 210,
+        "end_line": 227,
+        "text": "  property real spacingScale: 1.0\n  property bool spacingScaleWithFont: true\n  property var spacingOverrides: ({})\n  readonly property real effectiveSpacingScale: spacingScale * (spacingScaleWithFont ? fontScale : 1)\n\n  function spaceReal(px) {\n    var n = Number(px)\n    if (!isFinite(n) || n <= 0) return 0\n    return n * effectiveSpacingScale\n  }\n\n  function space(px) {\n    var n = spaceReal(px)\n    if (n <= 0) return 0\n    return Math.max(1, Math.round(n))\n  }\n\n  function spacingToken(key, fallback) {"
+      }
+    ]
+  }
+}

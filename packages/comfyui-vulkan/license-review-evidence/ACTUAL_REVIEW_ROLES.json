@@ -1,0 +1,106 @@
+[
+  {
+    "round": "review-followup",
+    "provider": "claude",
+    "role": "complete frozen V4 static runtime/source review",
+    "package": "comfyui-vulkan",
+    "request_sha256": "0b9739082acbcc4e5436ccd22744e9252572666c70bc07cc114e7a9b3550fc80",
+    "metadata_response_sha256": "8719ef85df929456d5965b0247c833d3cdfa2ecf6e333588bf70fabb76522e5b",
+    "review_text_sha256": "df4b237be4ff1e25896f1268837f25a566b54a44234088b2f5d0a415bc872bf0",
+    "reported_models": [
+      "claude-opus-5-5"
+    ],
+    "selected_cli_model": null,
+    "actual_status": "response_received",
+    "verdict": "no_blocking_findings",
+    "tools": "denied",
+    "human_release_approval": false,
+    "interpretation": "Claude V4 no-blocking includes a non-blocking license inconsistency; the narrow Claude license verdict requests missing provenance/full-body evidence, not a demonstrated code defect."
+  },
+  {
+    "round": "review-followup",
+    "provider": "gemini",
+    "role": "complete frozen V4 static runtime/source review",
+    "package": "comfyui-vulkan",
+    "request_sha256": "0b9739082acbcc4e5436ccd22744e9252572666c70bc07cc114e7a9b3550fc80",
+    "metadata_response_sha256": "3cc144b6b55616349df9449392e135885219892bf14226861b26360aae543caa",
+    "review_text_sha256": "d470fd9357416f093e9f5ae36784aed12a85c6bcb5633d57a0033a5740308d06",
+    "reported_models": [],
+    "selected_cli_model": "gemini-3.8-flash-high",
+    "actual_status": "response_received",
+    "verdict": "no_blocking_findings",
+    "tools": "denied",
+    "human_release_approval": false,
+    "interpretation": "Static review only; no reviewer runtime tests or human approval inferred."
+  },
+  {
+    "round": "review-followup",
+    "provider": "grok",
+    "role": "complete frozen V4 static runtime/source review",
+    "package": "comfyui-vulkan",
+    "request_sha256": "0b9739082acbcc4e5436ccd22744e9252572666c70bc07cc114e7a9b3550fc80",
+    "metadata_response_sha256": "fa4ca441ab012ea43d1daf4762ab4cdd5349a3776010a8cb7050e4d87627fc94",
+    "review_text_sha256": "a6fb3434d2179d09aaa2ec4adc43dc4bc0900ae299b69512d59fee1567fba124",
+    "reported_models": [
+      "grok-4.7-build"
+    ],
+    "selected_cli_model": null,
+    "actual_status": "response_received",
+    "verdict": "no_blocking_findings",
+    "tools": "denied",
+    "human_release_approval": false,
+    "interpretation": "Static review only; no reviewer runtime tests or human approval inferred."
+  },
+  {
+    "round": "review-latest",
+    "provider": "claude",
+    "role": "narrow frozen license-only supplement review",
+    "package": "comfyui-vulkan-license-only",
+    "request_sha256": "c359bb2159c26295067a56b7e8c2b8d768df65963ae1461dcc87509c5850fdd8",
+    "metadata_response_sha256": "bf89a6317c3ae48f2ffc01a9e8746c6fdbc439b28ea89ae9ef53d0995e48803b",
+    "review_text_sha256": "6b4a094dee0cedd3d9f12d6cdd9e73ea11439e165fdbb406cbf06057da621717",
+    "reported_models": [
+      "claude-opus-5-5"
+    ],
+    "selected_cli_model": null,
+    "actual_status": "response_received",
+    "verdict": "insufficient_evidence",
+    "tools": "denied",
+    "human_release_approval": false,
+    "interpretation": "Claude V4 no-blocking includes a non-blocking license inconsistency; the narrow Claude license verdict requests missing provenance/full-body evidence, not a demonstrated code defect."
+  },
+  {
+    "round": "review-latest",
+    "provider": "gemini",
+    "role": "narrow frozen license-only supplement review",
+    "package": "comfyui-vulkan-license-only",
+    "request_sha256": "c359bb2159c26295067a56b7e8c2b8d768df65963ae1461dcc87509c5850fdd8",
+    "metadata_response_sha256": "122f55ca492aa827070118833305e55e064ae768d2186e273e78d1f42ac3bffd",
+    "review_text_sha256": "b759a95103ffda69fd1ae2400b3a4e29b6a258746badd8df5f591ebdcb696e9b",
+    "reported_models": [],
+    "selected_cli_model": "gemini-3.8-flash-high",
+    "actual_status": "response_received",
+    "verdict": "no_blocking_findings",
+    "tools": "denied",
+    "human_release_approval": false,
+    "interpretation": "Static review only; no reviewer runtime tests or human approval inferred."
+  },
+  {
+    "round": "review-latest",
+    "provider": "grok",
+    "role": "narrow frozen license-only supplement review",
+    "package": "comfyui-vulkan-license-only",
+    "request_sha256": "c359bb2159c26295067a56b7e8c2b8d768df65963ae1461dcc87509c5850fdd8",
+    "metadata_response_sha256": "e0923dd5fbc00f6eedf82bc8331099e122f4ff1e9c444175291d88724f44e0d3",
+    "review_text_sha256": "1a90050d1b8f202ccdf42b7eee8bdba8f1249fae599852a94734a98ff1ee8b8c",
+    "reported_models": [
+      "grok-4.7-build"
+    ],
+    "selected_cli_model": null,
+    "actual_status": "response_received",
+    "verdict": "no_blocking_findings",
+    "tools": "denied",
+    "human_release_approval": false,
+    "interpretation": "Static review only; no reviewer runtime tests or human approval inferred."
+  }
+]

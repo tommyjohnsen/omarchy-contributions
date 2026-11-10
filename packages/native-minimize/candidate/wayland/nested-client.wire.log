@@ -1,0 +1,3 @@
+[04:08:56.386923] {Default Queue}  -> xdg_toplevel#34.set_minimized()
+[04:08:57.037331] {Default Queue}  -> xdg_toplevel#34.set_maximized()
+[04:08:57.487146] {Default Queue}  -> xdg_toplevel#34.set_fullscreen(nil)

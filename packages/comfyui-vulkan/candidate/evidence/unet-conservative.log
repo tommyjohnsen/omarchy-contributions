@@ -1,0 +1,4 @@
+PASS actual ComfyUI UNet: (1, 4, 8, 8), max error 0.00000063, 0.012s
+Vulkan memory: 9233760256 3226847283
+PASS actual ComfyUI FP16 UNet
+ComfyUI Vulkan integration checks passed without downloaded models or CPU operator fallback.

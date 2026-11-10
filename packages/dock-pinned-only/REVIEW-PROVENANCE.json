@@ -1,0 +1,55 @@
+{
+  "package": "dock-pinned-only",
+  "reviewed_files_sha256": {
+    "pinned-only.patch": "c548212606cf1dc44335729c4e69642e4e828352c79160aa546f33fe32668616",
+    "test-items.py": "32da0d912458d1ea7121c7123befe7e7a64cb2cbe353f1d4e5bba02e688ab151",
+    "baseline-context.json": "13173f5f3ca3c5473d8525807d5372e051bd2ad41ce4bd4ec328f0fb7bed24ba",
+    "README.md": "c893d3246b9f1acf123f0473aa3a6038d1268755b573d5c0bc4d81f75696e524"
+  },
+  "reviews": {
+    "claude": {
+      "request_sha256": "55f69c94a795b3844afb0ad93f1b004a44c2c66b7632064ba996fc40047f716b",
+      "response_sha256": "a34f5923c19d0f1539a21bdb8c4095d0e7f4e4f24ce9374e91f56496fff3a4ee",
+      "reported_models": [
+        "claude-opus-5-5"
+      ],
+      "verdict": "no_blocking_findings",
+      "scope": "static review of supplied source/context; no model-executed tests"
+    },
+    "grok": {
+      "request_sha256": "55f69c94a795b3844afb0ad93f1b004a44c2c66b7632064ba996fc40047f716b",
+      "response_sha256": "e647e87fd3a660b03f707f410f33d9d359578d35cf958da9e7f478cdb894004f",
+      "reported_models": [
+        "grok-4.7-build"
+      ],
+      "verdict": "no_blocking_findings",
+      "scope": "static review of supplied source/context; no model-executed tests"
+    },
+    "gemini": {
+      "request_sha256": "55f69c94a795b3844afb0ad93f1b004a44c2c66b7632064ba996fc40047f716b",
+      "response_sha256": "acd433138a11fc6fb038990c438712c6756a54ce3d433ee6609d8667e0d85582",
+      "reported_models": [],
+      "selected_cli_model": "gemini-3.8-flash-high",
+      "verdict": "no_blocking_findings",
+      "scope": "static review of supplied source/context; no model-executed tests"
+    }
+  },
+  "codex_role": "implementation, contract verification, tests, review triage and consolidation",
+  "upstream_authorship": "preserved; see source baseline context",
+  "license_policy": "upstream-derived code retains original notices; no license replacement",
+  "human_owner": "Tommy Johnsen",
+  "release_approved": false,
+  "published": false,
+  "new_unreviewed_packaging_files": [
+    "REVIEW-PROVENANCE.json",
+    "RELEASE-NOTES.md",
+    "LICENSE-UPSTREAM",
+    "supplemental-validation/test-reactivity.py",
+    "supplemental-validation/reactivity-result.json"
+  ],
+  "supplemental_files_sha256": {
+    "LICENSE-UPSTREAM": "1abcf1f3e09902d5357287d17d7d83e72376916771ec48a812e34ae4ff2ba041",
+    "supplemental-validation/test-reactivity.py": "881471547da11090806253a327ea52abbe8110f9bb38593a3bf7057e7babfa22",
+    "supplemental-validation/reactivity-result.json": "7711eb26ee0b2336ec5625ef46aa7aae2b0e8ccd36234a704a427a437f6fa378"
+  }
+}

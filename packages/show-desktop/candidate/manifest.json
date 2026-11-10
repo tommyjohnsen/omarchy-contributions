@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "id": "tommy.show-desktop",
+  "name": "Show desktop",
+  "version": "1.0.0",
+  "author": "Tommy",
+  "description": "Plain dark-red button to hide and restore the current workspace's windows.",
+  "kinds": ["bar-widget"],
+  "entryPoints": { "barWidget": "BarWidget.qml" },
+  "barWidget": { "displayName": "Show desktop", "description": "Hide or restore windows", "category": "Compositor", "allowMultiple": false }
+}

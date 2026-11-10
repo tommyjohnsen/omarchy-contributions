@@ -1,0 +1,16 @@
+{
+  "new_standalone_source": "MIT under publisher policy; see LICENSE",
+  "upstream_derived_files": [
+    "openapi-v3.3.5-excerpt.json",
+    "openapi-v3.3.5-filter-schemas.json",
+    "openapi-v3.3.5-response-envelope.json"
+  ],
+  "upstream_project": "Immich",
+  "upstream_revision": "v3.3.5",
+  "upstream_license": "GNU Affero General Public License v3",
+  "license_source": "https://raw.githubusercontent.com/immich-app/immich/v3.3.5/LICENSE",
+  "license_copy": "UPSTREAM-IMMICH-LICENSE",
+  "license_sha256": "a3bad629f67f442b23b5224419e49edafc32e6b9c876b89464f7aafe6091ccde",
+  "note": "Preserve these API-schema excerpt notices and upstream license; publisher MIT policy does not relicense upstream material.",
+  "v6_license_copy_verification": "Refetched official v3.3.5 LICENSE byte-for-byte. Earlier snapshots contained the complete body with one final blank line normalized away; V6 preserves the exact upstream bytes."
+}

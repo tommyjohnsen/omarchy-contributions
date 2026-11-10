@@ -1,0 +1,11 @@
+--- a/shell/plugins/dock/Dock.qml
++++ b/shell/plugins/dock/Dock.qml
+@@ -65,6 +65,8 @@
+       var toplevel = toplevels[i].wayland
+       if (!toplevel || !toplevel.appId || toplevel.parent) continue
+       var entry = root.entryForAppId(toplevel.appId)
++      // Optional: keep the dock limited to explicitly pinned applications.
++      if (root.dockConfig.pinnedOnly === true && pinned.indexOf(entry ? entry.id : toplevel.appId) === -1) continue
+       var workspace = toplevels[i].workspace
+       windows.push({
+         key: entry ? entry.id : toplevel.appId,

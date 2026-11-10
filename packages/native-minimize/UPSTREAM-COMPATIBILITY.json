@@ -1,0 +1,15 @@
+{
+  "upstream_repository": "https://github.com/hyprwm/Hyprland",
+  "current_upstream_HEAD": "4c3a8fe81feea899c894faec50e10cf01b301d2f",
+  "reviewed_tested_base": "acc1aa0bfd4bd575dcb0f76c35ccf12b660a1ab9",
+  "HEAD_differs_from_tested_base": true,
+  "affected_path": "src/desktop/view/window/Window.cpp",
+  "current_file_sha256": "e1b7dae5d0dd3352e3e62efd223980aa8338042b13631afb0d80fa6e64b1f521",
+  "affected_function": "CWindow::onUpdateState",
+  "function_identical_to_pristine_tested_base": true,
+  "old_function_sha256": "c1919cb8fa7875741afe8d54b2e328afddc304a2741199ce5ecee16aec6f6a65",
+  "current_function_sha256": "c1919cb8fa7875741afe8d54b2e328afddc304a2741199ce5ecee16aec6f6a65",
+  "frozen_patch_apply_check_on_current_file_passed": true,
+  "apply_check_diagnostic": "",
+  "scope": "Read-only HEAD/source comparison and isolated git apply --check only. No upstream port, compile or runtime test; frozen candidate bytes unchanged."
+}

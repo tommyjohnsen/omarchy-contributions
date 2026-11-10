@@ -1,0 +1,235 @@
+--- /dev/null
++++ b/check-gi-venv.py
+@@ -0,0 +1,10 @@
++#!/usr/bin/env python3
++# SPDX-License-Identifier: MIT
++"""Disposable system-site-packages GI import check; never accesses a keyring."""
++from pathlib import Path
++import json,platform,subprocess,tempfile
++with tempfile.TemporaryDirectory(prefix='immich-gi-venv-') as directory:
++ subprocess.run(['/usr/bin/python','-m','venv','--system-site-packages',directory],check=True,capture_output=True,timeout=30)
++ result=subprocess.run([str(Path(directory)/'bin/python'),'-c','import gi;gi.require_version("Secret","1");from gi.repository import Secret;print("GI Secret typelib import passed")'],capture_output=True,text=True,timeout=10)
++ assert result.returncode==0,'Fresh system-site-packages venv could not import GI/Secret'
++ print(json.dumps({'system_python_version':platform.python_version(),'fresh_system_site_packages_venv':True,'gi_secret_typelib_import':True,'keyring_access_performed':False}))
+--- a/check_hung_mount_probe.py
++++ b/check_hung_mount_probe.py
+@@ -2,6 +2,7 @@
+ import errno,json,os,signal,subprocess,sys,tempfile,time,shutil
+ from pathlib import Path
+ import mount_support
++from unittest.mock import patch
+ base=Path(tempfile.mkdtemp(prefix='immich-hung-fixture-',dir='/tmp'));point=base/'mount'
+ child=subprocess.Popen([sys.executable,str(Path(__file__).with_name('fixture_mount.py')),str(base)],stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
+ try:
+@@ -11,12 +12,14 @@
+   time.sleep(.05)
+  assert mount_support.mount_record(point);assert list(point.iterdir())
+  child.send_signal(signal.SIGSTOP);time.sleep(.05)
++ alias=base/'Pictures';alias.symlink_to(base,target_is_directory=True)
+  start=time.monotonic()
+- try:mount_support.prepare_mountpoint(point,active=lambda:True,probe_timeout=.15)
+- except OSError as error:assert error.errno==errno.ETIMEDOUT
+- else:raise AssertionError('Hung own mount unexpectedly accepted')
++ with patch.object(mount_support.Path,'iterdir',side_effect=AssertionError('helper may not list hung leaf')):
++  try:mount_support.prepare_mountpoint(alias/'mount',active=lambda:True,probe_timeout=.15)
++  except OSError as error:assert error.errno==errno.ETIMEDOUT
++  else:raise AssertionError('Hung own mount unexpectedly accepted')
+  elapsed=time.monotonic()-start;assert elapsed<1.5;assert mount_support.mount_record(point)[1]=='Immich'
+- print(json.dumps({'generated_fuse_daemon_suspended':True,'probe_timeout_returned':True,'mount_left_untouched':True,'seconds':round(elapsed,3)}))
++ print(json.dumps({'generated_fuse_daemon_suspended':True,'probe_timeout_returned':True,'mount_left_untouched':True,'parent_symlink_resolved':True,'no_helper_leaf_listing':True,'seconds':round(elapsed,3)}))
+ finally:
+  if child.poll() is None:child.send_signal(signal.SIGCONT)
+  if mount_support.mount_record(point):subprocess.run(['fusermount3','-u',str(point)],capture_output=True,timeout=10)
+--- a/connect_immich_files.py
++++ b/connect_immich_files.py
+@@ -19,8 +19,8 @@
+ def unit_active():
+     return subprocess.run(['systemctl','--user','is-active','--quiet',UNIT],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=5).returncode==0
+ 
+-def mount_record():
+-    return mount_support.mount_record(MOUNT)
++def mount_record(timeout=2):
++    return mount_support.mount_record(MOUNT,timeout=timeout)
+ 
+ def prepare_mountpoint(probe_timeout=2):
+     return mount_support.prepare_mountpoint(MOUNT, active=unit_active,probe_timeout=probe_timeout)
+@@ -34,6 +34,26 @@
+         return True
+     except OSError:
+         return False
++
++def wait_until_ready(deadline):
++    last_error=None
++    while time.monotonic()<deadline:
++        remaining=max(.01,deadline-time.monotonic())
++        try:
++            record=mount_record(timeout=min(2,remaining))
++            if record:
++                if len(record)!=2 or not record[0].startswith('fuse') or record[1]!='Immich':
++                    raise RuntimeError('Another filesystem occupies the mount location')
++                remaining=deadline-time.monotonic()
++                if remaining<=0:break
++                if mount_support.probe_mount(MOUNT,timeout=min(2,remaining)):return
++        except OSError as error:
++            if error.errno not in (errno.ENOTCONN,errno.ESTALE,errno.ETIMEDOUT,errno.EIO):raise
++            last_error=error
++        remaining=deadline-time.monotonic()
++        if remaining>0:time.sleep(min(.2,remaining))
++    if last_error:raise last_error
++    raise RuntimeError('The read-only mount did not become ready')
+ 
+ def validate(api):
+     deadline=time.monotonic()+25
+@@ -109,18 +129,12 @@
+     # An already-running daemon holds its key in memory; replacement requires
+     # restart, rather than enable --now which leaves that old process running.
+     subprocess.run(['systemctl','--user','restart' if fresh or needs_restart else 'start',UNIT],check=True,timeout=45)
+-    ready_deadline=time.monotonic()+12
+-    while time.monotonic()<ready_deadline:
+-        if mount_record():
+-            # The mount identity and a successful local listing verify readiness
+-            # before the upload-picker bookmark is ever published.
+-            if prepare_mountpoint(probe_timeout=min(2,max(.01,ready_deadline-time.monotonic()))):
+-                bookmark()
+-                print('\nConnected. Use Immich Photos in Files or the upload picker.')
+-                open_folder(MOUNT)
+-                return 0
+-        time.sleep(.2)
+-    raise RuntimeError('The read-only mount did not become ready.')
++    # Observation only: startup cleanup belongs to the daemon, never polling.
++    wait_until_ready(time.monotonic()+12)
++    bookmark()
++    print('\nConnected. Use Immich Photos in Files or the upload picker.')
++    open_folder(MOUNT)
++    return 0
+ 
+ if __name__=='__main__':
+     try:sys.exit(main())
+--- a/mount_support.py
++++ b/mount_support.py
+@@ -11,14 +11,34 @@
+ class DisconnectedMountActive(RuntimeError):
+     """A validated user connect may restart this unit; do not unmount it here."""
+ 
+-def mount_record(path):
++RESOLVE_PARENT_CODE = "import os,sys\nvalue=os.fsencode(os.path.join(os.path.realpath(os.path.dirname(sys.argv[1])),os.path.basename(sys.argv[1])))\nif not value.startswith(b'/') or len(value)>4096:sys.exit(5)\nos.write(1,value)\n"
++
++def canonical_mount_path(path,timeout=2):
++    # Parent resolution may itself enter a wedged remote filesystem. Isolate
++    # it too; never call realpath on the leaf that may already be FUSE-mounted.
++    process=subprocess.Popen([sys.executable,'-I','-c',RESOLVE_PARENT_CODE,str(path)],stdin=subprocess.DEVNULL,
++                             stdout=subprocess.PIPE,stderr=subprocess.DEVNULL)
++    try:
++        try:code=process.wait(timeout=max(.01,timeout))
++        except subprocess.TimeoutExpired:
++            process.kill()
++            try:process.wait(timeout=.5)
++            except subprocess.TimeoutExpired:pass
++            raise OSError(errno.ETIMEDOUT,'Immich parent resolution timed out')
++        value=process.stdout.read(4097)
++        if code or not value.startswith(b'/') or len(value)>4096:raise RuntimeError('Immich parent path could not be verified')
++        return Path(os.fsdecode(value))
++    finally:process.stdout.close()
++
++def mount_record(path,timeout=2):
++    path=canonical_mount_path(path,timeout)
+     with open('/proc/self/mountinfo','rb') as table: raw=table.read(4*1024*1024+1)
+     if not raw or len(raw)>4*1024*1024 or not raw.endswith(b'\n'):
+         raise RuntimeError('Mount table unavailable or oversized')
+     found=None
+-    for line in raw.splitlines():
++    for line in raw.split(b'\n')[:-1]:
+         fields=line.split(b' ')
+-        if len(fields)<10 or b'-' not in fields[6:]:raise RuntimeError('Malformed mount table')
++        if not line or any(not field for field in fields) or len(fields)<10 or b'-' not in fields[6:]:raise RuntimeError('Malformed mount table')
+         separator=fields.index(b'-',6)
+         if len(fields)-separator!=4 or not fields[0].isdigit() or not fields[1].isdigit() or not re.fullmatch(rb'[0-9]+:[0-9]+',fields[2]):raise RuntimeError('Malformed mount table')
+         encoded=fields[4]
+@@ -53,8 +73,8 @@
+     raise OSError(errno.EIO,'Immich mount responsiveness probe failed')
+ 
+ def prepare_mountpoint(path, *, active=lambda: False, recover_while_active=False,probe_timeout=2):
+-    path=Path(path)
+-    record=mount_record(path)
++    path=canonical_mount_path(path,probe_timeout)
++    record=mount_record(path,probe_timeout)
+     own=bool(record and len(record)==2 and record[0].startswith('fuse') and record[1]=='Immich')
+     if record and not own:raise RuntimeError('Another filesystem occupies the mount location; left unchanged')
+     if own:
+--- a/test_helper.py
++++ b/test_helper.py
+@@ -20,7 +20,7 @@
+   def prompt(message):prompts.append(message);return replacement
+   self.saved,self.prompts,self.validations,self.commands=saved,prompts,validations,commands
+   with tempfile.TemporaryDirectory(prefix='immich-helper-fixture-') as d:
+-   with patch.object(sys,'argv',['connect-immich-files']),patch.object(sys,'stdin',types.SimpleNamespace(isatty=lambda:True)),patch.object(helper,'prepare_mountpoint',side_effect=[initial_error or mounted,True]),patch.object(helper,'mount_record',return_value=['fuse','Immich']),patch.object(helper,'MOUNT',Path(d)),patch.object(helper,'keyring_key',keyring),patch.object(helper,'API',FakeAPI),patch.object(helper,'validate',validate),patch.object(helper.getpass,'getpass',prompt),patch.object(helper,'bookmark'),patch.object(helper.subprocess,'run',side_effect=lambda a,**k:commands.append(a)),patch.object(helper.subprocess,'Popen'),contextlib.redirect_stdout(io.StringIO()):
++   with patch.object(helper.mount_support,'probe_mount',return_value=True),patch.object(sys,'argv',['connect-immich-files']),patch.object(sys,'stdin',types.SimpleNamespace(isatty=lambda:True)),patch.object(helper,'prepare_mountpoint',side_effect=[initial_error or mounted,True]),patch.object(helper,'mount_record',return_value=['fuse','Immich']),patch.object(helper,'MOUNT',Path(d)),patch.object(helper,'keyring_key',keyring),patch.object(helper,'API',FakeAPI),patch.object(helper,'validate',validate),patch.object(helper.getpass,'getpass',prompt),patch.object(helper,'bookmark'),patch.object(helper.subprocess,'run',side_effect=lambda a,**k:commands.append(a)),patch.object(helper.subprocess,'Popen'),contextlib.redirect_stdout(io.StringIO()):
+     return helper.main()
+  def test_stored_rejected_key_reprompts_validates_then_saves(self):
+   self.assertEqual(self.run_helper('public-old-fixture-key'),0)
+--- a/test_v6_regressions.py
++++ b/test_v6_regressions.py
+@@ -46,4 +46,17 @@
+    self.assertEqual(support.mount_record('/with space'),['fuse','Immich'])
+   with patch('builtins.open',return_value=io.BytesIO(b'malformed\n')):
+    with self.assertRaises(RuntimeError):support.mount_record('/fixture')
++ def test_mountinfo_rawCR_in_source_and_path_is_preserved(self):
++  value=b'10 1 0:42 / /raw\rpath rw - fuse source\rname rw\n'
++  with patch('builtins.open',return_value=io.BytesIO(value)):
++   self.assertEqual(support.mount_record('/raw\rpath'),['fuse','source\rname'])
++ def test_mountinfo_empty_records_and_fields_are_refused(self):
++  valid=b'10 1 0:42 / / rw - fuse Immich rw\n'
++  for value in [valid+b'\n',valid.replace(b' rw -',b' rw  -')]:
++   with patch('builtins.open',return_value=io.BytesIO(value)),self.assertRaises(RuntimeError):support.mount_record('/fixture')
++ def test_mountinfo_VT_FF_85_are_literal_bytes(self):
++  for byte in [11,12,0x85]:
++   point=b'/raw'+bytes([byte])+b'path'
++   with patch('builtins.open',return_value=io.BytesIO(b'10 1 0:42 / '+point+b' rw - fuse Immich rw\n')):
++    self.assertEqual(support.mount_record(os.fsdecode(point)),['fuse','Immich'])
+ if __name__=='__main__':unittest.main()
+--- /dev/null
++++ b/test_v7_readiness.py
+@@ -0,0 +1,43 @@
++"""Read-only startup retries, buffered proc reads and bounded parent identity."""
++from pathlib import Path
++import errno,io,tempfile,time,unittest
++from unittest.mock import patch
++import connect_immich_files as helper
++import mount_support as support
++class ReadinessTests(unittest.TestCase):
++ def test_transient_probes_retry_without_recovery_or_unmount(self):
++  with patch.object(helper,'mount_record',return_value=['fuse','Immich']),patch.object(support,'probe_mount',side_effect=[False,OSError(errno.ENOTCONN,'public fixture'),OSError(errno.EIO,'public fixture'),True]) as probe,patch.object(helper.time,'sleep'),patch.object(helper,'prepare_mountpoint',side_effect=AssertionError('readiness must not recover')),patch.object(support.subprocess,'run',side_effect=AssertionError('readiness must not unmount')):
++   helper.wait_until_ready(time.monotonic()+1);self.assertEqual(probe.call_count,4)
++ def test_retry_deadline_returns_last_transient_error(self):
++  start=time.monotonic()
++  with patch.object(helper,'mount_record',return_value=['fuse','Immich']),patch.object(support,'probe_mount',side_effect=OSError(errno.ETIMEDOUT,'public fixture')):
++   with self.assertRaises(OSError) as error:helper.wait_until_ready(start+.01)
++   self.assertEqual(error.exception.errno,errno.ETIMEDOUT);self.assertLess(time.monotonic()-start,.2)
++ def test_foreign_mount_is_refused_without_probe(self):
++  with patch.object(helper,'mount_record',return_value=['fuse','Other']),patch.object(support,'probe_mount') as probe:
++   with self.assertRaises(RuntimeError):helper.wait_until_ready(time.monotonic()+1)
++   probe.assert_not_called()
++ def test_parent_resolution_follows_parent_alias_not_leaf(self):
++  with tempfile.TemporaryDirectory() as d:
++   root=Path(d);real=root/'real';real.mkdir();alias=root/'Pictures';alias.symlink_to(real,target_is_directory=True)
++   with patch.object(support.Path,'lstat',side_effect=AssertionError('parent helper must not touch leaf')):
++    self.assertEqual(support.canonical_mount_path(alias/'not-created'),real/'not-created')
++ def test_parent_resolution_timeout_is_bounded(self):
++  start=time.monotonic()
++  with patch.object(support,'RESOLVE_PARENT_CODE','import time;time.sleep(10)'):
++   with self.assertRaises(OSError) as error:support.canonical_mount_path('/public-fixture',timeout=.05)
++   self.assertEqual(error.exception.errno,errno.ETIMEDOUT);self.assertLess(time.monotonic()-start,1)
++ def test_buffered_read_collects_short_seq_file_reads_until_eof(self):
++  data=b'10 1 0:42 / /other rw - tmpfs source rw\n'+b'11 1 0:43 / /fixture rw - fuse Immich rw\n'
++  class ShortRaw(io.RawIOBase):
++   def __init__(self):self.position=0;self.calls=0;self.eof=False
++   def readable(self):return True
++   def readinto(self,view):
++    self.calls+=1;part=data[self.position:self.position+7];view[:len(part)]=part;self.position+=len(part)
++    if not part:self.eof=True
++    return len(part)
++  raw=ShortRaw()
++  with patch('builtins.open',return_value=io.BufferedReader(raw)),patch.object(support,'canonical_mount_path',return_value=Path('/fixture')):
++   self.assertEqual(support.mount_record('/fixture'),['fuse','Immich'])
++  self.assertTrue(raw.eof);self.assertGreater(raw.calls,3)
++if __name__=='__main__':unittest.main()

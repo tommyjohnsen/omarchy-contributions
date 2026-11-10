@@ -1,0 +1,127 @@
+{
+  "baseline": "Hyprland v0.57.1 acc1aa0bfd4bd575dcb0f76c35ccf12b660a1ab9",
+  "excerpts": [
+    {
+      "source": "src/config/lua/bindings/LuaBindingsToplevel.cpp",
+      "first_line": 295,
+      "last_line": 310,
+      "text": "}\n\nstatic int hlExecCmd(lua_State* L) {\n    auto cmd = Internal::argStr(L, 1);\n\n    if (cmd.empty())\n        return Internal::configError(L, \"hl.exec_cmd: expected command as first argument\");\n\n    auto rule = Internal::buildRuleFromTable(L, 2);\n\n    if (!rule)\n        return rule.error();\n\n    Config::Supplementary::executor()->spawn(Supplementary::SExecRequest{cmd, !*rule, *rule});\n\n    return 0;",
+      "full_file_sha256": "cda037666ed086e98027bd56fe35764cb841618347c721950c75bd0fcd475e24"
+    },
+    {
+      "source": "src/config/lua/bindings/LuaBindingsToplevel.cpp",
+      "first_line": 412,
+      "last_line": 463,
+      "text": "static int hlTimer(lua_State* L) {\n    auto* mgr = sc<CConfigManager*>(lua_touserdata(L, lua_upvalueindex(1)));\n\n    luaL_checktype(L, 1, LUA_TFUNCTION);\n    luaL_checktype(L, 2, LUA_TTABLE);\n\n    lua_getfield(L, 2, \"timeout\");\n    if (!lua_isnumber(L, -1))\n        return Internal::configError(L, \"hl.timer: opts.timeout must be a number (ms)\");\n    int timeoutMs = (int)lua_tonumber(L, -1);\n    lua_pop(L, 1);\n\n    if (timeoutMs <= 0)\n        return Internal::configError(L, \"hl.timer: opts.timeout must be > 0\");\n\n    lua_getfield(L, 2, \"type\");\n    if (!lua_isstring(L, -1))\n        return Internal::configError(L, \"hl.timer: opts.type must be \\\"repeat\\\" or \\\"oneshot\\\"\");\n    std::string type = lua_tostring(L, -1);\n    lua_pop(L, 1);\n\n    bool repeat = false;\n    if (type == \"repeat\")\n        repeat = true;\n    else if (type != \"oneshot\")\n        return Internal::configError(L, \"hl.timer: opts.type must be \\\"repeat\\\" or \\\"oneshot\\\"\");\n\n    auto timer = makeShared<CEventLoopTimer>(\n        std::chrono::milliseconds(timeoutMs),\n        [fn = makeShared<CLuaRef>(mgr->luaStateLifetime(), L, 1), repeat, timeoutMs, mgr](SP<CEventLoopTimer> self, void* data) {\n            // update repeat already so that if we call set_timeout inside\n            // our timer it doesn't get overwritten\n            if (repeat)\n                self->updateTimeout(std::chrono::milliseconds(timeoutMs));\n\n            mgr->caller().call(*fn, CLuaCaller::LUA_TIMEOUT_TIMER_CALLBACK_MS, \"hl.timer callback\");\n\n            // drop every owner so fn is released right away\n            if (!repeat) {\n                std::erase(mgr->m_luaTimers, self);\n                g_pEventLoopManager->removeTimer(self);\n            }\n        },\n        nullptr);\n\n    mgr->m_luaTimers.emplace_back(timer);\n    if (g_pEventLoopManager)\n        g_pEventLoopManager->addTimer(timer);\n\n    Objects::CLuaTimer::push(L, timer, timeoutMs);\n    return 1;\n}",
+      "full_file_sha256": "cda037666ed086e98027bd56fe35764cb841618347c721950c75bd0fcd475e24"
+    },
+    {
+      "source": "src/config/lua/ConfigManager.cpp",
+      "first_line": 466,
+      "last_line": 473,
+      "text": "void CConfigManager::cleanTimers() {\n    for (const auto& t : m_luaTimers) {\n        t->cancel();\n        g_pEventLoopManager->removeTimer(t);\n    }\n    m_luaTimers.clear();\n}\n",
+      "full_file_sha256": "776df9467b0f216b51e0acd1992308dc6ffc44a32b059bff59618304425bb1df"
+    },
+    {
+      "source": "src/managers/eventLoop/EventLoopTimer.cpp",
+      "first_line": 1,
+      "last_line": 26,
+      "text": "#include \"EventLoopTimer.hpp\"\n#include <limits>\n#include \"EventLoopManager.hpp\"\n#include \"../../helpers/time/Time.hpp\"\n\nCEventLoopTimer::CEventLoopTimer(std::optional<Time::steady_dur> timeout, std::function<void(SP<CEventLoopTimer> self, void* data)> cb_, void* data_) : m_cb(cb_), m_data(data_) {\n\n    if (!timeout.has_value())\n        m_expires.reset();\n    else\n        m_expires = Time::steadyNow() + *timeout;\n}\n\nvoid CEventLoopTimer::updateTimeout(std::optional<Time::steady_dur> timeout) {\n    if (!timeout.has_value()) {\n        m_expires.reset();\n        g_pEventLoopManager->scheduleRecalc();\n        return;\n    }\n\n    m_expires = Time::steadyNow() + *timeout;\n\n    g_pEventLoopManager->scheduleRecalc();\n}\n\nbool CEventLoopTimer::passed() {",
+      "full_file_sha256": "37418601a1c4dceab83abc103d363d96e5b4dd5d228ffc553c93e9cf064315df"
+    },
+    {
+      "source": "src/desktop/DesktopTypes.hpp",
+      "first_line": 24,
+      "last_line": 32,
+      "text": "/* Weak pointer to a workspace */\nusing PHLWORKSPACEREF = WP<Workspace::CHLWorkspace>;\n\n/* Shared pointer to a window */\nusing PHLWINDOW = SP<Desktop::View::CWindow>;\n/* Weak pointer to a window */\nusing PHLWINDOWREF = WP<Desktop::View::CWindow>;\n\n/* Shared pointer to a layer surface */",
+      "full_file_sha256": "34a4c68f4e8c29438687def8717a4e89128097520ea7d0229fc35a3381f7cbfd"
+    },
+    {
+      "source": "src/config/lua/objects/LuaWindow.cpp",
+      "first_line": 63,
+      "last_line": 85,
+      "text": "static int windowIndex(lua_State* L) {\n    auto*      ref = sc<PHLWINDOWREF*>(luaL_checkudata(L, 1, MT));\n    const auto w   = ref->lock();\n    if (!w) {\n        LOG(Log::DEBUG, \"[lua] Tried to access an expired object\");\n        lua_pushnil(L);\n        return 1;\n    }\n\n    const std::string_view key = luaL_checkstring(L, 2);\n\n    if (key == \"address\")\n        lua_pushstring(L, std::format(\"0x{:x}\", reinterpret_cast<uintptr_t>(w.get())).c_str());\n    else if (key == \"mapped\")\n        lua_pushboolean(L, w->mapped());\n    else if (key == \"hidden\")\n        lua_pushboolean(L, w->isHidden());\n    else if (key == \"visible\")\n        lua_pushboolean(L, w->mapped() && w->acceptsInput() && w->alphaNonZero());\n    else if (key == \"accepts_input\")\n        lua_pushboolean(L, w->acceptsInput());\n    else if (key == \"at\") {\n        lua_newtable(L);",
+      "full_file_sha256": "276c9ec4dcaa48de6e92c3c9478e06e2c28be0c3a1075470e514abf2a76d4fa9"
+    },
+    {
+      "source": "src/config/lua/objects/LuaWindow.cpp",
+      "first_line": 253,
+      "last_line": 270,
+      "text": "\nvoid Objects::CLuaWindow::setup(lua_State* L) {\n    registerMetatable(L, MT, windowIndex, gcRef<PHLWINDOWREF>, windowEq, windowToString);\n}\n\nvoid Objects::CLuaWindow::push(lua_State* L, PHLWINDOWREF w) {\n    if (!w) {\n        lua_pushnil(L);\n        return;\n    }\n\n    new (lua_newuserdata(L, sizeof(PHLWINDOWREF))) PHLWINDOWREF(w ? w->m_self : nullptr);\n    luaL_getmetatable(L, MT);\n    lua_setmetatable(L, -2);\n}",
+      "full_file_sha256": "276c9ec4dcaa48de6e92c3c9478e06e2c28be0c3a1075470e514abf2a76d4fa9"
+    },
+    {
+      "source": "src/config/lua/objects/LuaWorkspace.cpp",
+      "first_line": 108,
+      "last_line": 121,
+      "text": "    const std::string_view key = luaL_checkstring(L, 2);\n\n    if (key == \"name\")\n        lua_pushstring(L, ws->displayName().c_str());\n    else if (key == \"addressable_name\")\n        lua_pushstring(L, ws->addressableName().c_str());\n    else if (key == \"id\") {\n        // for compatibility under lua, keep this field populated with a numbered ID if there is one,\n        // or nil\n        auto id = ws->id();\n        if (std::holds_alternative<Workspace::SWorkspaceNumberedID>(id))\n            lua_pushinteger(L, std::get<Workspace::SWorkspaceNumberedID>(id).value);\n        else\n            lua_pushnil(L);",
+      "full_file_sha256": "5595ff395df516e74fb1ecc7f95628586732098cd002feda79187a45a8230491"
+    },
+    {
+      "source": "src/config/lua/objects/LuaWindow.cpp",
+      "first_line": 63,
+      "last_line": 104,
+      "text": "static int windowIndex(lua_State* L) {\n    auto*      ref = sc<PHLWINDOWREF*>(luaL_checkudata(L, 1, MT));\n    const auto w   = ref->lock();\n    if (!w) {\n        LOG(Log::DEBUG, \"[lua] Tried to access an expired object\");\n        lua_pushnil(L);\n        return 1;\n    }\n\n    const std::string_view key = luaL_checkstring(L, 2);\n\n    if (key == \"address\")\n        lua_pushstring(L, std::format(\"0x{:x}\", reinterpret_cast<uintptr_t>(w.get())).c_str());\n    else if (key == \"mapped\")\n        lua_pushboolean(L, w->mapped());\n    else if (key == \"hidden\")\n        lua_pushboolean(L, w->isHidden());\n    else if (key == \"visible\")\n        lua_pushboolean(L, w->mapped() && w->acceptsInput() && w->alphaNonZero());\n    else if (key == \"accepts_input\")\n        lua_pushboolean(L, w->acceptsInput());\n    else if (key == \"at\") {\n        lua_newtable(L);\n        lua_pushinteger(L, sc<int>(w->position(Desktop::View::IGeometric::GEOMETRIC_GOAL).x));\n        lua_setfield(L, -2, \"x\");\n        lua_pushinteger(L, sc<int>(w->position(Desktop::View::IGeometric::GEOMETRIC_GOAL).y));\n        lua_setfield(L, -2, \"y\");\n    } else if (key == \"size\") {\n        lua_newtable(L);\n        lua_pushinteger(L, sc<int>(w->size(Desktop::View::IGeometric::GEOMETRIC_GOAL).x));\n        lua_setfield(L, -2, \"x\");\n        lua_pushinteger(L, sc<int>(w->size(Desktop::View::IGeometric::GEOMETRIC_GOAL).y));\n        lua_setfield(L, -2, \"y\");\n    } else if (key == \"workspace\") {\n        if (w->m_workspace)\n            Objects::CLuaWorkspace::push(L, w->m_workspace);\n        else\n            lua_pushnil(L);\n    } else if (key == \"floating\")\n        lua_pushboolean(L, w->isFloating());\n    else if (key == \"monitor\") {\n        const auto mon = w->m_monitor.lock();",
+      "full_file_sha256": "276c9ec4dcaa48de6e92c3c9478e06e2c28be0c3a1075470e514abf2a76d4fa9",
+      "note": "Exact baseline adapter/accessor"
+    },
+    {
+      "source": "src/config/lua/LuaEventHandler.cpp",
+      "first_line": 94,
+      "last_line": 103,
+      "text": "    m_listeners.push_back(\n        bus()->m_events.window.bell.listen([this](PHLWINDOW w, Event::SCallbackInfo&) { dispatch(\"window.bell\", 1, [&](lua_State* L) { CLuaWindow::push(L, w); }); }));\n    m_listeners.push_back(bus()->m_events.window.minimize.listen([this](PHLWINDOW w, bool s) {\n        dispatch(\"window.minimize\", 2, [&](lua_State* L) {\n            CLuaWindow::push(L, w);\n            lua_pushboolean(L, s);\n        });\n    }));\n\n    m_listeners.push_back(bus()->m_events.layer.opened.listen([this](PHLLS ls) { dispatch(\"layer.opened\", 1, [&](lua_State* L) { CLuaLayerSurface::push(L, ls); }); }));",
+      "full_file_sha256": "f637b324d86a9dbafa8ee36468b4d627d177046b11fb85a187d181343724307b",
+      "note": "Exact baseline adapter/accessor"
+    },
+    {
+      "source": "src/desktop/view/window/Window.cpp",
+      "first_line": 833,
+      "last_line": 859,
+      "text": "\n    if (m_target->floating())\n        Desktop::windowState()->raise(m_self.lock());\n\n    Desktop::focusState()->fullWindowFocus(m_self.lock(), FOCUS_REASON_DESKTOP_STATE_CHANGE);\n    warpCursor();\n}\n\nvoid CWindow::onUpdateState(const SBackendStateRequest& request) {\n    requestClientFullscreen({\n        .fullscreen        = request.fullscreen,\n        .maximized         = request.maximized,\n        .fullscreenMonitor = request.fullscreenMonitor,\n        .origin            = SClientFullscreenRequest::ORIGIN_BACKEND,\n    });\n\n    if (request.minimized.has_value() && mapped()) {\n        const bool MINIMIZED = request.minimized.value();\n        IPC::Socket2::sock()->postEvent({.event = \"minimized\", .data = std::format(\"{:x},{}\", rc<uintptr_t>(this), MINIMIZED ? 1 : 0)});\n        Event::bus()->m_events.window.minimize.emit(m_self.lock(), MINIMIZED);\n    }\n}\n\nvoid CWindow::requestClientFullscreen(const SClientFullscreenRequest& request) {\n    // a client re-asserting fullscreen every frame (notably gamescope) would snap the window back the instant\n    // the drag handler pulls it out of fullscreen, so ignore the request while this window is being dragged.\n    const auto  DRAGTARGET         = g_layoutManager->dragController()->target();",
+      "full_file_sha256": "bf8ae59ea2cb30e22be48a4e4d42d484fec3f6a15a11a07dc8676459e824d3a6",
+      "note": "Window.cpp is actual guarded patched source, not unmodified baseline"
+    },
+    {
+      "file": "src/config/lua/ConfigManager.cpp",
+      "first_line": 474,
+      "last_line": 490,
+      "full_source_sha256": "776df9467b0f216b51e0acd1992308dc6ffc44a32b059bff59618304425bb1df",
+      "source": "void CConfigManager::reinitLuaState() {\n    m_eventHandler.reset();\n\n    cleanTimers();\n    clearLuaLayoutProviders();\n\n    if (m_luaStateLifetime)\n        m_luaStateLifetime->state = nullptr;\n\n    m_caller.reset();\n\n    if (m_lua && m_ownsLuaState) {\n        lua_close(m_lua);\n    }\n    m_lua = nullptr;\n\n    m_lua              = luaL_newstate();"
+    },
+    {
+      "file": "src/config/lua/ConfigManager.cpp",
+      "first_line": 671,
+      "last_line": 697,
+      "full_source_sha256": "776df9467b0f216b51e0acd1992308dc6ffc44a32b059bff59618304425bb1df",
+      "source": "        return;\n    }\n\n    // phase 2: syntax is valid, reset and load.\n    Config::animationTree()->reset();\n    Config::workspaceRuleMgr()->clear();\n    Config::monitorRuleMgr()->clear();\n    Desktop::Rule::ruleEngine()->clearAllRules();\n    g_pTrackpadGestures->clearGestures();\n    cleanTimers();\n    clearLuaLayoutProviders();\n    clearDeprecations();\n    m_luaWindowRules.clear();\n    m_luaLayerRules.clear();\n    m_errors.clear();\n    m_deviceConfigs.clear();\n    m_registeredPlugins.clear();\n    m_eventHandler->clearEvents();\n\n    if (Keybinds::mgr())\n        Keybinds::mgr()->clearBinds();\n\n    // refresh lua state so we get rid of any stale state\n    reinitLuaState();\n\n    // restart phase 1 load, because our state is gone now.\n    if (!phase1Load()) {"
+    },
+    {
+      "file": "src/config/lua/LuaEventHandler.cpp",
+      "first_line": 25,
+      "last_line": 43,
+      "full_source_sha256": "f637b324d86a9dbafa8ee36468b4d627d177046b11fb85a187d181343724307b",
+      "source": "void CLuaEventHandler::dispatch(const std::string& name, int nargs, const std::function<void(lua_State*)>& pushArgs) {\n    const auto it = m_callbacks.find(name);\n    if (it == m_callbacks.end() || it->second.empty())\n        return;\n\n    const auto CONTEXT = std::format(\"hl.on(\\\"{}\\\") callback\", name);\n    const auto HANDLES = it->second;\n\n    for (const auto handle : HANDLES) {\n        const auto sub = m_subscriptions.find(handle);\n        if (sub == m_subscriptions.end())\n            continue;\n\n        m_caller.call(sub->second.fn, CLuaCaller::LUA_TIMEOUT_EVENT_CALLBACK_MS, CONTEXT, [&](lua_State* L) {\n            pushArgs(L);\n            return nargs;\n        });\n    }\n}"
+    },
+    {
+      "file": "src/config/lua/LuaEventHandler.cpp",
+      "first_line": 87,
+      "last_line": 94,
+      "full_source_sha256": "f637b324d86a9dbafa8ee36468b4d627d177046b11fb85a187d181343724307b",
+      "source": "    m_listeners.push_back(bus()->m_events.window.updateRules.listen([this](PHLWINDOW w) { dispatch(\"window.update_rules\", 1, [&](lua_State* L) { CLuaWindow::push(L, w); }); }));\n    m_listeners.push_back(bus()->m_events.window.moveToWorkspace.listen([this](PHLWINDOW w, PHLWORKSPACE ws) {\n        dispatch(\"window.move_to_workspace\", 2, [&](lua_State* L) {\n            CLuaWindow::push(L, w);\n            CLuaWorkspace::push(L, ws);\n        });\n    }));\n    m_listeners.push_back("
+    },
+    {
+      "file": "src/desktop/view/window/Window.cpp",
+      "first_line": 450,
+      "last_line": 483,
+      "full_source_sha256": "bf8ae59ea2cb30e22be48a4e4d42d484fec3f6a15a11a07dc8676459e824d3a6",
+      "source": "void CWindow::moveToWorkspace(PHLWORKSPACE pWorkspace) {\n    if (!pWorkspace || m_workspace == pWorkspace)\n        return;\n\n    syncInitialWorkspaceToken(pWorkspace);\n\n    static auto PCLOSEONLASTSPECIAL = CConfigValue<Config::INTEGER>(\"misc:close_special_on_empty\");\n\n    const auto  OLDWORKSPACE = m_workspace;\n\n    if (OLDWORKSPACE->visible()) {\n        m_presentation->alpha(WINDOW_ALPHA_MOVE_TO_WORKSPACE)->setValueAndWarp(1.F);\n        *m_presentation->alpha(WINDOW_ALPHA_MOVE_TO_WORKSPACE) = 0.F;\n        m_presentation->alpha(WINDOW_ALPHA_MOVE_TO_WORKSPACE)->setCallbackOnEnd([this](auto) {\n            m_presentation->alpha(WINDOW_ALPHA_MOVE_TO_WORKSPACE)->setValueAndWarp(1.F);\n            m_presentation->resetMonitorMovedFrom();\n        });\n        m_presentation->setMonitorMovedFrom(OLDWORKSPACE ? OLDWORKSPACE->monitorID() : -1);\n    }\n\n    m_workspace = pWorkspace;\n    updateFullscreenInputState();\n    *m_presentation->alpha(WINDOW_ALPHA_FULLSCREEN) = isBlockedByFullscreen() ? 0.F : 1.F;\n\n    m_presentation->setAnimationsToMove();\n\n    Desktop::globalWindowController()->updateAllWindowsDecorations();\n\n    if (valid(pWorkspace)) {\n        IPC::Socket2::sock()->postEvent({.event = \"movewindow\", .data = std::format(\"{:x},{}\", rc<uintptr_t>(this), pWorkspace->addressableName())});\n        IPC::Socket2::sock()->postEvent(\n            {.event = \"movewindowv2\", .data = std::format(\"{:x},{},{}\", rc<uintptr_t>(this), pWorkspace->addressableName(), pWorkspace->displayName())});\n        Event::bus()->m_events.window.moveToWorkspace.emit(m_self.lock(), pWorkspace);\n    }"
+    }
+  ],
+  "patched_core_contract": {
+    "patch_file": "core-contract.patch",
+    "tested_binary_sha256": "d61d3844729494fac0f0a72345f54792d4fb84c1d12cad588f264ed587394813",
+    "emit_shape": "Event bus emits mapped PHLWINDOW and bool; LuaEventHandler pushes HL.Window then lua_pushboolean",
+    "separate_core_package": true
+  },
+  "reload_semantics": "Successful reload clears callbacks, resets handler and closes/recreates Lua state; R4 actual native GTK request after reload produced exactly one observer callback/helper. Repeated dofile in one state remains forbidden load-once contract."
+}

@@ -1,0 +1,54 @@
+{
+  "package": "omarchy-native-integration",
+  "reviewed_files_sha256": {
+    "BASELINE_API.json": "e95df9945a53ec0fc50fbbe8ac6646faf414b63c8d126c3b3899b659eb47394b",
+    "LICENSE": "0cc34f39eb9edddb09ec48e5de62d772685941ad8db46c0509dcee1aedbe7b4e",
+    "README.md": "48b618f7ba4f068db7fff350f17b813291a36f85f1790a8f9e1780e7a305d6ef",
+    "VALIDATION.json": "d1808f785de08de3272e54fe79c556237ee7c6711bbbf65e62e4f3a56cc9381d",
+    "core-contract.patch": "d5c44e88d9bf57abe139d04ad8ce0e6fdedd6a400e57173c2371885b8d429825",
+    "native-minimize.lua": "901470303d8aa32528e11fe0cb6f8998f70cb9f48565aaea6afb4b3020e6aa0e",
+    "runtime/gtk-after-reload-wire.log": "487440398751e6f3108539b49b3cc8125e5984de7bf1b9dea0529599c6861236",
+    "runtime/gtk-wire.log": "ff527e1d7c563bb0a96a350d7e9c94e2e2478bc2069c22a95815e8dfa9bb1369",
+    "runtime/results.json": "9ceffd5fad7ceb6eb2d8eb610ffa1c5fb9313a7d29e67e742703e63ddf740d5e",
+    "runtime/verify.py": "6330f0a6b048b2e8577d57b325a0867bbd6a281bba9613ac91c687d7637168d5",
+    "tests/behavior.lua": "b94abc9677e2652cb90c4e383dbdd960c844a3e307acaa6e6feb2ca67801c909"
+  },
+  "reviews": {
+    "claude": {
+      "request_sha256": "c1ff85f30b7f7074f1d2841c006b3783ada67fd852f6a15521202cb5ae48474d",
+      "response_sha256": "481164690cbb80ae5457a09b17efc076519525e5e1ca029b256851a2026894f3",
+      "reported_models": [
+        "claude-opus-5-5"
+      ],
+      "verdict": "no_blocking_findings",
+      "scope": "static exact snapshot; no model-executed tests"
+    },
+    "grok": {
+      "request_sha256": "c1ff85f30b7f7074f1d2841c006b3783ada67fd852f6a15521202cb5ae48474d",
+      "response_sha256": "a421a77fcd1cc405d22ee5dd2199ae1747f841e286e976f7f28815a469d97d9f",
+      "reported_models": [
+        "grok-4.7-build"
+      ],
+      "verdict": "no_blocking_findings",
+      "scope": "static exact snapshot; no model-executed tests"
+    },
+    "gemini": {
+      "request_sha256": "c1ff85f30b7f7074f1d2841c006b3783ada67fd852f6a15521202cb5ae48474d",
+      "response_sha256": "3e3c5e032969a85974dc400c9902815088aff6bf8fae84d0b794297169adfe71",
+      "reported_models": [],
+      "selected_cli_model": "gemini-3.8-flash-high",
+      "verdict": "no_blocking_findings",
+      "scope": "static exact snapshot; no model-executed tests"
+    }
+  },
+  "codex_role": "implementation, exact source validation, nested runtime tests and consolidation",
+  "production_lua_sha256": "901470303d8aa32528e11fe0cb6f8998f70cb9f48565aaea6afb4b3020e6aa0e",
+  "new_supplemental_material": [
+    "LICENSE-HYPRLAND",
+    "STOCK-HELPER-VALIDATION.json",
+    "RELEASE-NOTES.md",
+    "REVIEW-PROVENANCE.json"
+  ],
+  "release_approved": false,
+  "published": false
+}

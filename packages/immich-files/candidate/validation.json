@@ -1,0 +1,33 @@
+{
+  "revision": "v7",
+  "generated_unit_tests": 79,
+  "command": "python -m unittest discover",
+  "result": "passed",
+  "real_generated_FUSE_fixtures": {
+    "check_fixture_mount.py": "passed lazy/cached/read-only/cursor",
+    "check_partial_readdir.py": "passed3files4callbacks approx0.138s",
+    "check_stale_remount.py": "passed SIGKILL recovery/remount",
+    "check_hung_mount_probe.py": "passed SIGSTOP deadline approx0.152s; mount untouched"
+  },
+  "umask022_new_directory_mode": "0700",
+  "simultaneous_Trio_open_handles": "distinct and correct rows",
+  "official_license_sha256": "a3bad629f67f442b23b5224419e49edafc32e6b9c876b89464f7aafe6091ccde",
+  "full_license_included_for_review": true,
+  "real_authentication": "not tested",
+  "real_systemd_keyring_lifecycle": "not tested",
+  "Portal": "not tested",
+  "live_changes": false,
+  "exact_revision_review": "All6 V6 base responses received;3core+Gemini desktop green, Claude/Grok desktop findings require all3 delta closure",
+  "release_approved": false,
+  "v7_executed": {
+    "whole_suite": "79 passed",
+    "read_only_readiness_retries": "passed without recovery/unmount calls",
+    "buffered_short_read_to_EOF": "passed",
+    "parent_alias_resolution_and_timeout": "passed",
+    "check_hung_mount_probe.py": "passed below Pictures symlink approx0.183s without helper leaf listing",
+    "check_stale_remount.py": "passed",
+    "check_fixture_mount.py": "passed",
+    "check_partial_readdir.py": "passed approx0.137s",
+    "check-gi-venv.py": "fresh system-site-packages GI/Secret import passed; no keyring access"
+  }
+}

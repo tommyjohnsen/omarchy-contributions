@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "checks": [
+    "source digest checks before and after copy",
+    "exact composed candidate digest coverage",
+    "review response status/hash checks",
+    "safe public allowlist copies only"
+  ],
+  "runtime_tests_run_by_this_staging": "none",
+  "human_release_approval": false
+}

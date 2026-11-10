@@ -1,0 +1,329 @@
+--- a/comfy/cli_args.py
++++ b/comfy/cli_args.py
+@@ -113,6 +113,7 @@
+ 
+ parser.add_argument("--force-channels-last", action="store_true", help="Force channels last format when inferencing the models.")
+ 
++parser.add_argument("--vulkan", action="store_true", help="Use the experimental torchvulkan backend.")
+ parser.add_argument("--directml", type=int, nargs="?", metavar="DIRECTML_DEVICE", const=-1, help="Use torch-directml.")
+ 
+ parser.add_argument("--oneapi-device-selector", type=str, default=None, metavar="SELECTOR_STRING", help="Sets the oneAPI device(s) this instance will use.")
+@@ -292,6 +293,13 @@
+ if args.cache_ram is not None and len(args.cache_ram) > 2:
+     parser.error("--cache-ram accepts at most two values: active GB and inactive GB")
+ 
++if args.vulkan and (args.cpu or args.directml is not None):
++    parser.error("--vulkan cannot be combined with --cpu or --directml")
++if args.vulkan and args.enable_dynamic_vram:
++    parser.error("--enable-dynamic-vram is not supported with --vulkan")
++if args.vulkan and args.cuda_device is not None:
++    parser.error("--cuda-device cannot be combined with --vulkan; use --default-device")
++
+ if args.high_ram:
+     args.cache_classic = True
+ 
+@@ -334,6 +342,8 @@
+     args.fast = set(args.fast)
+ 
+ def enables_dynamic_vram():
++    if args.vulkan:
++        return False
+     if args.enable_dynamic_vram:
+         return True
+     return not args.disable_dynamic_vram and not args.highvram and not args.gpu_only and not args.novram and not args.cpu
+--- a/comfy/model_management.py
++++ b/comfy/model_management.py
+@@ -108,6 +108,23 @@
+     logging.info("Using deterministic algorithms for pytorch")
+     torch.use_deterministic_algorithms(True, warn_only=True)
+ 
++vulkan_enabled = args.vulkan
++vulkan_cached_memory = None
++if vulkan_enabled:
++    try:
++        import torchvulkan
++    except ImportError as e:
++        raise RuntimeError("--vulkan requires torchvulkan installed for this PyTorch version") from e
++    if not torchvulkan.is_available():
++        raise RuntimeError("--vulkan requested, but torchvulkan found no usable Vulkan device")
++    if args.default_device is not None:
++        device_count = torchvulkan.device_count()
++        if not 0 <= args.default_device < device_count:
++            raise RuntimeError("--default-device must select an available Vulkan device (0 through {})".format(device_count - 1))
++        torchvulkan.set_device(args.default_device)
++    vulkan_cached_memory = getattr(torchvulkan, "memory_cached", None)
++    logging.info("Using torchvulkan {} on {}".format(torchvulkan.__version__, torchvulkan.get_device_name()))
++
+ directml_enabled = False
+ if args.directml is not None:
+     logging.warning("WARNING: torch-directml barely works, is very slow, has not been updated in over 1 year and might be removed soon, please don't use it, there are better options.")
+@@ -157,30 +174,32 @@
+ 
+ if args.cpu:
+     cpu_state = CPUState.CPU
++elif vulkan_enabled:
++    cpu_state = CPUState.GPU
+ 
+ def is_intel_xpu():
+     global cpu_state
+     global xpu_available
+-    if cpu_state == CPUState.GPU:
++    if cpu_state == CPUState.GPU and not vulkan_enabled:
+         if xpu_available:
+             return True
+     return False
+ 
+ def is_ascend_npu():
+     global npu_available
+-    if npu_available:
++    if npu_available and not vulkan_enabled:
+         return True
+     return False
+ 
+ def is_mlu():
+     global mlu_available
+-    if mlu_available:
++    if mlu_available and not vulkan_enabled:
+         return True
+     return False
+ 
+ def is_ixuca():
+     global ixuca_available
+-    if ixuca_available:
++    if ixuca_available and not vulkan_enabled:
+         return True
+     return False
+ 
+@@ -198,6 +217,8 @@
+     if directml_enabled:
+         global directml_device
+         return directml_device
++    if vulkan_enabled:
++        return torch.device("vulkan", torchvulkan.current_device())
+     if cpu_state == CPUState.MPS:
+         return torch.device("mps")
+     if cpu_state == CPUState.CPU:
+@@ -219,7 +240,10 @@
+         # NVIDIA + AMD/ROCm both expose their GPUs through torch.cuda.*;
+         # without the AMD arm, single-GPU ROCm users get an empty list
+         # which silently turns unload_all_models() into a no-op.
+-        if is_nvidia() or is_amd():
++        if vulkan_enabled:
++            for i in range(torchvulkan.device_count()):
++                devices.append(torch.device("vulkan", i))
++        elif is_nvidia() or is_amd():
+             for i in range(torch.cuda.device_count()):
+                 devices.append(torch.device("cuda", i))
+         elif is_intel_xpu():
+@@ -325,6 +349,11 @@
+         if directml_enabled:
+             mem_total = 1024 * 1024 * 1024 #TODO
+             mem_total_torch = mem_total
++        elif vulkan_enabled and hasattr(dev, 'type') and dev.type == "vulkan":
++            mem_total = torchvulkan.get_device_properties(dev).total_memory
++            # The cache query flushes queued work before the active-byte sample.
++            mem_total_torch = 0 if vulkan_cached_memory is None else vulkan_cached_memory(dev)
++            mem_total_torch += torchvulkan.memory_allocated(dev)
+         elif is_intel_xpu():
+             stats = torch.xpu.memory_stats(dev)
+             mem_reserved = stats['reserved_bytes.all.current']
+@@ -400,7 +429,7 @@
+ 
+ XFORMERS_VERSION = ""
+ XFORMERS_ENABLED_VAE = True
+-if args.disable_xformers:
++if args.disable_xformers or vulkan_enabled:
+     XFORMERS_IS_AVAILABLE = False
+ else:
+     try:
+@@ -425,14 +454,14 @@
+ 
+ def is_nvidia():
+     global cpu_state
+-    if cpu_state == CPUState.GPU:
++    if cpu_state == CPUState.GPU and not vulkan_enabled:
+         if torch.version.cuda:
+             return True
+     return False
+ 
+ def is_amd():
+     global cpu_state
+-    if cpu_state == CPUState.GPU:
++    if cpu_state == CPUState.GPU and not vulkan_enabled:
+         if torch.version.hip:
+             return True
+     return False
+@@ -611,6 +640,8 @@
+             return "{} {} : {}".format(device, torch.cuda.get_device_name(device), allocator_backend)
+         elif device.type == "xpu":
+             return "{} {}".format(device, torch.xpu.get_device_name(device))
++        elif device.type == "vulkan" and vulkan_enabled:
++            return "{} {}".format(device, torchvulkan.get_device_name(device))
+         else:
+             return "{}".format(device.type)
+     elif is_intel_xpu():
+@@ -932,6 +963,9 @@
+     elif device is not None:
+         if vram_state != VRAMState.HIGH_VRAM:
+             mem_free_total, mem_free_torch = get_free_memory(device, torch_free_too=True)
++            if is_device_vulkan(device):
++                # Retained free VMA arena space cannot be released by empty_cache.
++                mem_free_torch = 0 if vulkan_cached_memory is None else vulkan_cached_memory(device)
+             if mem_free_torch > mem_free_total * 0.25:
+                 soft_empty_cache()
+     return unloaded_models
+@@ -1314,6 +1348,9 @@
+         return True
+     if is_device_cpu(device):
+         return False
++    if is_device_vulkan(device) or (device is None and vulkan_enabled):
++        props = torchvulkan.get_device_properties(device)
++        return (dtype == torch.float16 and props.has_fp16) or (dtype == torch.bfloat16 and props.has_bf16) or (dtype == torch.float64 and props.has_fp64)
+     if dtype == torch.float16:
+         return True
+     if dtype == torch.bfloat16:
+@@ -1321,6 +1358,8 @@
+     return False
+ 
+ def supports_cast(device, dtype): #TODO
++    if is_device_vulkan(device) or (device is None and vulkan_enabled):
++        return supports_dtype(device, dtype)
+     if dtype == torch.float32:
+         return True
+     if dtype == torch.float16:
+@@ -1349,6 +1388,8 @@
+     return dtype
+ 
+ def device_supports_non_blocking(device):
++    if is_device_vulkan(device):
++        return False
+     if args.force_non_blocking:
+         return True
+     if is_device_mps(device):
+@@ -1378,7 +1419,7 @@
+     if is_nvidia() or is_amd():
+         NUM_STREAMS = 2
+ 
+-if args.disable_async_offload:
++if args.disable_async_offload or vulkan_enabled:
+     NUM_STREAMS = 0
+ 
+ if NUM_STREAMS > 0:
+@@ -1883,6 +1924,18 @@
+         if directml_enabled:
+             mem_free_total = 1024 * 1024 * 1024 #TODO
+             mem_free_torch = mem_free_total
++        elif vulkan_enabled and hasattr(dev, 'type') and dev.type == "vulkan":
++            # Older torchvulkan builds expose no exact reusable-buffer counter.
++            mem_free_torch = 0
++            if vulkan_cached_memory is not None:
++                mem_free_torch = vulkan_cached_memory(dev)
++            mem_free_total, _ = torchvulkan.mem_get_info(dev)
++            mem_free_total += mem_free_torch
++            # Vulkan may share physical RAM; existing CPU weights already consume host availability.
++            host_reserve = max(comfy.memory_management.RAM_CACHE_HEADROOM // 2, 2048 * 1024 ** 2)
++            host_available = max(0, comfy.system_memory.virtual_memory_available() - host_reserve)
++            mem_free_total = min(mem_free_total, host_available)
++            mem_free_torch = min(mem_free_torch, mem_free_total)
+         elif is_intel_xpu():
+             stats = torch.xpu.memory_stats(dev)
+             mem_active = stats['active_bytes.all.current']
+@@ -1943,6 +1996,9 @@
+ def is_device_cuda(device):
+     return is_device_type(device, 'cuda')
+ 
++def is_device_vulkan(device):
++    return vulkan_enabled and is_device_type(device, 'vulkan')
++
+ def is_device_npu(device):
+     return is_device_type(device, 'npu')
+ 
+@@ -1952,6 +2008,8 @@
+         torch.cuda.set_device(device)
+     elif is_device_xpu(device):
+         torch.xpu.set_device(device)
++    elif is_device_vulkan(device):
++        torchvulkan.set_device(device)
+ 
+ def is_directml_enabled():
+     global directml_enabled
+@@ -1970,6 +2028,9 @@
+ 
+     if FORCE_FP32:
+         return False
++
++    if is_device_vulkan(device) or (device is None and vulkan_enabled):
++        return torchvulkan.get_device_properties(device).has_fp16
+ 
+     if is_directml_enabled():
+         return True
+@@ -2035,6 +2096,9 @@
+     if FORCE_FP32:
+         return False
+ 
++    if is_device_vulkan(device) or (device is None and vulkan_enabled):
++        return torchvulkan.get_device_properties(device).has_bf16
++
+     if directml_enabled:
+         return False
+ 
+@@ -2137,6 +2201,8 @@
+     return True
+ 
+ def supports_fp64(device=None):
++    if is_device_vulkan(device) or (device is None and vulkan_enabled):
++        return torchvulkan.get_device_properties(device).has_fp64
+     if (device is not None and is_device_mps(device)) or mps_mode():
+         return False
+ 
+@@ -2153,6 +2219,9 @@
+ 
+ def supports_int8_compute(device=None):
+     if is_device_cpu(device):
++        return False
++
++    if is_device_vulkan(device) or (device is None and vulkan_enabled):
+         return False
+ 
+     # The eager comfy_kitchen backend implements int8 weight-only quantized
+@@ -2195,6 +2264,9 @@
+ 
+ def synchronize():
+     if cpu_mode():
++        return
++    if vulkan_enabled:
++        torchvulkan.synchronize()
+         return
+     if is_intel_xpu():
+         torch.xpu.synchronize()
+@@ -2207,7 +2279,10 @@
+     if cpu_mode():
+         return
+     global cpu_state
+-    if cpu_state == CPUState.MPS:
++    if vulkan_enabled:
++        torchvulkan.synchronize()
++        torchvulkan.empty_cache()
++    elif cpu_state == CPUState.MPS:
+         torch.mps.empty_cache()
+     elif is_intel_xpu():
+         torch.xpu.synchronize()
+--- a/main.py
++++ b/main.py
+@@ -49,6 +49,7 @@
+ 
+     if (
+         os.name == "nt"
++        and not args.vulkan
+         and args.cuda_device is None
+         and args.default_device is None
+         and os.environ.get("CUDA_VISIBLE_DEVICES") is None
+@@ -87,7 +88,7 @@
+ 
+ if __name__ == "__main__":
+     os.environ['TORCH_ROCM_AOTRITON_ENABLE_EXPERIMENTAL'] = '1'
+-    if args.default_device is not None and args.cuda_device != "all":
++    if args.default_device is not None and args.cuda_device != "all" and not args.vulkan:
+         default_dev = args.default_device
+         devices = list(range(32))
+         devices.remove(default_dev)

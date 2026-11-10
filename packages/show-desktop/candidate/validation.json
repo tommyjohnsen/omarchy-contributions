@@ -1,0 +1,33 @@
+{
+  "revision": "v7",
+  "controller_fixture_cases": 15,
+  "actual_Qt_JS_geometry_groups": 14,
+  "same_row_probes": 5,
+  "neighbor_signal_fixture": "actual Qt exact fragment passed",
+  "commands": [
+    "lua test-controller.lua",
+    "python test-gap-model.py",
+    "python test-neighbor-signals.py",
+    "python test-orientation-signals.py"
+  ],
+  "exact_controller_nested_runtime": {
+    "status": "passed fresh strict render-only focus/spawn gate",
+    "controller_sha256": "3d672b5afd0babefd6b0b6cf7bb17a283c3a25266bc2abfd50ecf94db69f3e05",
+    "controller_unchanged_from": "v6",
+    "activewindow_empty_after_hide": true,
+    "spawned_native_client_workspace": 1,
+    "back_and_forth_values_tested": [
+      false,
+      true
+    ],
+    "raw_results_equal_public_results": true,
+    "at_run_script_and_controller_hashes_recorded": true,
+    "evidence": "runtime-evidence/results.json",
+    "full_live_bar_or_physical_input_test": false
+  },
+  "full_live_bar_tested": false,
+  "exact_revision_provider_review": "pending",
+  "human_release_approval": false,
+  "orientation_signal_fixture": "actual Qt orientation/barSize immediate changes without position movement passed",
+  "actual_Qt_JS_supported_nonoverlap_property_cases": 2304
+}

@@ -1,0 +1,40 @@
+{
+  "source_excerpts": [
+    {
+      "source": "src/xwayland/XWM.cpp",
+      "first_line": 459,
+      "last_line": 486,
+      "full_file_sha256": "014e306a6f711b4e5480e4018db6eca301f4513e2de6b73b4347fc2a0b54ea24",
+      "text": "                        default: return false;\n                    }\n                    return false;\n                };\n\n                if (prop == HYPRATOMS[\"_NET_WM_STATE_FULLSCREEN\"])\n                    XSURF->m_state.requestsFullscreen = updateState(action, XSURF->m_fullscreen);\n                if (prop == HYPRATOMS[\"_NET_WM_STATE_HIDDEN\"])\n                    XSURF->m_state.requestsMinimize = updateState(action, XSURF->m_minimized);\n                if (prop == HYPRATOMS[\"_NET_WM_STATE_MAXIMIZED_VERT\"] || prop == HYPRATOMS[\"_NET_WM_STATE_MAXIMIZED_HORZ\"])\n                    XSURF->m_state.requestsMaximize = updateState(action, XSURF->m_maximized);\n                if (prop == HYPRATOMS[\"_NET_WM_STATE_DEMANDS_ATTENTION\"] && updateState(action, false))\n                    demandsAttention = true;\n            }\n\n            if (demandsAttention)\n                XSURF->m_events.activate.emit();\n\n            XSURF->m_events.stateChanged.emit();\n        }\n    } else if (e->type == HYPRATOMS[\"WM_CHANGE_STATE\"]) {\n        int state = e->data.data32[0];\n        if (state == XCB_ICCCM_WM_STATE_ICONIC || state == XCB_ICCCM_WM_STATE_WITHDRAWN)\n            XSURF->m_state.requestsMinimize = true;\n        else if (state == XCB_ICCCM_WM_STATE_NORMAL)\n            XSURF->m_state.requestsMinimize = false;\n        XSURF->m_events.stateChanged.emit();\n    } else if (e->type == HYPRATOMS[\"_NET_ACTIVE_WINDOW\"]) {"
+    },
+    {
+      "source": "src/desktop/view/window/X11Backend.cpp",
+      "first_line": 185,
+      "last_line": 209,
+      "full_file_sha256": "c1c167e5d1bca4ad7c920dce2191b08f9791ba606d0e83462ec6a9a3b71cd138",
+      "text": "        updateMetadata(true);\n        updateTraits(true);\n    });\n    m_listeners.state          = surface->m_events.stateChanged.listen([this] {\n        const auto SURFACE = m_xwaylandSurface.lock();\n        if (!SURFACE)\n            return;\n\n        const SBackendStateRequest REQUEST = {\n            .fullscreen = SURFACE->m_state.requestsFullscreen,\n            .maximized  = SURFACE->m_state.requestsMaximize,\n            .minimized  = SURFACE->m_state.requestsMinimize,\n        };\n\n        SURFACE->m_state.requestsFullscreen.reset();\n        SURFACE->m_state.requestsMaximize.reset();\n        SURFACE->m_state.requestsMinimize.reset();\n\n        updateTraits(true);\n        m_events.stateRequest.emit(REQUEST);\n    });\n    m_listeners.metadata       = surface->m_events.metadataChanged.listen([this] {\n        updateMetadata(true);\n        updateTraits(true);\n    });"
+    },
+    {
+      "source": "src/desktop/view/window/Window.cpp",
+      "first_line": 833,
+      "last_line": 859,
+      "full_file_sha256": "bf8ae59ea2cb30e22be48a4e4d42d484fec3f6a15a11a07dc8676459e824d3a6",
+      "text": "\n    if (m_target->floating())\n        Desktop::windowState()->raise(m_self.lock());\n\n    Desktop::focusState()->fullWindowFocus(m_self.lock(), FOCUS_REASON_DESKTOP_STATE_CHANGE);\n    warpCursor();\n}\n\nvoid CWindow::onUpdateState(const SBackendStateRequest& request) {\n    requestClientFullscreen({\n        .fullscreen        = request.fullscreen,\n        .maximized         = request.maximized,\n        .fullscreenMonitor = request.fullscreenMonitor,\n        .origin            = SClientFullscreenRequest::ORIGIN_BACKEND,\n    });\n\n    if (request.minimized.has_value() && mapped()) {\n        const bool MINIMIZED = request.minimized.value();\n        IPC::Socket2::sock()->postEvent({.event = \"minimized\", .data = std::format(\"{:x},{}\", rc<uintptr_t>(this), MINIMIZED ? 1 : 0)});\n        Event::bus()->m_events.window.minimize.emit(m_self.lock(), MINIMIZED);\n    }\n}\n\nvoid CWindow::requestClientFullscreen(const SClientFullscreenRequest& request) {\n    // a client re-asserting fullscreen every frame (notably gamescope) would snap the window back the instant\n    // the drag handler pulls it out of fullscreen, so ignore the request while this window is being dragged.\n    const auto  DRAGTARGET         = g_layoutManager->dragController()->target();"
+    },
+    {
+      "source": "src/config/lua/LuaEventHandler.cpp",
+      "first_line": 96,
+      "last_line": 102,
+      "full_file_sha256": "f637b324d86a9dbafa8ee36468b4d627d177046b11fb85a187d181343724307b",
+      "text": "    m_listeners.push_back(bus()->m_events.window.minimize.listen([this](PHLWINDOW w, bool s) {\n        dispatch(\"window.minimize\", 2, [&](lua_State* L) {\n            CLuaWindow::push(L, w);\n            lua_pushboolean(L, s);\n        });\n    }));\n"
+    }
+  ],
+  "interpretation": "XWM true/false optional copied then reset by X11Backend before event forwarding. New guarded core emits one Lua + Socket2 per request in actual synthetic Iconic/Normal test. This does not exhaust all NET_WM_STATE_HIDDEN/foreign-toplevel combinations.",
+  "tested_binary_sha256": "d61d3844729494fac0f0a72345f54792d4fb84c1d12cad588f264ed587394813",
+  "runtime_files": [
+    "client.c",
+    "verify.py",
+    "results.json",
+    "client-events.txt"
+  ]
+}

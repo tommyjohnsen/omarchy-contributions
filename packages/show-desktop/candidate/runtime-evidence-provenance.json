@@ -1,0 +1,20 @@
+{
+  "source_allowlist_sha256": "7b0397d8ac85dd6b92c7c993a70a3de89daa7ec27a6bb678019af9c7a2e153c4",
+  "copied_files": [
+    "LICENSE",
+    "README.md",
+    "RUN_IDENTITY.json",
+    "backend_guard.py",
+    "device-isolation.json",
+    "raw-results.json",
+    "results.json",
+    "run-isolated.sh",
+    "sandbox_bootstrap.py",
+    "show-desktop.lua",
+    "test_backend_guard.py",
+    "verify.py"
+  ],
+  "controller_unchanged_from_v6": true,
+  "raw_results_equal_sanitized_results": true,
+  "scope": "Actual isolated installed render-only nested compositor focus/spawn gate; no full live bar/physical keyboard test; no parent IPC writes"
+}

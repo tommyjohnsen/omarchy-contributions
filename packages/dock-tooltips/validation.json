@@ -1,0 +1,6 @@
+{
+  "test_offscreen": "pass",
+  "test_position_wrap": "pass",
+  "full_live_dock": "not run",
+  "release_approved": false
+}

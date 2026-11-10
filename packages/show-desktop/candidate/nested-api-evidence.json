@@ -1,0 +1,56 @@
+{
+  "candidate_sha256": "901470303d8aa32528e11fe0cb6f8998f70cb9f48565aaea6afb4b3020e6aa0e",
+  "candidate": "omarchy-native-integration-r3-context-only",
+  "physical_keyboard_test": false,
+  "nested_runtime_only": true,
+  "cases": [
+    {
+      "case": "move_to_workspace callback fires synchronously inside hl.dispatch after window workspace assignment",
+      "pass": true,
+      "observed": [
+        "1",
+        "before-dispatch",
+        "2",
+        "2"
+      ]
+    },
+    {
+      "case": "reload recreates Lua state and listeners: count resets, next move invokes exactly one callback",
+      "pass": true,
+      "observed": [
+        "1",
+        "post-reload",
+        "1",
+        "1"
+      ]
+    }
+  ],
+  "config_errors": "",
+  "nested_version": {
+    "branch": "v0.57.1",
+    "commit": "acc1aa0bfd4bd575dcb0f76c35ccf12b660a1ab9",
+    "version": "0.57.1",
+    "dirty": false,
+    "commit_message": "[gha] Nix: update inputs",
+    "commit_date": "Tue Nov 3 09:45:48 2026",
+    "tag": "v0.57.1",
+    "commits": "7993",
+    "buildAquamarine": "0.16.0",
+    "buildHyprlang": "0.6.8",
+    "buildHyprutils": "0.14.3",
+    "buildHyprcursor": "0.1.13",
+    "buildHyprgraphics": "0.6.0",
+    "systemAquamarine": "0.16.0",
+    "systemHyprlang": "0.6.8",
+    "systemHyprutils": "0.14.3",
+    "systemHyprcursor": "0.1.13",
+    "systemHyprgraphics": "0.6.0",
+    "abiHash": "acc1aa0bfd4bd575dcb0f76c35ccf12b660a1ab9_aq_0.16_hu_0.14_hg_0.6_hc_0.1_hlg_0.6",
+    "flags": []
+  },
+  "parent_geometry_unchanged": true,
+  "parent_focus_restored": true,
+  "scope": "Installed nested compositor API test conducted by desktop contribution agent; not a V5 controller integration test.",
+  "result_source_sha256": "bc1ec8fbb5f1ae49b2dcb50a9ec9c6c9ff96107a75ceb81e11b03521402c24ac",
+  "harness_sha256": "9313a03313ec7e829ccd9bc169a70dda2464be2f3acdc5930cd50216e81e0b08"
+}

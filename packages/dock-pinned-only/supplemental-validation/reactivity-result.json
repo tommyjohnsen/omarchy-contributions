@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "cases": 6,
+  "scope": "actual patched items binding, real Qt dependency tracking, stubbed DesktopEntries and Hyprland sources; no live dock/session interaction",
+  "patch_sha256": "c548212606cf1dc44335729c4e69642e4e828352c79160aa546f33fe32668616",
+  "binding_sha256": "16b37781b95d2f75b4aa4b328112eda70b80e5df65b187ff3f0442daf953139b"
+}

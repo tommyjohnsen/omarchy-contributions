@@ -1,0 +1,53 @@
+{
+  "package": "dock-tooltips",
+  "reviewed_files_sha256": {
+    "tooltip.patch": "b66bc5c4c708d8b94e8d4c1bd810713e83e6e53037aa8b72bc596755821bd9d1",
+    "plaintext-tooltip-fixture.qml": "175d78262eb34fbe10c9838d538e449dc623c827d04954e1d76544f7ea335296",
+    "test-offscreen.py": "8a68493afb9b782f804bd94c65fc717372debedc7b80a9002683022ebce148e4",
+    "test-position-wrap.py": "205c4ddcbf46ed039ced8101a76083d6f77b0bf37bd543243e6d1b753e48fc0c",
+    "baseline-context.json": "faa434249cc796ead111dd6eaef4935bc974d12b136d987e4916dc9f3c24759e",
+    "README.md": "336cc0ebb4972071494eeb926da5ff14b52c1f0b864e4d7597eeba014e39908f",
+    "LICENSE": "0cc34f39eb9edddb09ec48e5de62d772685941ad8db46c0509dcee1aedbe7b4e",
+    "validation.json": "47b807d4e01c90bffd5de7e2ced8af2dc0553b3e8b1118d4da070fb72c0a16aa"
+  },
+  "reviews": {
+    "claude": {
+      "request_sha256": "51f59e912396eaa1ed9de971bdd3e91b2db410e31535683578b1782a3083d57c",
+      "response_sha256": "5c23902a155a38942358cfb9d9e2858ccd1e16dc62f8638e4b449219cf51e998",
+      "reported_models": [
+        "claude-opus-5-5"
+      ],
+      "verdict": "no_blocking_findings",
+      "scope": "independent static source review; no reviewer-executed tests"
+    },
+    "grok": {
+      "request_sha256": "51f59e912396eaa1ed9de971bdd3e91b2db410e31535683578b1782a3083d57c",
+      "response_sha256": "1ec771f8b5f0161810d5e7e21dce29bcc6c2b526abc8f6cce2850d34b7e11154",
+      "reported_models": [
+        "grok-4.7-build"
+      ],
+      "verdict": "no_blocking_findings",
+      "scope": "independent static source review; no reviewer-executed tests"
+    },
+    "gemini": {
+      "request_sha256": "51f59e912396eaa1ed9de971bdd3e91b2db410e31535683578b1782a3083d57c",
+      "response_sha256": "899fae1ecec7afbbb5b5485bff4b1c9076bdc3cb07ca70ed952963b708921199",
+      "reported_models": [],
+      "selected_cli_model": "gemini-3.8-flash-high",
+      "verdict": "no_blocking_findings",
+      "scope": "independent static source review; no reviewer-executed tests"
+    }
+  },
+  "codex_role": "implementation, Qt/source contract verification, tests and triage",
+  "upstream_authorship": "David Heinemeier Hansson and Omarchy contributors; original notices retained",
+  "license": "Upstream-derived Omarchy code retains upstream MIT; new fixtures use MIT",
+  "human_owner": "Tommy Johnsen",
+  "release_approved": false,
+  "published": false,
+  "new_packaging_material_not_part_of_reviewed_production_snapshot": [
+    "LICENSE-UPSTREAM",
+    "RELEASE-NOTES.md",
+    "REVIEW-PROVENANCE.json",
+    "QML-SYNTAX-VALIDATION.json"
+  ]
+}

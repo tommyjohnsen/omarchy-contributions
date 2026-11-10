@@ -1,0 +1,213 @@
+{
+  "package": "comfyui-vulkan",
+  "technical_review": "Composed static-green scope: all3 V4 runtime reviews plus Grok/Gemini MIT supplement and Claude complete origin/body evidence.",
+  "reviews": {
+    "runtime_v4": {
+      "claude": {
+        "provider_cli": "claude",
+        "request_sha256": "0b9739082acbcc4e5436ccd22744e9252572666c70bc07cc114e7a9b3550fc80",
+        "response_sha256": "8719ef85df929456d5965b0247c833d3cdfa2ecf6e333588bf70fabb76522e5b",
+        "visible_final_text_sha256": "df4b237be4ff1e25896f1268837f25a566b54a44234088b2f5d0a415bc872bf0",
+        "reported_models": [
+          "claude-opus-5-5"
+        ],
+        "provider_verdict_exact_excerpt": "no_blocking_findings",
+        "codex_normalized_technical_status": "no_confirmed_blocking_finding_in_static_scope",
+        "review_type": "actual external static response; reviewer executed no tests",
+        "human_release_approval": false
+      },
+      "grok": {
+        "provider_cli": "grok",
+        "request_sha256": "0b9739082acbcc4e5436ccd22744e9252572666c70bc07cc114e7a9b3550fc80",
+        "response_sha256": "fa4ca441ab012ea43d1daf4762ab4cdd5349a3776010a8cb7050e4d87627fc94",
+        "visible_final_text_sha256": "a6fb3434d2179d09aaa2ec4adc43dc4bc0900ae299b69512d59fee1567fba124",
+        "reported_models": [
+          "grok-4.7-build"
+        ],
+        "provider_verdict_exact_excerpt": "no_blocking_findings",
+        "codex_normalized_technical_status": "no_confirmed_blocking_finding_in_static_scope",
+        "review_type": "actual external static response; reviewer executed no tests",
+        "human_release_approval": false
+      },
+      "gemini": {
+        "provider_cli": "gemini",
+        "request_sha256": "0b9739082acbcc4e5436ccd22744e9252572666c70bc07cc114e7a9b3550fc80",
+        "response_sha256": "3cc144b6b55616349df9449392e135885219892bf14226861b26360aae543caa",
+        "visible_final_text_sha256": "d470fd9357416f093e9f5ae36784aed12a85c6bcb5633d57a0033a5740308d06",
+        "reported_models": [],
+        "provider_verdict_exact_excerpt": "no_blocking_findings",
+        "codex_normalized_technical_status": "no_confirmed_blocking_finding_in_static_scope",
+        "review_type": "actual external static response; reviewer executed no tests",
+        "human_release_approval": false
+      }
+    },
+    "mit_header_only": {
+      "grok": {
+        "provider_cli": "grok",
+        "request_sha256": "c359bb2159c26295067a56b7e8c2b8d768df65963ae1461dcc87509c5850fdd8",
+        "response_sha256": "e0923dd5fbc00f6eedf82bc8331099e122f4ff1e9c444175291d88724f44e0d3",
+        "visible_final_text_sha256": "1a90050d1b8f202ccdf42b7eee8bdba8f1249fae599852a94734a98ff1ee8b8c",
+        "reported_models": [
+          "grok-4.7-build"
+        ],
+        "provider_verdict_exact_excerpt": "no_blocking_findings",
+        "codex_normalized_technical_status": "no_confirmed_blocking_finding_in_static_scope",
+        "review_type": "actual external static response; reviewer executed no tests",
+        "human_release_approval": false
+      },
+      "gemini": {
+        "provider_cli": "gemini",
+        "request_sha256": "c359bb2159c26295067a56b7e8c2b8d768df65963ae1461dcc87509c5850fdd8",
+        "response_sha256": "122f55ca492aa827070118833305e55e064ae768d2186e273e78d1f42ac3bffd",
+        "visible_final_text_sha256": "b759a95103ffda69fd1ae2400b3a4e29b6a258746badd8df5f591ebdcb696e9b",
+        "reported_models": [],
+        "provider_verdict_exact_excerpt": "no_blocking_findings",
+        "codex_normalized_technical_status": "no_confirmed_blocking_finding_in_static_scope",
+        "review_type": "actual external static response; reviewer executed no tests",
+        "human_release_approval": false
+      }
+    },
+    "full_origin_body_evidence": {
+      "claude": {
+        "provider_cli": "claude",
+        "request_sha256": "659f8e8f19c5387294590de4bc3edcd71f727a7624785848f86fc5c335b24145",
+        "response_sha256": "6972ea0a9752078426c6d5401ee103eb322f5dbcc60244fd5074804c55a723cd",
+        "visible_final_text_sha256": "cfbc94854286882c17dd868952f128a11c786039ef6cc1c34aec8a1984502965",
+        "reported_models": [
+          "claude-opus-5-5"
+        ],
+        "provider_verdict_exact_excerpt": "no_blocking_findings",
+        "codex_normalized_technical_status": "no_confirmed_blocking_finding_in_static_scope",
+        "review_type": "actual external static response; reviewer executed no tests",
+        "human_release_approval": false
+      }
+    }
+  },
+  "composed_candidate_original_files_sha256": {
+    "COPYING.GPL-3.0": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+    "ComfyUI-Vulkan.patch": "76bd47b54904eee81af57af075084e0c4b3247f0359f8ab301323a8ec23f3a56",
+    "FIX_LOG.json": "da49a9d99b5a09db7553706d934510c091f5e397b4a800b51b81b7aabcd5b13c",
+    "LICENSE.TESTS.MIT": "0cc34f39eb9edddb09ec48e5de62d772685941ad8db46c0509dcee1aedbe7b4e",
+    "README.md": "eae7374f3fc6bbc1334e3db6f389d462d37b4a7c3fcbd565364c4a19301b8c1d",
+    "REVIEW_CONTEXT.md": "50dc12ac94c8ca078059c342dbc6cd99e2ec8b222ff411efd2f736f767bb95b1",
+    "base/comfy/cli_args.py": "bebe7a5802f99acaed6315adcf1ed2a3661689f4f618452e12dc179b16be8a6c",
+    "base/comfy/model_management.py": "6d2e82518e949003d7b5f6b6db3e8b3103a597800f83354bbff073142e600141",
+    "base/main.py": "d5f1d810946f0d26c8187c12f9cac273c4689d06466076aea360cfe405e088a2",
+    "evidence/cache-eviction-conservative.log": "256c69fb2d66510398b0855a588232c62ac74889b830f4ee8405c2e5884c1b54",
+    "evidence/capabilities.log": "6d4d2bb7dbd1a5907db8d6d39cf7530efad557f70aaabd7abc27d30ca4e3b676",
+    "evidence/cpu-tests.log": "4a99d81995cb88d2979fccb516e8bd58fdb257ef6fc00036cf4b226c9d4adc56",
+    "evidence/default-attention-unet.log": "0a085fddddf7b5445e572f0bf84c3d3d887a422ac6ba81c899c83269ebba9011",
+    "evidence/explicit-async.log": "68be945dede1604ffe30af75f78b912ac6cb26336774cac10e51bec6f8d2aa9f",
+    "evidence/integrated-budget-probe.json": "63c342b9801b20d0221214f47eaacaa1c541c8ea3ccfba0a3e7e39c2729dcc49",
+    "evidence/memory-tests.log": "e2ef497f0922c236c2f1298f1a64c03a52ec1c0798cd04c8dbcd6e9d76e5701e",
+    "evidence/query-benchmark.log": "d996f6b0b474c851635efda36f8c561c33f25aba11fa22b39a6ec27845d719fe",
+    "evidence/review-regressions.log": "0d6653413f55f7cf64dbfab59b6b29c640ade8e63585414ab2a44a0892a5ed0a",
+    "evidence/ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "evidence/unet-conservative.log": "9584c60473f57522d4d51d2c79394a1addfad52f333d27b19d279130132c3372",
+    "evidence/unflagged-device.log": "f9e0888c5fef8b1dab8a0756659c025c2c7cf670881b4ed50c7466d2174dd4ef",
+    "evidence/v3-control-regressions.log": "07fa27db0d5f1cd40d04d951a2eb5fae875abe7f996058f0fb5c92af5a4421b4",
+    "src/comfy/cli_args.py": "1918f3a240a1ab224e473a8641861b2a909148285a5f5db892f06192bdc6ce4a",
+    "src/comfy/model_management.py": "12bb1f3915b7ecc98c1407849bd784f3485e933fdf9f604d85bab0fc1f8aeb1e",
+    "src/main.py": "3bb8fffea0eebba7a15786ccb090ccd9883f038727cbf5f0de800fc696c20643",
+    "tests/benchmark_memory_queries.py": "6e6be03be2d6f3a14d963f88b265fefee99670805751784c2324aafde86eaf5a",
+    "tests/check_cache_eviction.py": "3add1fe20ea5a59ee30e1e35781990574b02c5ec0e43887b7856b94024b7f56a",
+    "tests/check_capabilities.py": "b43cc62d26b9e05bff420309eff1f9a3390f1d1c78071ecdbf0cdd1564f327d1",
+    "tests/check_real_cli_index.py": "388e9fd228979ec05e87ce45b63249dae208c28114c18b90ff0773c135614b2a",
+    "tests/check_release_gates.py": "301a532f650b699227e03e042ab63d5d2edc6b10551cee295fe3b6ffb647c155",
+    "tests/probe_vulkan_budget.py": "3b7afb605809763900bcc3b329a111b1ce7b848bbe021325be57fd9c39cb5e88",
+    "tests/test_comfy_vulkan_unet.py": "31517381c9636d12bf11c23ec828144ba37c584bd47c401c6efd66f881624cc9",
+    "tests/test_memory_accounting.py": "34b8048ca1e7b6d8b675a8c080339855beb3f206fef628fb51622193f73bf1ff",
+    "tests/test_review_regressions.py": "083ac174151d0d01e9267738a78bf6339cc0347bfbd5892afec9b3e478ba4fe5",
+    "tests/test_vulkan_ops.py": "acd14e7fe7fbc8bc74ad1d55d23b4bfd9f9d1cecd26e33ced9db75929a6e9cd6",
+    "manifest.json": "1d37165f6ed5ef4b94693accd50bf4cf08b6d778efdd42e04c5f39fa214624bc",
+    "file-digests.json": "c3d89931765fe0ccac0df8a07d2dca1094f22cdfbceac7f9e5da54b007945dc5"
+  },
+  "license_origin_evidence_files_sha256": {
+    "ACTUAL_REVIEW_ROLES.json": "6c9ad8b349aa7150e15b72e045eba1a59d7be2a4212eb399d1aafd5679e25df7",
+    "FILE_ORIGINS.json": "82147469cb9d313a1cd260390fce05ea3b229313f3114946aa83f48c691b28b3",
+    "FROZEN_ARTIFACT_CONTEXT.json": "a2fad0890f3c9fc60748ff93059b2c9c02f670aa498f8fb2593cca9e727577a9",
+    "LICENSE-EVIDENCE.README.md": "8fc0503d694b33ebe5e08b540db1b84763e906fb542c5549fc511c6559298f50",
+    "LICENSE-ONLY.patch": "1eced190edde2fc191ed501abebb8ecef03a3eaa621ae7d78033995bedf788d9",
+    "VERIFICATION.json": "77e606b87343f2a8e10aaddf506506feb989ebff88ed4bce3909631c145e4345",
+    "candidate/LICENSE.TESTS.MIT": "0cc34f39eb9edddb09ec48e5de62d772685941ad8db46c0509dcee1aedbe7b4e",
+    "candidate/README.md": "eae7374f3fc6bbc1334e3db6f389d462d37b4a7c3fcbd565364c4a19301b8c1d",
+    "candidate/tests/benchmark_memory_queries.py": "6e6be03be2d6f3a14d963f88b265fefee99670805751784c2324aafde86eaf5a",
+    "candidate/tests/check_cache_eviction.py": "3add1fe20ea5a59ee30e1e35781990574b02c5ec0e43887b7856b94024b7f56a",
+    "candidate/tests/check_capabilities.py": "b43cc62d26b9e05bff420309eff1f9a3390f1d1c78071ecdbf0cdd1564f327d1",
+    "candidate/tests/check_real_cli_index.py": "388e9fd228979ec05e87ce45b63249dae208c28114c18b90ff0773c135614b2a",
+    "candidate/tests/check_release_gates.py": "301a532f650b699227e03e042ab63d5d2edc6b10551cee295fe3b6ffb647c155",
+    "candidate/tests/probe_vulkan_budget.py": "3b7afb605809763900bcc3b329a111b1ce7b848bbe021325be57fd9c39cb5e88",
+    "candidate/tests/test_comfy_vulkan_unet.py": "31517381c9636d12bf11c23ec828144ba37c584bd47c401c6efd66f881624cc9",
+    "candidate/tests/test_memory_accounting.py": "34b8048ca1e7b6d8b675a8c080339855beb3f206fef628fb51622193f73bf1ff",
+    "candidate/tests/test_review_regressions.py": "083ac174151d0d01e9267738a78bf6339cc0347bfbd5892afec9b3e478ba4fe5",
+    "candidate/tests/test_vulkan_ops.py": "acd14e7fe7fbc8bc74ad1d55d23b4bfd9f9d1cecd26e33ced9db75929a6e9cd6",
+    "original/tests/benchmark_memory_queries.py": "c2420a4bf71a22ad5ee797d9ff2502d7a3bece3059e66657601f8d6402444487",
+    "original/tests/check_cache_eviction.py": "ec6a5d5834552398c7220898190e8164a87bb6c180e07ebef7abcc6f802b413f",
+    "original/tests/check_capabilities.py": "74107dd7f9ee9df2d3cd662f32f02e9c2960915a64b9bff36abc429a0f4cc6c2",
+    "original/tests/check_real_cli_index.py": "511080741f4fe0a32ecaa9bf9c3f5d30de6868bca24ff161b579a85d62f3ac68",
+    "original/tests/check_release_gates.py": "8c5c70f6a241d7d3877cc450eb1e13b95b961f3d636de40c29594296609d64d8",
+    "original/tests/probe_vulkan_budget.py": "dfc73997cb0180e7bc938abba7753d982a6c2f539fe08cad8a4cd4a85dbec659",
+    "original/tests/test_comfy_vulkan_unet.py": "3daa59f2bbb115afe74d973b202c4c1abb8ef4f11947c4a4db2e7711a0d5273d",
+    "original/tests/test_memory_accounting.py": "93d6233c99d5dc746d95322e54cb625641b27570f8bd4c5755bacfa47b8a2440",
+    "original/tests/test_review_regressions.py": "b059efbb87454b2e21487531705c62714b9158ae411cfdb033ff84e93c058d9d",
+    "original/tests/test_vulkan_ops.py": "58578d7a5d7b7a31a9c7f02343cb7c470807a9468e7db2d12457567a57271358",
+    "test_memory_accounting.py.log": "e2ef497f0922c236c2f1298f1a64c03a52ec1c0798cd04c8dbcd6e9d76e5701e",
+    "test_review_regressions.py.log": "0d6653413f55f7cf64dbfab59b6b29c640ade8e63585414ab2a44a0892a5ed0a"
+  },
+  "production_patch_sha256": "76bd47b54904eee81af57af075084e0c4b3247f0359f8ab301323a8ec23f3a56",
+  "packaging_metadata_changes": [
+    "candidate/manifest.json: current composed technical status, no release approval",
+    "candidate/file-digests.json: regenerated over final candidate manifest/header overlay"
+  ],
+  "final_candidate_digests": {
+    "COPYING.GPL-3.0": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+    "ComfyUI-Vulkan.patch": "76bd47b54904eee81af57af075084e0c4b3247f0359f8ab301323a8ec23f3a56",
+    "FIX_LOG.json": "da49a9d99b5a09db7553706d934510c091f5e397b4a800b51b81b7aabcd5b13c",
+    "LICENSE.TESTS.MIT": "0cc34f39eb9edddb09ec48e5de62d772685941ad8db46c0509dcee1aedbe7b4e",
+    "README.md": "eae7374f3fc6bbc1334e3db6f389d462d37b4a7c3fcbd565364c4a19301b8c1d",
+    "REVIEW_CONTEXT.md": "50dc12ac94c8ca078059c342dbc6cd99e2ec8b222ff411efd2f736f767bb95b1",
+    "base/comfy/cli_args.py": "bebe7a5802f99acaed6315adcf1ed2a3661689f4f618452e12dc179b16be8a6c",
+    "base/comfy/model_management.py": "6d2e82518e949003d7b5f6b6db3e8b3103a597800f83354bbff073142e600141",
+    "base/main.py": "d5f1d810946f0d26c8187c12f9cac273c4689d06466076aea360cfe405e088a2",
+    "evidence/cache-eviction-conservative.log": "256c69fb2d66510398b0855a588232c62ac74889b830f4ee8405c2e5884c1b54",
+    "evidence/capabilities.log": "6d4d2bb7dbd1a5907db8d6d39cf7530efad557f70aaabd7abc27d30ca4e3b676",
+    "evidence/cpu-tests.log": "4a99d81995cb88d2979fccb516e8bd58fdb257ef6fc00036cf4b226c9d4adc56",
+    "evidence/default-attention-unet.log": "0a085fddddf7b5445e572f0bf84c3d3d887a422ac6ba81c899c83269ebba9011",
+    "evidence/explicit-async.log": "68be945dede1604ffe30af75f78b912ac6cb26336774cac10e51bec6f8d2aa9f",
+    "evidence/integrated-budget-probe.json": "63c342b9801b20d0221214f47eaacaa1c541c8ea3ccfba0a3e7e39c2729dcc49",
+    "evidence/memory-tests.log": "e2ef497f0922c236c2f1298f1a64c03a52ec1c0798cd04c8dbcd6e9d76e5701e",
+    "evidence/query-benchmark.log": "d996f6b0b474c851635efda36f8c561c33f25aba11fa22b39a6ec27845d719fe",
+    "evidence/review-regressions.log": "0d6653413f55f7cf64dbfab59b6b29c640ade8e63585414ab2a44a0892a5ed0a",
+    "evidence/ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "evidence/unet-conservative.log": "9584c60473f57522d4d51d2c79394a1addfad52f333d27b19d279130132c3372",
+    "evidence/unflagged-device.log": "f9e0888c5fef8b1dab8a0756659c025c2c7cf670881b4ed50c7466d2174dd4ef",
+    "evidence/v3-control-regressions.log": "07fa27db0d5f1cd40d04d951a2eb5fae875abe7f996058f0fb5c92af5a4421b4",
+    "src/comfy/cli_args.py": "1918f3a240a1ab224e473a8641861b2a909148285a5f5db892f06192bdc6ce4a",
+    "src/comfy/model_management.py": "12bb1f3915b7ecc98c1407849bd784f3485e933fdf9f604d85bab0fc1f8aeb1e",
+    "src/main.py": "3bb8fffea0eebba7a15786ccb090ccd9883f038727cbf5f0de800fc696c20643",
+    "tests/benchmark_memory_queries.py": "6e6be03be2d6f3a14d963f88b265fefee99670805751784c2324aafde86eaf5a",
+    "tests/check_cache_eviction.py": "3add1fe20ea5a59ee30e1e35781990574b02c5ec0e43887b7856b94024b7f56a",
+    "tests/check_capabilities.py": "b43cc62d26b9e05bff420309eff1f9a3390f1d1c78071ecdbf0cdd1564f327d1",
+    "tests/check_real_cli_index.py": "388e9fd228979ec05e87ce45b63249dae208c28114c18b90ff0773c135614b2a",
+    "tests/check_release_gates.py": "301a532f650b699227e03e042ab63d5d2edc6b10551cee295fe3b6ffb647c155",
+    "tests/probe_vulkan_budget.py": "3b7afb605809763900bcc3b329a111b1ce7b848bbe021325be57fd9c39cb5e88",
+    "tests/test_comfy_vulkan_unet.py": "31517381c9636d12bf11c23ec828144ba37c584bd47c401c6efd66f881624cc9",
+    "tests/test_memory_accounting.py": "34b8048ca1e7b6d8b675a8c080339855beb3f206fef628fb51622193f73bf1ff",
+    "tests/test_review_regressions.py": "083ac174151d0d01e9267738a78bf6339cc0347bfbd5892afec9b3e478ba4fe5",
+    "tests/test_vulkan_ops.py": "acd14e7fe7fbc8bc74ad1d55d23b4bfd9f9d1cecd26e33ced9db75929a6e9cd6",
+    "manifest.json": "e993c34ca5c0ab0fa6aabf9aca9de8198f70e3e8fc82e1d20ba3766b995b71ec"
+  },
+  "licensing": "Upstream ComfyUI source/patch retains GPL terms/notices; new standalone tests retain explicit MIT; licenses included.",
+  "scope_limits": [
+    "Vulkan control/data-flow and recorded limited UNet tests; no broad model/workflow validation",
+    "test module __doc__ and line offsets may change with headers; supplement records this honestly",
+    "AST/header evidence is static; no runtime test rerun by this packaging",
+    "current upstream rebase is not claimed"
+  ],
+  "human_owner": "Tommy Johnsen",
+  "codex_role": "Implementation/verification/triage where recorded; this addition packages exact reviewed bytes and composes evidence.",
+  "release_approved": false,
+  "published": false,
+  "live_changes_performed": false,
+  "new_packaging_material_is_not_a_fresh_production_review": true
+}

@@ -1,0 +1,19 @@
+[Unit]
+Description=Read-only on-demand Immich photos
+After=graphical-session.target
+PartOf=graphical-session.target
+StartLimitIntervalSec=300
+StartLimitBurst=3
+
+[Service]
+Type=simple
+ExecStart=%h/.local/share/immich-files/.venv/bin/python %h/.local/share/immich-files/immich_files.py
+KillSignal=SIGINT
+Restart=on-failure
+RestartSec=20
+TimeoutStopSec=40
+UMask=0077
+StandardOutput=null
+
+[Install]
+WantedBy=graphical-session.target

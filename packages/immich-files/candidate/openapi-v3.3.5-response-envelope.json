@@ -1,0 +1,144 @@
+{
+  "source": "https://raw.githubusercontent.com/immich-app/immich/v3.3.5/open-api/immich-openapi-specs.json",
+  "upstream_full_spec_sha256": "632700b84590f6b197fe6ef9a8486db19d08a31a03cf10bc780925e8a32b6bb9",
+  "version": "v3.3.5",
+  "response_200": {
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "#/components/schemas/SearchResponseDto"
+        }
+      }
+    },
+    "description": ""
+  },
+  "components": {
+    "SearchResponseDto": {
+      "properties": {
+        "albums": {
+          "$ref": "#/components/schemas/SearchAlbumResponseDto"
+        },
+        "assets": {
+          "$ref": "#/components/schemas/SearchAssetResponseDto"
+        }
+      },
+      "required": [
+        "albums",
+        "assets"
+      ],
+      "type": "object"
+    },
+    "SearchAssetResponseDto": {
+      "properties": {
+        "count": {
+          "description": "Number of assets in this page",
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "facets": {
+          "items": {
+            "$ref": "#/components/schemas/SearchFacetResponseDto"
+          },
+          "type": "array"
+        },
+        "items": {
+          "items": {
+            "$ref": "#/components/schemas/AssetResponseDto"
+          },
+          "type": "array"
+        },
+        "nextCursor": {
+          "description": "Cursor for the next page of results",
+          "nullable": true,
+          "type": "string",
+          "x-immich-history": [
+            {
+              "version": "v3.2.0",
+              "state": "Added"
+            }
+          ]
+        },
+        "nextPage": {
+          "deprecated": true,
+          "description": "Next page token",
+          "nullable": true,
+          "type": "string",
+          "x-immich-history": [
+            {
+              "version": "v1",
+              "state": "Added"
+            },
+            {
+              "version": "v2",
+              "state": "Stable"
+            },
+            {
+              "version": "v3.2.0",
+              "state": "Deprecated"
+            }
+          ],
+          "x-immich-state": "Deprecated"
+        },
+        "total": {
+          "description": "Total number of matching assets",
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer",
+          "x-immich-history": [
+            {
+              "version": "v3.0.0",
+              "state": "Deprecated"
+            }
+          ],
+          "x-immich-state": "Deprecated"
+        }
+      },
+      "required": [
+        "count",
+        "facets",
+        "items",
+        "nextCursor",
+        "nextPage",
+        "total"
+      ],
+      "type": "object"
+    },
+    "SearchAlbumResponseDto": {
+      "properties": {
+        "count": {
+          "description": "Number of albums in this page",
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "facets": {
+          "items": {
+            "$ref": "#/components/schemas/SearchFacetResponseDto"
+          },
+          "type": "array"
+        },
+        "items": {
+          "items": {
+            "$ref": "#/components/schemas/AlbumResponseDto"
+          },
+          "type": "array"
+        },
+        "total": {
+          "description": "Total number of matching albums",
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "count",
+        "facets",
+        "items",
+        "total"
+      ],
+      "type": "object"
+    }
+  },
+  "scope": "Complete HTTP response wrapper and nested search asset/album response schemas; item DTO references remain upstream refs. Existing excerpt.response is SearchAssetResponseDto only, not HTTP body."
+}

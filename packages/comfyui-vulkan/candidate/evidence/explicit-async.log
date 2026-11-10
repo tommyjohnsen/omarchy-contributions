@@ -1,0 +1,1 @@
+{"mode": "explicit_async", "device": "vulkan:0", "device_name": "vulkan:0 Apple M3 Pro (G15S B1)", "total_memory": 9233760256, "free_memory": 3332426956, "known_reusable_cache": 0, "async_streams": 0, "disable_pinned_memory": false, "dynamic_vram_cli_enabled": false, "fp16": true, "bf16": false}

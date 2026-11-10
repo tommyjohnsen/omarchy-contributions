@@ -1,0 +1,24 @@
+{
+  "bar": {
+    "layout": {
+      "left": [
+        {
+          "id": "omarchy.workspaces"
+        },
+        {
+          "id": "tommy.show-desktop"
+        }
+      ],
+      "center": [
+        {
+          "id": "omarchy.clock"
+        }
+      ]
+    }
+  },
+  "plugins": [
+    {
+      "id": "tommy.show-desktop"
+    }
+  ]
+}

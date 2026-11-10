@@ -1,0 +1,46 @@
+{
+  "result": "passed",
+  "xdg_set_minimized_requests": 1,
+  "lua_minimize_events": 1,
+  "state": true,
+  "separate_maximize_request_did_not_emit_minimize": true,
+  "separate_fullscreen_request_did_not_emit_minimize": true,
+  "plugin_list_output": "no plugins loaded",
+  "monitor_observations": [
+    {
+      "name": "WAYLAND-1",
+      "backend": "wayland",
+      "width": 1508,
+      "height": 916
+    }
+  ],
+  "observed_wayland_output": true,
+  "observed_headless_output": false,
+  "output_inference_basis": "strict actual hardwareDetails.backend=wayland and WAYLAND-/WL- name assertions",
+  "private_device_visibility": {
+    "drm_nodes": [
+      "renderD128"
+    ],
+    "input_visible": false,
+    "system_bus_socket_visible": false,
+    "seatd_socket_visible": false
+  },
+  "backend_selector_environment": {
+    "AQ_BACKEND": null,
+    "AQ_DRM_DEVICES": null,
+    "WLR_BACKENDS": null
+  },
+  "headless_only_env_present": false,
+  "observer_config_sha256": "33b8fd59a7aaed7969b92f8e07a69c572be544597ecc1e5fa7c51196223959c2",
+  "observer_config_external_loads": false,
+  "source_revision": "acc1aa0bfd4bd575dcb0f76c35ccf12b660a1ab9",
+  "received": "1\nrender-only-v4-premap-0-nested-client.py\ttrue\ttrue\t0xaaab459e82b0",
+  "binary": "build/Hyprland",
+  "binary_sha256": "d61d3844729494fac0f0a72345f54792d4fb84c1d12cad588f264ed587394813",
+  "premap_minimize_requests": 1,
+  "premap_events": 0,
+  "premap_received": "0",
+  "premap_socket2_minimize_events": 0,
+  "mapped_socket2_minimize_events": 1,
+  "socket2_event": "minimized>>aaab459e82b0,1"
+}

@@ -1,0 +1,47 @@
+{
+  "scope": "Current V7; prior exact V6 static review distinguished from actual runtime evidence",
+  "actual_prior_reports": {
+    "claude_v4": "changes_requested; collision/min-width fixes",
+    "grok_v4": "changes_requested; same geometry fixes",
+    "gemini_v4": "changes_requested; API claims disproven by exact source/runtime",
+    "claude_v5": "changes_requested; stale counts/manifest/comment corrected, real back-and-forth investigation requested"
+  },
+  "v6_production_change": "Skip redundant same-workspace focus after hiding; actual V5 nested runtime reproduced back-and-forth bug",
+  "optional_or_disproven_changes_not_adopted": [
+    "unsubscribe across full config reload; state is recreated",
+    "selector string rewrite; userdata supported",
+    "tag no-op guard; actual absent-tag removal succeeds"
+  ],
+  "provider_tests": "static reviews; models did not execute tests",
+  "codex_tests": "listed in validation.json",
+  "human_release_approval": false,
+  "v7_changes": [
+    "supported fill shrinks below compact to actual available room",
+    "immediate orientation/barSize resize handlers"
+  ],
+  "v7_actual_tests": {
+    "lua_lifecycle_cases": 15,
+    "Qt_geometry_groups": 14,
+    "Qt_supported_nonoverlap_property_cases": 2304,
+    "Qt_signal_fixtures": [
+      "neighbor change/removal",
+      "orientation/barSize without position movement"
+    ],
+    "fresh_actual_controller_focus_spawn_gate": "passed"
+  },
+  "grok_v6_disputed": [
+    "focus alleged stuck on special: actual activewindow empty and new Foot client lands workspace1 with back-and-forth false/true",
+    "runtime missing-field claim: exact historical artifacts contain false field twice; fresh raw/public results identical with at-run hashes"
+  ],
+  "grok_v6_actual_provenance": {
+    "request_sha256": "6907a4c0d9a5dd072e07171a4da5488b83b90fc021d298f15b6dcc1b12846c9d",
+    "response_sha256": "15b32d979ab91dc457eca8c4a015925b64d25f212ef44266ec482bebc1416164",
+    "review_text_sha256": "9716c54549f7e08c61cce6b91cab9f5f4ecf381df587ca2048dd384e55e49f9c",
+    "reported_models": [
+      "grok-4.7-build"
+    ],
+    "provider_tests_executed": false,
+    "verdict": "changes_requested"
+  },
+  "exact_v7_review": "pending"
+}

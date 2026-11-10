@@ -1,0 +1,33 @@
+{
+  "helpers.lua": {
+    "sha256": "91c0cbe9654e8cc2189664d53cd50ad22202a10071ef9a75c93eabdeb97cb857",
+    "excerpts": [
+      {
+        "start_line": 138,
+        "end_line": 157,
+        "text": "function o.bind(keys, description, dispatcher, options)\n  local opts = options or {}\n\n  if description then\n    opts.description = description\n  end\n\n  dispatcher = command_from(dispatcher, description)\n\n  if type(dispatcher) == \"string\" then\n    dispatcher = hl.dsp.exec_cmd(dispatcher)\n  end\n\n  hl.bind(keys, dispatcher, opts)\nend\n\nfunction o.rebind(keys, description, dispatcher, options)\n  hl.unbind(keys)\n  o.bind(keys, description, dispatcher, options)\nend"
+      }
+    ]
+  },
+  "tiling.lua": {
+    "sha256": "485bb00931315fd78ceb8dbb18bfc11d040d42559712600cbc4134194c864781",
+    "excerpts": [
+      {
+        "start_line": 23,
+        "end_line": 29,
+        "text": "-- Each monitor has workspaces 1-10 of its own; see default/hypr/monitor-workspaces.lua.\nfor workspace = 1, 10 do\n  local key = \"code:\" .. tostring(workspace + 9)\n  o.bind(\"SUPER + \" .. key, \"Switch to workspace \" .. workspace, o.workspaces.focus(workspace))\n  o.bind(\"SUPER + SHIFT + \" .. key, \"Move window to workspace \" .. workspace, o.workspaces.move_window(workspace))\n  o.bind(\"SUPER + SHIFT + ALT + \" .. key, \"Move window silently to workspace \" .. workspace, o.workspaces.move_window(workspace, false))\nend"
+      }
+    ]
+  },
+  "omarchy-capture-screenshot": {
+    "sha256": "d5af4dcbfea5d43b81e414c2afb256f00611f0b2a86d0da7f21796520a72a5f4",
+    "excerpts": [
+      {
+        "start_line": 1,
+        "end_line": 27,
+        "text": "#!/bin/bash\n\n# omarchy:summary=Take a screenshot\n# omarchy:group=capture\n# omarchy:args=[smart|region|windows|fullscreen|scroll] [copy|save]\n# omarchy:examples=omarchy screenshot | omarchy capture screenshot region\n# omarchy:aliases=omarchy screenshot\n\nif [[ -n ${OMARCHY_SCREENSHOT_DIR:-} && -z ${OMASNAP_SCREENSHOT_DIR:-} ]]; then\n  export OMASNAP_SCREENSHOT_DIR=\"$OMARCHY_SCREENSHOT_DIR\"\nfi\n\n# --notify announces saved shots with Open and Edit buttons instead of a\n# preview. Omasnap reads that toast's text from this catalog itself:\n#   omarchy-i18n capture.screenshotSaved, omarchy-i18n capture.screenshotSavedCopied,\n#   omarchy-i18n capture.screenshotOpen, omarchy-i18n capture.screenshotEdit\nomasnap_args=(--notify)\nfor arg in \"$@\"; do\n  case \"$arg\" in\n    copy) omasnap_args+=(--copy) ;;\n    save) omasnap_args+=(--save) ;;\n    slurp) ;;\n    *) omasnap_args+=(\"$arg\") ;;\n  esac\ndone\n\nexec omasnap \"${omasnap_args[@]}\""
+      }
+    ]
+  },
+  "CLI_help": "Usage:\n  omarchy capture screenshot [smart|region|windows|fullscreen|scroll] [copy|save]\n\nTake a screenshot\n\nArguments:\n  [smart|region|windows|fullscreen|scroll] [copy|save]\n\nExamples:\n  omarchy screenshot\n  omarchy capture screenshot region\n\nAliases:\n  omarchy screenshot\n\nBinary:\n  omarchy-capture-screenshot\n"
+}

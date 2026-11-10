@@ -1,0 +1,53 @@
+{
+  "before": {
+    "allocated": 0,
+    "reserved": 33554432,
+    "cached": 0,
+    "driver_free": 3671117004
+  },
+  "active32": {
+    "allocated": 33554432,
+    "reserved": 100663296,
+    "cached": 0,
+    "driver_free": 3644850176
+  },
+  "cached32": {
+    "allocated": 0,
+    "reserved": 100663296,
+    "cached": 33554432,
+    "driver_free": 3644850176
+  },
+  "peer": {
+    "allocated": 67108864,
+    "reserved": 167772160,
+    "cached": 0,
+    "driver_free": 3500041830
+  },
+  "during_peer": {
+    "allocated": 0,
+    "reserved": 100663296,
+    "cached": 33554432,
+    "driver_free": 3503397273
+  },
+  "after_empty_cache": {
+    "allocated": 0,
+    "reserved": 100663296,
+    "cached": 0,
+    "driver_free": 3644850176
+  },
+  "memory_cached_idle_ns_per_call": {
+    "median": 202.6544,
+    "min": 199.1668,
+    "max": 218.19,
+    "batches": 7,
+    "calls_per_batch": 10000
+  },
+  "memory_stats_idle_ns_per_call": {
+    "median": 266.3933,
+    "min": 264.5688,
+    "max": 286.8539,
+    "batches": 7,
+    "calls_per_batch": 10000
+  },
+  "scope": "32MiB own buffer plus optional64MiB separate-process buffer; no model downloads"
+}

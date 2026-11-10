@@ -1,0 +1,110 @@
+{
+  "physical_devices": [
+    {
+      "name": "Apple M3 Pro (G15S B1)",
+      "device_type": 1,
+      "type_names": {
+        "1": "INTEGRATED_GPU",
+        "2": "DISCRETE_GPU",
+        "4": "CPU"
+      }
+    }
+  ],
+  "before": [
+    {
+      "MemTotal": 18468552704,
+      "MemAvailable": 8291139584,
+      "vulkan_free": 3541617868,
+      "vulkan_total": 9233760256
+    },
+    {
+      "MemTotal": 18468552704,
+      "MemAvailable": 8289943552,
+      "vulkan_free": 3541617868,
+      "vulkan_total": 9233760256
+    },
+    {
+      "MemTotal": 18468552704,
+      "MemAvailable": 8289943552,
+      "vulkan_free": 3541617868,
+      "vulkan_total": 9233760256
+    },
+    {
+      "MemTotal": 18468552704,
+      "MemAvailable": 8289943552,
+      "vulkan_free": 3541617868,
+      "vulkan_total": 9233760256
+    },
+    {
+      "MemTotal": 18468552704,
+      "MemAvailable": 8289943552,
+      "vulkan_free": 3541617868,
+      "vulkan_total": 9233760256
+    }
+  ],
+  "cpu_touched_bytes": 134217728,
+  "during_cpu_allocation": [
+    {
+      "MemTotal": 18468552704,
+      "MemAvailable": 8155463680,
+      "vulkan_free": 3483841331,
+      "vulkan_total": 9233760256
+    },
+    {
+      "MemTotal": 18468552704,
+      "MemAvailable": 8155463680,
+      "vulkan_free": 3483841331,
+      "vulkan_total": 9233760256
+    },
+    {
+      "MemTotal": 18468552704,
+      "MemAvailable": 8155463680,
+      "vulkan_free": 3483841331,
+      "vulkan_total": 9233760256
+    },
+    {
+      "MemTotal": 18468552704,
+      "MemAvailable": 8155463680,
+      "vulkan_free": 3483841331,
+      "vulkan_total": 9233760256
+    },
+    {
+      "MemTotal": 18468552704,
+      "MemAvailable": 8155463680,
+      "vulkan_free": 3483841331,
+      "vulkan_total": 9233760256
+    }
+  ],
+  "after_release": [
+    {
+      "MemTotal": 18468552704,
+      "MemAvailable": 8152285184,
+      "vulkan_free": 3482845184,
+      "vulkan_total": 9233760256
+    },
+    {
+      "MemTotal": 18468552704,
+      "MemAvailable": 8152285184,
+      "vulkan_free": 3482845184,
+      "vulkan_total": 9233760256
+    },
+    {
+      "MemTotal": 18468552704,
+      "MemAvailable": 8152285184,
+      "vulkan_free": 3482845184,
+      "vulkan_total": 9233760256
+    },
+    {
+      "MemTotal": 18468552704,
+      "MemAvailable": 8152285184,
+      "vulkan_free": 3482845184,
+      "vulkan_total": 9233760256
+    },
+    {
+      "MemTotal": 18468552704,
+      "MemAvailable": 8152285184,
+      "vulkan_free": 3482845184,
+      "vulkan_total": 9233760256
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+diff --git a/src/desktop/view/window/Window.cpp b/src/desktop/view/window/Window.cpp
+index 881b5f7..eb29279 100644
+--- a/src/desktop/view/window/Window.cpp
++++ b/src/desktop/view/window/Window.cpp
+@@ -845,6 +845,12 @@ void CWindow::onUpdateState(const SBackendStateRequest& request) {
+         .fullscreenMonitor = request.fullscreenMonitor,
+         .origin            = SClientFullscreenRequest::ORIGIN_BACKEND,
+     });
++
++    if (request.minimized.has_value() && mapped()) {
++        const bool MINIMIZED = request.minimized.value();
++        IPC::Socket2::sock()->postEvent({.event = "minimized", .data = std::format("{:x},{}", rc<uintptr_t>(this), MINIMIZED ? 1 : 0)});
++        Event::bus()->m_events.window.minimize.emit(m_self.lock(), MINIMIZED);
++    }
+ }
+ 
+ void CWindow::requestClientFullscreen(const SClientFullscreenRequest& request) {

@@ -1,0 +1,33 @@
+{
+  "finding": "Grok report4 says manual_workspace_recreation_required absent; exact current reviewed files disprove this specific claim.",
+  "historical": {
+    "original_results_sha256": "34416b192c7e73fe4e35894978c3e5e9df2c1cd30d2ef892cc9e92b925b54e47",
+    "shipped_results_sha256": "34416b192c7e73fe4e35894978c3e5e9df2c1cd30d2ef892cc9e92b925b54e47",
+    "results_identical": true,
+    "original_verifier_sha256": "819fdb1cd792e583dd1eacf5dff8d99eb115a781d0fbe37a713bc71fe4092c46",
+    "shipped_verifier_sha256": "819fdb1cd792e583dd1eacf5dff8d99eb115a781d0fbe37a713bc71fe4092c46",
+    "verifiers_identical": true,
+    "fields_present": [
+      {
+        "case": "actual V6 hides/restores two windows; synchronous callback tag removals and repeated no-op removals succeed",
+        "manual_workspace_recreation_required": false
+      },
+      {
+        "case": "actual V6 hides/restores two windows; synchronous callback tag removals and repeated no-op removals succeed",
+        "manual_workspace_recreation_required": false
+      }
+    ],
+    "original_raw_transformations": "No output normalization/removal was applied by this work. Historical run did not record its script hash at start; current artifact/manifest equality does not retroactively provide that attestation."
+  },
+  "fresh": {
+    "raw_results_sha256": "505f7607f5d271e1b11b286f99e2c4ecf7acc0dd73cda73247292b714b1dfa58",
+    "results_sha256": "505f7607f5d271e1b11b286f99e2c4ecf7acc0dd73cda73247292b714b1dfa58",
+    "raw_equals_results": true,
+    "script_sha256_at_run": "f60399ba261f560faf6acf37877d6ab2bbebd1f38b8bb678961caaa84d6c6229",
+    "script_sha256_now": "f60399ba261f560faf6acf37877d6ab2bbebd1f38b8bb678961caaa84d6c6229",
+    "controller_sha256_at_run": "3d672b5afd0babefd6b0b6cf7bb17a283c3a25266bc2abfd50ecf94db69f3e05",
+    "controller_sha256_now": "3d672b5afd0babefd6b0b6cf7bb17a283c3a25266bc2abfd50ecf94db69f3e05",
+    "transformations": [],
+    "method": "Verifier computes script/controller digests at start, serializes JSON once and writes identical raw-results.json and results.json. No post-run edits to source or measured JSON."
+  }
+}

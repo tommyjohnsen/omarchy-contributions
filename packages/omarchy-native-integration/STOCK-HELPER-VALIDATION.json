@@ -1,0 +1,52 @@
+{
+  "candidate_sha256": "901470303d8aa32528e11fe0cb6f8998f70cb9f48565aaea6afb4b3020e6aa0e",
+  "candidate": "unchanged bounded policy actual stock-helper supplement",
+  "core_binary_sha256": "d61d3844729494fac0f0a72345f54792d4fb84c1d12cad588f264ed587394813",
+  "parent_focus_restore_requested": false,
+  "parent_ipc_mutation_performed": false,
+  "physical_keyboard_test": false,
+  "nested_runtime_only": true,
+  "cases": [
+    {
+      "case": "GTK native request -> core -> unchanged policy -> real installed stock helper: mapped target moves special:minimized, origin tag1, active workspace1",
+      "pass": true,
+      "native_protocol_transport_test": true,
+      "helper_sha256": "e6e275eb2e39e9bb64cba0cdce936362327d89424416eec67765c40d2575501f"
+    },
+    {
+      "case": "exact installed dock bringForward dispatcher sequence returns target to workspace1 and focuses it",
+      "pass": true
+    },
+    {
+      "case": "private non-floating mode rejects native request and direct stock helper exits0 without moving or tagging",
+      "pass": true,
+      "direct_helper_exit_code": 0,
+      "native_protocol_transport_test": true
+    }
+  ],
+  "config_errors": "",
+  "nested_version": {
+    "branch": "",
+    "commit": "acc1aa0bfd4bd575dcb0f76c35ccf12b660a1ab9",
+    "version": "0.57.1",
+    "dirty": true,
+    "commit_message": "[gha] Nix: update inputs",
+    "commit_date": "Tue Nov 3 04:45:48 2026",
+    "tag": "",
+    "commits": "1",
+    "buildAquamarine": "0.16.0",
+    "buildHyprlang": "0.6.8",
+    "buildHyprutils": "0.14.3",
+    "buildHyprcursor": "0.1.13",
+    "buildHyprgraphics": "0.6.0",
+    "systemAquamarine": "0.16.0",
+    "systemHyprlang": "0.6.8",
+    "systemHyprutils": "0.14.3",
+    "systemHyprcursor": "0.1.13",
+    "systemHyprgraphics": "0.6.0",
+    "abiHash": "acc1aa0bfd4bd575dcb0f76c35ccf12b660a1ab9_aq_0.16_hu_0.14_hg_0.6_hc_0.1_hlg_0.6",
+    "flags": []
+  },
+  "parent_geometry_unchanged": true,
+  "parent_focus_restored": false
+}

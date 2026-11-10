@@ -1,0 +1,136 @@
+{
+  "candidate_sha256": "3d672b5afd0babefd6b0b6cf7bb17a283c3a25266bc2abfd50ecf94db69f3e05",
+  "candidate": "immutable V6 post-hide focus/spawn gate",
+  "script_sha256": "f60399ba261f560faf6acf37877d6ab2bbebd1f38b8bb678961caaa84d6c6229",
+  "raw_json_transformations": [],
+  "run_started_utc": "2026-11-10T04:17:12.258217+00:00",
+  "parent_ipc_mutation_performed": false,
+  "physical_keyboard_test": false,
+  "nested_runtime_only": true,
+  "cases": [
+    {
+      "case": "real missing-tag removal is successful no-op",
+      "pass": true,
+      "result": "true\tnil"
+    },
+    {
+      "case": "post-hide activewindow and new actual native Wayland client placement",
+      "workspace_back_and_forth": false,
+      "active_workspace_after_hide": 1,
+      "active_window_after_hide": {
+        "address": null,
+        "class": null,
+        "workspace": null,
+        "mapped": null
+      },
+      "new_client_workspace": {
+        "address": "1",
+        "id": 1,
+        "type": "normal",
+        "name": "1"
+      },
+      "new_client_stayed_on_origin": true,
+      "confirmed_focus_defect": false
+    },
+    {
+      "case": "actual V6 hides/restores two windows; synchronous callback tag removals and repeated no-op removals succeed",
+      "pass": true,
+      "workspace_back_and_forth": false,
+      "active_workspace_after_hide": 1,
+      "hide_result": [
+        "hidden",
+        "2"
+      ],
+      "restore_result": [
+        "restored",
+        "2"
+      ],
+      "restore_observer_marker_counts": "0,0",
+      "floating_geometry_preserved": true,
+      "manual_workspace_recreation_required": false
+    },
+    {
+      "case": "post-hide activewindow and new actual native Wayland client placement",
+      "workspace_back_and_forth": true,
+      "active_workspace_after_hide": 1,
+      "active_window_after_hide": {
+        "address": null,
+        "class": null,
+        "workspace": null,
+        "mapped": null
+      },
+      "new_client_workspace": {
+        "address": "1",
+        "id": 1,
+        "type": "normal",
+        "name": "1"
+      },
+      "new_client_stayed_on_origin": true,
+      "confirmed_focus_defect": false
+    },
+    {
+      "case": "actual V6 hides/restores two windows; synchronous callback tag removals and repeated no-op removals succeed",
+      "pass": true,
+      "workspace_back_and_forth": true,
+      "active_workspace_after_hide": 1,
+      "hide_result": [
+        "hidden",
+        "2"
+      ],
+      "restore_result": [
+        "restored",
+        "2"
+      ],
+      "restore_observer_marker_counts": "0,0,0,0",
+      "floating_geometry_preserved": true,
+      "manual_workspace_recreation_required": false
+    },
+    {
+      "case": "hyprctl eval intentional-error",
+      "exit_code": 7,
+      "stdout": "error: [string \"return error(\"synthetic-eval-failure\");\"]:1: synthetic-eval-failure",
+      "stderr": "",
+      "measurement_only": true
+    },
+    {
+      "case": "hyprctl eval nil-controller",
+      "exit_code": 7,
+      "stdout": "error: [string \"o.show_desktop=nil;o.show_desktop.toggle(1)\"]:1: attempt to index a nil value (field 'show_desktop')",
+      "stderr": "",
+      "measurement_only": true
+    }
+  ],
+  "nested_only": true,
+  "monitor_observations": [
+    {
+      "name": "WAYLAND-1",
+      "backend": "wayland"
+    }
+  ],
+  "config_errors": "",
+  "nested_version": {
+    "branch": "v0.57.1",
+    "commit": "acc1aa0bfd4bd575dcb0f76c35ccf12b660a1ab9",
+    "version": "0.57.1",
+    "dirty": false,
+    "commit_message": "[gha] Nix: update inputs",
+    "commit_date": "Tue Nov 3 09:45:48 2026",
+    "tag": "v0.57.1",
+    "commits": "7993",
+    "buildAquamarine": "0.16.0",
+    "buildHyprlang": "0.6.8",
+    "buildHyprutils": "0.14.3",
+    "buildHyprcursor": "0.1.13",
+    "buildHyprgraphics": "0.6.0",
+    "systemAquamarine": "0.16.0",
+    "systemHyprlang": "0.6.8",
+    "systemHyprutils": "0.14.3",
+    "systemHyprcursor": "0.1.13",
+    "systemHyprgraphics": "0.6.0",
+    "abiHash": "acc1aa0bfd4bd575dcb0f76c35ccf12b660a1ab9_aq_0.16_hu_0.14_hg_0.6_hc_0.1_hlg_0.6",
+    "flags": []
+  },
+  "missing_original_parent_windows": [],
+  "parent_geometry_unchanged": true,
+  "parent_focus_restored": true
+}

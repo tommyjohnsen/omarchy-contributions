@@ -1,0 +1,82 @@
+{
+  "base_revision": "v6",
+  "all_six_actual_responses_received": true,
+  "all_core_verdicts": "no_blocking_findings",
+  "desktop_changes_requested_require_delta_closure": true,
+  "records": [
+    {
+      "provider": "claude",
+      "packet": "immich-files-core",
+      "verdict": "no_blocking_findings",
+      "request_sha256": "10a6d9383394660866feee05192c7fceb6cd34aaaa2f4c0b1e3ebc6015770c4d",
+      "response_sha256": "d392c640bf0c8529da3cfcd154c5b9b12c12d4095e245d142a9fbf72cab40c76",
+      "review_text_sha256": "be11e9cda414e251c2b6051d506df581747a9aba59f401ef26235b04228b806c",
+      "reported_models": [
+        "claude-opus-5-5"
+      ],
+      "provider_tests_executed": false,
+      "human_release_approval": false
+    },
+    {
+      "provider": "claude",
+      "packet": "immich-files-desktop",
+      "verdict": "changes_requested",
+      "request_sha256": "3075c6b5839512892250f0d17cc6e1acc9cbbbbac5957a0600a8da2a0945fb64",
+      "response_sha256": "d170b423111ef595bb76cd02ba0a43a15e836873d2a2ba50d603537dff81cb03",
+      "review_text_sha256": "23ca98c5edaba39a58f5b1d4e3605a958a1ba37be74d789f790a69acdee5aa97",
+      "reported_models": [
+        "claude-opus-5-5"
+      ],
+      "provider_tests_executed": false,
+      "human_release_approval": false
+    },
+    {
+      "provider": "grok",
+      "packet": "immich-files-core",
+      "verdict": "no_blocking_findings",
+      "request_sha256": "10a6d9383394660866feee05192c7fceb6cd34aaaa2f4c0b1e3ebc6015770c4d",
+      "response_sha256": "1196b63e1205fdaf9af3bc224df8c03a11bf91bd8818e9a2ccfdfb7e25a72b08",
+      "review_text_sha256": "8a7cbfa370e9babd53d1ff28fb1cbf9fcfa3be83d1c4109e682469e9e323acf2",
+      "reported_models": [
+        "grok-4.7-build"
+      ],
+      "provider_tests_executed": false,
+      "human_release_approval": false
+    },
+    {
+      "provider": "grok",
+      "packet": "immich-files-desktop",
+      "verdict": "changes_requested",
+      "request_sha256": "3075c6b5839512892250f0d17cc6e1acc9cbbbbac5957a0600a8da2a0945fb64",
+      "response_sha256": "778d6f450fae1168f3e8ff16a9263829a4ded05bd2e171bd2c1afa60a2bc0928",
+      "review_text_sha256": "2497cb085c703325af23f418d69c24e06363bd94cb0f7c15de293dd760c5fd07",
+      "reported_models": [
+        "grok-4.7-build"
+      ],
+      "provider_tests_executed": false,
+      "human_release_approval": false
+    },
+    {
+      "provider": "gemini",
+      "packet": "immich-files-core",
+      "verdict": "no_blocking_findings",
+      "request_sha256": "10a6d9383394660866feee05192c7fceb6cd34aaaa2f4c0b1e3ebc6015770c4d",
+      "response_sha256": "aa382c7e6ec4df34907f0ceff1f0f4f66ccb95b72f1008e6e946ea7d3e9994d6",
+      "review_text_sha256": "2c66b0de746a47869d6648668e3b17d99ab6400d51b3d442c8929721043a00c7",
+      "reported_models": [],
+      "provider_tests_executed": false,
+      "human_release_approval": false
+    },
+    {
+      "provider": "gemini",
+      "packet": "immich-files-desktop",
+      "verdict": "no_blocking_findings",
+      "request_sha256": "3075c6b5839512892250f0d17cc6e1acc9cbbbbac5957a0600a8da2a0945fb64",
+      "response_sha256": "fdf72b3acc2933ccd01d5648d062470e54bb5c118195da3509df44fcd28d1402",
+      "review_text_sha256": "de8e594a9b80b947e5f5e877500fcb1eabcea09191520f2012aa3a9206a05393",
+      "reported_models": [],
+      "provider_tests_executed": false,
+      "human_release_approval": false
+    }
+  ]
+}

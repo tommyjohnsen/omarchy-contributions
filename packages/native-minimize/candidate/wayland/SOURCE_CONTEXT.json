@@ -1,0 +1,9 @@
+{
+  "hyprland_base": "acc1aa0bfd4bd575dcb0f76c35ccf12b660a1ab9",
+  "compositor_source_sha256": "27813d6b2ea5f918b3e4b30b43310987b83ed1e1a7a7aa2e940dfe461b86d4f4",
+  "backend_construction_source": "    Aquamarine::SBackendOptions           options{};\n    SP<Hyprutils::CLI::CLoggerConnection> conn = makeShared<Hyprutils::CLI::CLoggerConnection>(Log::logger->hu());\n    conn->setLogLevel(Log::DEBUG);\n    conn->setName(\"aquamarine\");\n    options.logConnection = std::move(conn);\n\n    std::vector<Aquamarine::SBackendImplementationOptions> implementations;\n    Aquamarine::SBackendImplementationOptions              option;\n    option.backendType        = Aquamarine::eBackendType::AQ_BACKEND_HEADLESS;\n    option.backendRequestMode = Aquamarine::eBackendRequestMode::AQ_BACKEND_REQUEST_MANDATORY;\n    implementations.emplace_back(option);\n    option.backendType        = Aquamarine::eBackendType::AQ_BACKEND_DRM;\n    option.backendRequestMode = Aquamarine::eBackendRequestMode::AQ_BACKEND_REQUEST_IF_AVAILABLE;\n    implementations.emplace_back(option);\n    option.backendType        = Aquamarine::eBackendType::AQ_BACKEND_WAYLAND;\n    option.backendRequestMode = Aquamarine::eBackendRequestMode::AQ_BACKEND_REQUEST_FALLBACK;\n    implementations.emplace_back(option);\n\n    m_aqBackend = CBackend::create(implementations, options);",
+  "installed_aquamarine_version": "0.16.0",
+  "installed_aquamarine_binary_sha256": "e52e42ec2871b0d4648602641c35e54ae3df03840001cba4c41c5d97b73cb81f",
+  "backend_override_claim": "none; unsupported AQ_BACKEND force claim explicitly rejected",
+  "actual_run": "explicit bwrap invocation with render node only, private /dev and hidden system bus; see render-only-v4-premap-0-result.json fields"
+}

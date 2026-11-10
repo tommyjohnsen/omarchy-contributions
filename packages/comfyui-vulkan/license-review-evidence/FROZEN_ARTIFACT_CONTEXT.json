@@ -1,0 +1,61 @@
+{
+  "source": "gpu/revisions/review-v4",
+  "source_patch_sha256": "76bd47b54904eee81af57af075084e0c4b3247f0359f8ab301323a8ec23f3a56",
+  "changed_files": [
+    "tests/benchmark_memory_queries.py",
+    "tests/check_cache_eviction.py",
+    "tests/check_capabilities.py",
+    "tests/check_real_cli_index.py",
+    "tests/check_release_gates.py",
+    "tests/probe_vulkan_budget.py",
+    "tests/test_comfy_vulkan_unet.py",
+    "tests/test_memory_accounting.py",
+    "tests/test_review_regressions.py",
+    "tests/test_vulkan_ops.py",
+    "README.md",
+    "LICENSE.TESTS.MIT"
+  ],
+  "original_sha256": {
+    "tests/benchmark_memory_queries.py": "c2420a4bf71a22ad5ee797d9ff2502d7a3bece3059e66657601f8d6402444487",
+    "tests/check_cache_eviction.py": "ec6a5d5834552398c7220898190e8164a87bb6c180e07ebef7abcc6f802b413f",
+    "tests/check_capabilities.py": "74107dd7f9ee9df2d3cd662f32f02e9c2960915a64b9bff36abc429a0f4cc6c2",
+    "tests/check_real_cli_index.py": "511080741f4fe0a32ecaa9bf9c3f5d30de6868bca24ff161b579a85d62f3ac68",
+    "tests/check_release_gates.py": "8c5c70f6a241d7d3877cc450eb1e13b95b961f3d636de40c29594296609d64d8",
+    "tests/probe_vulkan_budget.py": "dfc73997cb0180e7bc938abba7753d982a6c2f539fe08cad8a4cd4a85dbec659",
+    "tests/test_comfy_vulkan_unet.py": "3daa59f2bbb115afe74d973b202c4c1abb8ef4f11947c4a4db2e7711a0d5273d",
+    "tests/test_memory_accounting.py": "93d6233c99d5dc746d95322e54cb625641b27570f8bd4c5755bacfa47b8a2440",
+    "tests/test_review_regressions.py": "b059efbb87454b2e21487531705c62714b9158ae411cfdb033ff84e93c058d9d",
+    "tests/test_vulkan_ops.py": "58578d7a5d7b7a31a9c7f02343cb7c470807a9468e7db2d12457567a57271358",
+    "README.md": "0d59fb5ebc5cd5b4001bbf0e8cd9718daf46aebf9bbe4445b32085d6dd28e201"
+  },
+  "candidate_sha256": {
+    "tests/benchmark_memory_queries.py": "6e6be03be2d6f3a14d963f88b265fefee99670805751784c2324aafde86eaf5a",
+    "tests/check_cache_eviction.py": "3add1fe20ea5a59ee30e1e35781990574b02c5ec0e43887b7856b94024b7f56a",
+    "tests/check_capabilities.py": "b43cc62d26b9e05bff420309eff1f9a3390f1d1c78071ecdbf0cdd1564f327d1",
+    "tests/check_real_cli_index.py": "388e9fd228979ec05e87ce45b63249dae208c28114c18b90ff0773c135614b2a",
+    "tests/check_release_gates.py": "301a532f650b699227e03e042ab63d5d2edc6b10551cee295fe3b6ffb647c155",
+    "tests/probe_vulkan_budget.py": "3b7afb605809763900bcc3b329a111b1ce7b848bbe021325be57fd9c39cb5e88",
+    "tests/test_comfy_vulkan_unet.py": "31517381c9636d12bf11c23ec828144ba37c584bd47c401c6efd66f881624cc9",
+    "tests/test_memory_accounting.py": "34b8048ca1e7b6d8b675a8c080339855beb3f206fef628fb51622193f73bf1ff",
+    "tests/test_review_regressions.py": "083ac174151d0d01e9267738a78bf6339cc0347bfbd5892afec9b3e478ba4fe5",
+    "tests/test_vulkan_ops.py": "acd14e7fe7fbc8bc74ad1d55d23b4bfd9f9d1cecd26e33ced9db75929a6e9cd6",
+    "README.md": "eae7374f3fc6bbc1334e3db6f389d462d37b4a7c3fcbd565364c4a19301b8c1d",
+    "LICENSE.TESTS.MIT": "0cc34f39eb9edddb09ec48e5de62d772685941ad8db46c0509dcee1aedbe7b4e"
+  },
+  "protected_original_sha256": {
+    "ComfyUI-Vulkan.patch": "76bd47b54904eee81af57af075084e0c4b3247f0359f8ab301323a8ec23f3a56",
+    "COPYING.GPL-3.0": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+    "src/comfy/cli_args.py": "1918f3a240a1ab224e473a8641861b2a909148285a5f5db892f06192bdc6ce4a",
+    "src/comfy/model_management.py": "12bb1f3915b7ecc98c1407849bd784f3485e933fdf9f604d85bab0fc1f8aeb1e",
+    "src/main.py": "3bb8fffea0eebba7a15786ccb090ccd9883f038727cbf5f0de800fc696c20643",
+    "base/comfy/cli_args.py": "bebe7a5802f99acaed6315adcf1ed2a3661689f4f618452e12dc179b16be8a6c",
+    "base/comfy/model_management.py": "6d2e82518e949003d7b5f6b6db3e8b3103a597800f83354bbff073142e600141",
+    "base/main.py": "d5f1d810946f0d26c8187c12f9cac273c4689d06466076aea360cfe405e088a2"
+  },
+  "licence_scope": "MIT applies only to newly independently written test/probe source; upstream-derived code/patch/license unchanged",
+  "legacy_change_manifest_sha256": "7840207186e03ed8c717da0752cb6273823e0216b8d5f38377386f875c148735",
+  "legacy_review_status": "Creation-time pending-provider status in the preserved original CHANGE_MANIFEST is historical; ACTUAL_REVIEW_ROLES.json now records all three completed V4 and license-supplement reviews.",
+  "executable_logic_changes": false,
+  "runtime_metadata_caveat": "Four module __doc__ strings change; no claim of byte-identical observable runtime metadata.",
+  "frozen_license_patch_sha256": "1eced190edde2fc191ed501abebb8ecef03a3eaa621ae7d78033995bedf788d9"
+}

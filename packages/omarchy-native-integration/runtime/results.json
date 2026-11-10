@@ -1,0 +1,89 @@
+{
+  "candidate_sha256": "901470303d8aa32528e11fe0cb6f8998f70cb9f48565aaea6afb4b3020e6aa0e",
+  "candidate": "omarchy-native-integration-r4-context-only",
+  "parent_focus_restore_requested": false,
+  "parent_ipc_mutation_performed": false,
+  "physical_keyboard_test": false,
+  "nested_runtime_only": true,
+  "cases": [
+    {
+      "case": "actual Wayland GTK set_minimized -> guarded core -> hl.on -> unchanged bounded policy -> real stub helper",
+      "pass": true,
+      "native_protocol_transport_test": true,
+      "wire_minimize_requests": 1,
+      "observed_callback_signature": "HL.Window(mapped=true), boolean true",
+      "helper_calls": 1,
+      "core_binary_sha256": "d61d3844729494fac0f0a72345f54792d4fb84c1d12cad588f264ed587394813"
+    },
+    {
+      "case": "1000 repeated requests for actual mapped userdata plus cooldown burst launch one real helper process",
+      "pass": true,
+      "requests_per_burst": 1000,
+      "helper_calls": 1,
+      "native_protocol_transport_test": false
+    },
+    {
+      "case": "normal retry after1s HL timer cooldown",
+      "pass": true,
+      "helper_calls": 2
+    },
+    {
+      "case": "three actual userdata windows drain FIFO via real HL timers; all records clean up",
+      "pass": true,
+      "order_matches": true,
+      "helper_calls": 5
+    },
+    {
+      "case": "actual queued window moved special before drain is skipped",
+      "pass": true
+    },
+    {
+      "case": "actual queued window closes before drain: expired weak userdata skipped",
+      "pass": true
+    },
+    {
+      "case": "fixed GNU timeout kills TERM-ignoring helper parent and blocked child in same process group",
+      "pass": true,
+      "elapsed_seconds": 6.122,
+      "parent_terminated": true,
+      "child_terminated": true,
+      "native_protocol_transport_test": false
+    },
+    {
+      "case": "config reload cancels old pending timer/state, no stale helper launched",
+      "pass": true
+    },
+    {
+      "case": "successful reload resets state/listeners; one actual new GTK minimize request launches exactly one helper and one observer callback",
+      "pass": true,
+      "native_protocol_transport_test": true,
+      "helper_calls_for_request": 1,
+      "observer_callbacks": 1
+    }
+  ],
+  "config_errors": "",
+  "nested_version": {
+    "branch": "",
+    "commit": "acc1aa0bfd4bd575dcb0f76c35ccf12b660a1ab9",
+    "version": "0.57.1",
+    "dirty": true,
+    "commit_message": "[gha] Nix: update inputs",
+    "commit_date": "Tue Nov 3 04:45:48 2026",
+    "tag": "",
+    "commits": "1",
+    "buildAquamarine": "0.16.0",
+    "buildHyprlang": "0.6.8",
+    "buildHyprutils": "0.14.3",
+    "buildHyprcursor": "0.1.13",
+    "buildHyprgraphics": "0.6.0",
+    "systemAquamarine": "0.16.0",
+    "systemHyprlang": "0.6.8",
+    "systemHyprutils": "0.14.3",
+    "systemHyprcursor": "0.1.13",
+    "systemHyprgraphics": "0.6.0",
+    "abiHash": "acc1aa0bfd4bd575dcb0f76c35ccf12b660a1ab9_aq_0.16_hu_0.14_hg_0.6_hc_0.1_hlg_0.6",
+    "flags": []
+  },
+  "parent_geometry_unchanged": true,
+  "parent_focus_restored": true
+}

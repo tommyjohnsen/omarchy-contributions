@@ -1,0 +1,50 @@
+{
+  "package": "macos-screenshots",
+  "reviewed_files_sha256": {
+    "macos-shortcuts/screenshots.lua": "e155cf690cc1be1b0210e0921dacee4b7bb6623ce1b6d145db73bab00ff39ef2",
+    "revisions/macos-screenshots-context/baseline-context.json": "fb42eec2ca1310e5e5eb22515db532382708570090550798bcade47f4ab41e4f",
+    "revisions/macos-screenshots-context/README.md": "7b8b75b4dd9a90820a7d498cab5a99e0b035a92de44228f9532c7ebc303003c2"
+  },
+  "reviews": {
+    "claude": {
+      "request_sha256": "29c6960b20b04a8a5a0b90f025b639dfb9724782cb01e3528d18bd640ed33060",
+      "response_sha256": "ada33f8320816c4aec43629d641d31bd7c049667254dfcaa00b1057b8ef0678b",
+      "reported_models": [
+        "claude-opus-5-5"
+      ],
+      "verdict": "no_blocking_findings",
+      "scope": "static review of supplied source/context; no model-executed tests"
+    },
+    "grok": {
+      "request_sha256": "29c6960b20b04a8a5a0b90f025b639dfb9724782cb01e3528d18bd640ed33060",
+      "response_sha256": "70ce93d181be575bff11a1bfd7d7639cc965844d84740f5e843de481f0a7ccab",
+      "reported_models": [
+        "grok-4.7-build"
+      ],
+      "verdict": "no_blocking_findings",
+      "scope": "static review of supplied source/context; no model-executed tests"
+    },
+    "gemini": {
+      "request_sha256": "29c6960b20b04a8a5a0b90f025b639dfb9724782cb01e3528d18bd640ed33060",
+      "response_sha256": "327326858cd97ba5a4f28f5f6a72a2a6edc4ad8f743967995612c131e8ffc149",
+      "reported_models": [],
+      "selected_cli_model": "gemini-3.8-flash-high",
+      "verdict": "no_blocking_findings",
+      "scope": "static review of supplied source/context; no model-executed tests"
+    }
+  },
+  "codex_role": "implementation, contract verification, tests, review triage and consolidation",
+  "upstream_authorship": "preserved; see source baseline context",
+  "license_policy": "upstream-derived code retains original notices; no license replacement",
+  "human_owner": "Tommy Johnsen",
+  "release_approved": false,
+  "published": false,
+  "new_unreviewed_packaging_files": [
+    "REVIEW-PROVENANCE.json",
+    "RELEASE-NOTES.md",
+    "LICENSE"
+  ],
+  "supplemental_files_sha256": {
+    "LICENSE": "0cc34f39eb9edddb09ec48e5de62d772685941ad8db46c0509dcee1aedbe7b4e"
+  }
+}

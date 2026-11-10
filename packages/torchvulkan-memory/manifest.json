@@ -1,0 +1,43 @@
+{
+  "upstream": "https://github.com/zainsharief/torchvulkan",
+  "base": "ab9fd4b82033d29abc5dd03a3d0a9c6058606886",
+  "patch_sha256": "2e18dec5ea14edc7b84dbdf36d58400fcb8f62bbd359412224b91b4212ae7f5e",
+  "status": "frozen corrected candidate; all prior reviews triaged; current-byte external reviews/human release approval pending",
+  "release_approved": false,
+  "live_changes": false,
+  "public_files": [
+    "API_CONTEXT.json",
+    "FIX_LOG.json",
+    "LICENSE.MIT",
+    "README.md",
+    "backend-memory.patch",
+    "base/src/api/backend.cpp",
+    "base/src/vulkan/cache.cpp",
+    "base/src/vulkan/cache.h",
+    "base/src/vulkan/device_context.cpp",
+    "base/src/vulkan/device_context.h",
+    "base/torchvulkan/__init__.py",
+    "evidence/allocator-cache-test.log",
+    "evidence/pytest.log",
+    "src/src/api/backend.cpp",
+    "src/src/vulkan/cache.cpp",
+    "src/src/vulkan/cache.h",
+    "src/src/vulkan/device_context.cpp",
+    "src/src/vulkan/device_context.h",
+    "src/tests/test_allocator_cache.py",
+    "src/torchvulkan/__init__.py",
+    "tests/test_allocator_cache.py"
+  ],
+  "frozen_utc": "2026-11-10T03:56:51.741685+00:00",
+  "metadata_files": [
+    "manifest.json",
+    "file-digests.json"
+  ],
+  "file_digests_scope": "all public_files plus manifest.json; file-digests.json intentionally excludes itself",
+  "validation_summary": {
+    "gpu_pytest_tests": 1,
+    "allocator_unused_api": "removed",
+    "exact_cache_foreign_process_check": "passed",
+    "clean_full_build": "not run; isolated incremental relink only"
+  }
+}

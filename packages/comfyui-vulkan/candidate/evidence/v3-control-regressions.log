@@ -1,0 +1,51 @@
+FFFE
+======================================================================
+ERROR: test_unflagged_vulkan_device_name (regression_control.ReviewRegressions.test_unflagged_vulkan_device_name)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<CONTRIBUTIONS_ROOT>/gpu/revisions/review-v4/tests/test_review_regressions.py", line 20, in test_unflagged_vulkan_device_name
+    self.assertEqual(scope['get_torch_device_name'](SimpleNamespace(type='vulkan')), 'vulkan')
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<CONTRIBUTIONS_ROOT>/gpu/revisions/review-v3/src/comfy/model_management.py", line 642, in get_torch_device_name
+    return "{} {}".format(device, torchvulkan.get_device_name(device))
+                                  ^^^^^^^^^^^
+NameError: name 'torchvulkan' is not defined
+
+======================================================================
+FAIL: test_explicit_async_offload_keeps_vulkan_synchronization (regression_control.ReviewRegressions.test_explicit_async_offload_keeps_vulkan_synchronization)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<CONTRIBUTIONS_ROOT>/gpu/revisions/review-v4/tests/test_review_regressions.py", line 42, in test_explicit_async_offload_keeps_vulkan_synchronization
+    self.assertEqual(scope['NUM_STREAMS'], 0)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0
+
+======================================================================
+FAIL: test_fp64_capability_matches_device (regression_control.ReviewRegressions.test_fp64_capability_matches_device)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<CONTRIBUTIONS_ROOT>/gpu/revisions/review-v4/tests/test_review_regressions.py", line 28, in test_fp64_capability_matches_device
+    self.assertEqual(scope['supports_dtype']('device', 'f64'), capable)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False != True
+
+======================================================================
+FAIL: test_retained_arena_does_not_repeat_empty_cache (regression_control.ReviewRegressions.test_retained_arena_does_not_repeat_empty_cache)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<CONTRIBUTIONS_ROOT>/gpu/revisions/review-v4/tests/test_review_regressions.py", line 57, in test_retained_arena_does_not_repeat_empty_cache
+    self.assertEqual(trims, [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^
+AssertionError: Lists differ: [1, 1] != []
+
+First list contains 2 additional elements.
+First extra element 0:
+1
+
+- [1, 1]
++ []
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.002s
+
+FAILED (failures=3, errors=1)

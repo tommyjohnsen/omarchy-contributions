@@ -1,0 +1,79 @@
+{
+  "production_sha256": {
+    "configuration-example.lua": "dd42dfa6eedb566da5ade464076e2016418d332648f332887e4ef2cb6d9d2c5f"
+  },
+  "reviews": [
+    {
+      "provider_cli": "claude",
+      "request_sha256": "c4df2184e2f5164f50a18f5c1783efa7694dd291d52507519833ccec5be42003",
+      "response_sha256": "2e6a36c6bdf69239a17d31f793e0bf2ef81f543a932d81857da5023f75cef174",
+      "reported_models": [
+        "claude-opus-5-5"
+      ],
+      "verdict": "no_blocking_findings",
+      "scope": "static review of exact frozen candidate; reviewers executed no tests"
+    },
+    {
+      "provider_cli": "grok",
+      "request_sha256": "c4df2184e2f5164f50a18f5c1783efa7694dd291d52507519833ccec5be42003",
+      "response_sha256": "ca7e595726444c4a42ee578dfa9a418f2c8cd1c884c341e34dbbc1ebc7da048f",
+      "reported_models": [
+        "grok-4.7-build"
+      ],
+      "verdict": "no_blocking_findings",
+      "scope": "static review of exact frozen candidate; reviewers executed no tests"
+    },
+    {
+      "provider_cli": "gemini",
+      "request_sha256": "c4df2184e2f5164f50a18f5c1783efa7694dd291d52507519833ccec5be42003",
+      "response_sha256": "236b3db660f325d3571c288fd5626c4d7c81afcf87c4c3248e3d11e5e0ce94a6",
+      "reported_models": [],
+      "selected_cli_model": "gemini-3.8-flash-high",
+      "verdict": "no_blocking_findings",
+      "scope": "static review of exact frozen candidate; reviewers executed no tests"
+    }
+  ],
+  "review_interpretation": "Static review assistance, not model approval, certification, or human release approval. Production hashes are unchanged. Evidence-file identity and new supplementary files are distinguished below.",
+  "additional_release_files": [
+    "CONTRIBUTING-NOTES.md",
+    "LICENSE",
+    "README.md",
+    "REVIEW-PROVENANCE.json",
+    "tests/behavior.lua",
+    "tests/re2-input.lua",
+    "tests/re2-literals.cpp",
+    "tests/run.py"
+  ],
+  "roles": {
+    "human_owner": "Tommy Johnsen (tommyjohnsen)",
+    "Codex": "Validated findings against source, implemented scoped changes, annotations and tests, triaged actual reviewer output.",
+    "Claude Code": "Independent static review; earlier findings informed revisions.",
+    "Grok Build": "Independent static review.",
+    "Google Gemini": "Independent static review using selected CLI model metadata; no invented underlying model ID."
+  },
+  "publication_approved": false,
+  "test_evidence": {
+    "tests/behavior.lua": {
+      "sha256": "47ebca95f3254654fcba16e51b91bdb4f347ace09db6d862abb6aabfb5326e49",
+      "identical_to_reviewed_input": true
+    },
+    "tests/re2-literals.cpp": {
+      "sha256": "dc5e773460df7556a63d4799d49f73f4bd8c10031da9b7405f0271d8d700e028",
+      "identical_to_reviewed_input": true
+    },
+    "tests/re2-input.lua": {
+      "sha256": "db6ea3d6e6e0441b05729783592177c14b8e7af0fa968caa2a54898350061331",
+      "identical_to_reviewed_input": true
+    },
+    "tests/run.py": {
+      "sha256": "cb45cb0880e52c6e7e6304fc7a4482e3c5458626b06cec48f811efa76d951907",
+      "identical_to_reviewed_input": true
+    }
+  },
+  "new_supplementary_files_since_external_review": [
+    "CONTRIBUTING-NOTES.md",
+    "REVIEW-PROVENANCE.json",
+    "README.md",
+    "LICENSE"
+  ]
+}

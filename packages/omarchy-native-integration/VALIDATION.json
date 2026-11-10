@@ -1,0 +1,29 @@
+{
+  "candidate_sha256": "901470303d8aa32528e11fe0cb6f8998f70cb9f48565aaea6afb4b3020e6aa0e",
+  "unit_tests": "passed: same-window1000, distinct64, guards, queue cap, cooldown retry, expired/special skip, dispatch throw, cleanup; exact fixed timeout command asserted on every dispatch",
+  "syntax": "luac -p passed",
+  "runtime_evidence": "runtime/results.json",
+  "native_protocol_transport_test": {
+    "wayland_gtk_single_request": true,
+    "wire_request_count": 1,
+    "observed_hl_on_callback": "mapped HL.Window, boolean true",
+    "xwayland": false,
+    "native_protocol_flood": false
+  },
+  "external_reviews_this_revision": "not yet requested by this agent",
+  "publication_approved": false,
+  "runtime_process_lifetime_test": {
+    "pass": true,
+    "elapsed_seconds": 6.122,
+    "parent_and_child_terminated": true,
+    "TERM_ignored": true,
+    "native_protocol_transport_test": false
+  },
+  "revision_scope": "R4 test/context only; production Lua unchanged from R2",
+  "parent_ipc_mutation_performed": false,
+  "native_request_after_reload": {
+    "passed": true,
+    "helper_calls": 1,
+    "observer_callbacks": 1
+  }
+}

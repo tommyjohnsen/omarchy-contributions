@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "tool": "Qt6 qmlformat parser",
+  "scope": "full patched files parse; does not instantiate/import or exercise actual DockWindow",
+  "files_sha256": {
+    "shell/plugins/dock/DockWindow.qml": "5a297ed3e7a7c0ba5ce714e96f00fc6adea7b658adebe2884d740180147b7802",
+    "shell/Ui/PanelToolTip.qml": "3f13de3fbdbfcef2203175cfe546cd68c821ecbc648dfbe93f7077ab1a3375a0"
+  }
+}

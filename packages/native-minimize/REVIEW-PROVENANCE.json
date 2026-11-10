@@ -1,0 +1,78 @@
+{
+  "package": "native-minimize",
+  "technical_review": "All three actual external static no_blocking_findings on unchanged core plus corrected harness/evidence scope.",
+  "reviewed_files_sha256": {
+    "AUDIT_LIMITS.json": "20802b627a5b005c6b01dcae36ff262421e2e81358aee7c136ef311da525948f",
+    "PROVENANCE.json": "de6324a492e56ba1c043e62ea6b2faef3b4ba1a0cf3af02072ebfa00998a0566",
+    "README.md": "00cfd682349b8e4ea5bdd8a381afd507375fe036335919698683d0c1966c06eb",
+    "WAYLAND_SCOPE.md": "8e902daf193c870f33a01409e46e0541090efe117e47f432ff02aa42bd1aed86",
+    "core/API_CONTEXT.json": "a2c0f510d0ca672403accbef598fd75d0452d4e2cba9dc879d2fde4b16172880",
+    "core/candidate.patch": "d5c44e88d9bf57abe139d04ad8ce0e6fdedd6a400e57173c2371885b8d429825",
+    "historical-x11/SOURCE_CONTEXT.json": "3fd25d2c9a65ffa380f082d3acdd10b3564cd118ab3d2791bb50b8c61c4936ea",
+    "historical-x11/client.c": "e8fa4786f2e1e8af5ee86f6798c3555e86c8b4c145a2b1a29aeb9b86f9fc025e",
+    "historical-x11/results.json": "41a9a1b17509bb355a2cc09508014703ca2935f736e90e560e5782f18926ee90",
+    "wayland/SOURCE_CONTEXT.json": "e03541d7c5b323879c199170b9bde212a39a7d193c6313ffce91ed1e08d55323",
+    "wayland/negative-fixtures.json": "203b4e8a730760dc6a2699364ccd13ff2e12def94758e9f7f8c0de2eba4bff5e",
+    "wayland/nested-client.wire.log": "1bd63637cf5463b26bd3f62c6a808bfe08be95a35c2e4fd08d027eb18743f935",
+    "wayland/nested-minimize-test.py": "22042dc2c68f3440ffa3ea5a7a5440d71f6a2fc2edb85c2f56d0622080826b46",
+    "wayland/premap-client.c": "d2d762c467c6cdfda48a8d883f264240ee505994a559167a68382e04087ba3f4",
+    "wayland/premap-client.wire.log": "4929c5e516e3bb817a0d4506090f80c065e514f60b961a75b3e0e4170678ad88",
+    "wayland/render-only-v4-premap-0-result.json": "6f0746d15939911af77adcad049d59acd05ca37c1316014295a75f2402177eac",
+    "wayland/run-sandboxed.py": "3a638f53eb569aff9ae9891db0c922351b1df1d361da684cb3db247a1de19962"
+  },
+  "reviews": {
+    "claude": {
+      "provider_cli": "claude",
+      "request_sha256": "88e7703252b960815c009a0c40b549f4fd6a67c4d82cc9681a08c6545fcd6591",
+      "response_sha256": "029cc9a98d8594ee9669b6b8245457181e2abfd8ecbdbb9529f2855b5cf9de6e",
+      "visible_final_text_sha256": "645f05af34609e75ea19170f6f71cf72a14a8979915ecca8e925240ec8efde06",
+      "reported_models": [
+        "claude-opus-5-5"
+      ],
+      "provider_verdict_exact_excerpt": "no_blocking_findings",
+      "codex_normalized_technical_status": "no_confirmed_blocking_finding_in_static_scope",
+      "review_type": "actual external static response; reviewer executed no tests",
+      "human_release_approval": false
+    },
+    "grok": {
+      "provider_cli": "grok",
+      "request_sha256": "88e7703252b960815c009a0c40b549f4fd6a67c4d82cc9681a08c6545fcd6591",
+      "response_sha256": "3b79eca1162b785d69e6fd319a98e3895467840b8d293c6cc3b3694b7c0c4bfb",
+      "visible_final_text_sha256": "06cead2d41bd0c86c4b753a24255fa56405324511a7b30521166c92fcb1366ec",
+      "reported_models": [
+        "grok-4.7-build"
+      ],
+      "provider_verdict_exact_excerpt": "no_blocking_findings",
+      "codex_normalized_technical_status": "no_confirmed_blocking_finding_in_static_scope",
+      "review_type": "actual external static response; reviewer executed no tests",
+      "human_release_approval": false
+    },
+    "gemini": {
+      "provider_cli": "gemini",
+      "request_sha256": "88e7703252b960815c009a0c40b549f4fd6a67c4d82cc9681a08c6545fcd6591",
+      "response_sha256": "a6c7b66096680ca7381c2ebdf701d887f4b3428962d4476973c6daf20b6a8a83",
+      "visible_final_text_sha256": "ba13b87c118866cb41d71cf2a0ae9c69230657a136764f41964a8d24c25d87eb",
+      "reported_models": [],
+      "provider_verdict_exact_excerpt": "no_blocking_findings",
+      "codex_normalized_technical_status": "no_confirmed_blocking_finding_in_static_scope",
+      "review_type": "actual external static response; reviewer executed no tests",
+      "human_release_approval": false
+    }
+  },
+  "upstream_authorship": "vaxerski and Hyprland contributors; upstream BSD3 license retained.",
+  "upstream_communication_policy": "Human-only communication for upstream GitHub issues/discussions/PRs; local patch and technical evidence only. No AI-authored PR body is included.",
+  "policy_url": "https://github.com/hyprwm/.github/blob/main/policies/AI_USAGE.md",
+  "current_upstream_applicability": "HEAD differs; affected function identical and isolated patch check passes. No current-HEAD compile/runtime test or frozen-byte port.",
+  "scope_limits": [
+    "Passing strict render-only Wayland fixture is the demonstrated gate",
+    "Historical X11 true/false pass is weaker device isolation; newer strict X11 attempt executed zero requests and is incomplete",
+    "No real-parent IPC/physical KMS/input access is claimed"
+  ],
+  "human_owner": "Tommy Johnsen",
+  "codex_role": "Implementation/verification/triage where recorded; this addition packages exact reviewed bytes and composes evidence.",
+  "release_approved": false,
+  "published": false,
+  "live_changes_performed": false,
+  "new_packaging_material_is_not_a_fresh_production_review": true,
+  "licensing": "Upstream core/source context retains Hyprland BSD3 via LICENSE-UPSTREAM; new standalone harness/probe files use publisher MIT via LICENSE.TESTS.MIT. Reviewed source headers/bytes unchanged."
+}

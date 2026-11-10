@@ -1,0 +1,118 @@
+--- a/tests/benchmark_memory_queries.py
++++ b/tests/benchmark_memory_queries.py
+@@ -1,4 +1,4 @@
+-"""SPDX-License-Identifier: GPL-3.0-only"""
++"""SPDX-License-Identifier: MIT"""
+ import copy
+ import os
+ from pathlib import Path
+--- a/tests/check_cache_eviction.py
++++ b/tests/check_cache_eviction.py
+@@ -1,3 +1,4 @@
++# SPDX-License-Identifier: MIT
+ """Exercise actual GPU buffers with ComfyUI's real eviction loop and tiny model stubs."""
+ import argparse,importlib.util,json,sys,gc
+ from pathlib import Path
+--- a/tests/check_capabilities.py
++++ b/tests/check_capabilities.py
+@@ -1,3 +1,4 @@
++# SPDX-License-Identifier: MIT
+ """Independent runtime checks of actual reviewer capability claims."""
+ import argparse,importlib.util,sys,json
+ from pathlib import Path
+--- a/tests/check_real_cli_index.py
++++ b/tests/check_real_cli_index.py
+@@ -1,3 +1,4 @@
++# SPDX-License-Identifier: MIT
+ """Import staged files through the real main.py sequence, without preloading torch/model management."""
+ import argparse,importlib.abc,importlib.util,sys,runpy,os,json
+ from pathlib import Path
+--- a/tests/check_release_gates.py
++++ b/tests/check_release_gates.py
+@@ -1,3 +1,4 @@
++# SPDX-License-Identifier: MIT
+ """Isolated negative/startup tests; no server, model files, or live edits."""
+ import argparse
+ import builtins
+--- a/tests/probe_vulkan_budget.py
++++ b/tests/probe_vulkan_budget.py
+@@ -1,5 +1,5 @@
+ """Explicit bounded host-pressure observation; not run on import.
+-SPDX-License-Identifier: GPL-3.0-only
++SPDX-License-Identifier: MIT
+ """
+ 
+ def main():
+--- a/tests/test_comfy_vulkan_unet.py
++++ b/tests/test_comfy_vulkan_unet.py
+@@ -1,4 +1,4 @@
+-"""SPDX-License-Identifier: GPL-3.0-only"""
++"""SPDX-License-Identifier: MIT"""
+ import copy
+ import os
+ from pathlib import Path
+--- a/tests/test_memory_accounting.py
++++ b/tests/test_memory_accounting.py
+@@ -1,3 +1,4 @@
++# SPDX-License-Identifier: MIT
+ """Program-wide implicit GPU usage must not be mistaken for reusable cache."""
+ import ast
+ from pathlib import Path
+--- a/tests/test_review_regressions.py
++++ b/tests/test_review_regressions.py
+@@ -1,5 +1,5 @@
+ """Source-level regression fixtures for independently confirmed review findings.
+-SPDX-License-Identifier: GPL-3.0-only
++SPDX-License-Identifier: MIT
+ """
+ import ast
+ from pathlib import Path
+--- a/tests/test_vulkan_ops.py
++++ b/tests/test_vulkan_ops.py
+@@ -1,3 +1,4 @@
++# SPDX-License-Identifier: MIT
+ import json
+ import time
+ 
+--- a/README.md
++++ b/README.md
+@@ -1,6 +1,6 @@
+ # Experimental ComfyUI Vulkan integration, V4 candidate
+ 
+-Exact base Comfy-Org/ComfyUI0decb39ee5b5e17c200334589fc317dbbe98310e, GPL-3.0. Apply ComfyUI-Vulkan.patch. Opt-in --vulkan dispatches device/memory/dtype/synchronization to torchvulkan and disables CUDA-only streams, xformers and dynamic VRAM. Startup validates devices/conflicts and preserves CUDA/HIP visibility for Vulkan, including the Windows-only default guard. Device enumeration covers all backend indexes; multi-GPU hardware remains untested.
++Exact base Comfy-Org/ComfyUI 0decb39ee5b5e17c200334589fc317dbbe98310e; upstream source keeps its existing GPL terms. Apply ComfyUI-Vulkan.patch. Opt-in --vulkan dispatches device/memory/dtype/synchronization to torchvulkan and disables CUDA-only streams, xformers and dynamic VRAM. Startup validates devices/conflicts and preserves CUDA/HIP visibility for Vulkan, including the Windows-only default guard. Device enumeration covers all backend indexes; multi-GPU hardware remains untested.
+ 
+ Current edits incorporate actual earlier Claude/Gemini findings: unflagged Vulkan device naming, fp64 capability parity, None-device BF16/FP8 fallback, explicit async-offload forcing zero streams, and exact-pool-only cache-release heuristics. Seven focused source-level regressions pass; their mocked device/platform branches are not Windows or multi-device runtime claims. --force-non-blocking remains false for Vulkan. Explicit async-offload is safely disabled rather than rejected; the actual no-CUDA startup trap test validates zero streams.
+ 
+@@ -22,6 +22,6 @@
+ 
+ ## Credit and licensing
+ 
+-Upstream ComfyUI contributors retain GPL licensing; COPYING.GPL-3.0 is preserved. New integration tests/documentation accompany this GPL package; they are not a relicensing of upstream code as MIT. Prior community integration lineage remains credited: zainsharief/torchvulkan, hartmark's benchmark integration and softcookiepp's experimental integration. No backend/kernel authorship is claimed.
++Upstream ComfyUI source and patch hunks retain their existing GPL terms and notices, including model_management.py's GPL-3.0-or-later notice; COPYING.GPL-3.0 is preserved unchanged. The newly and independently written standalone tests and probes in tests/ use MIT, with their notice in LICENSE.TESTS.MIT. That test-source permission does not relicense upstream ComfyUI or other dependencies loaded by the tests. Prior community integration lineage remains credited: zainsharief/torchvulkan, hartmark's benchmark integration and softcookiepp's experimental integration. No backend/kernel authorship is claimed.
+ 
+ Codex/OpenAI prepared isolated audit, fixes, tests and annotations for Tommy Johnsen. Actual prior-candidate Claude Opus5.5/Gemini3.8FlashHigh/Grok4.7Build static findings are recorded in FIX_LOG.json; provider scope does not imply approval of V4. All three actual prior-candidate reviews for both proposals have been received and triaged; these new bytes still require independent review. All current-byte independent reviews and human release approval remain pending. No live source/config/service changes, installs, commits, pushes or publication occurred.
+--- /dev/null
++++ b/LICENSE.TESTS.MIT
+@@ -0,0 +1,21 @@
++MIT License
++
++Copyright (c) 2026 Tommy Johnsen
++
++Permission is hereby granted, free of charge, to any person obtaining a copy
++of this software and associated documentation files (the "Software"), to deal
++in the Software without restriction, including without limitation the rights
++to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is
++furnished to do so, subject to the following conditions:
++
++The above copyright notice and this permission notice shall be included in all
++copies or substantial portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
++AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
++OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
++SOFTWARE.

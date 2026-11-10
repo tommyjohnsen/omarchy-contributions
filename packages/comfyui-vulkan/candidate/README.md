@@ -1,0 +1,27 @@
+# Experimental ComfyUI Vulkan integration, V4 candidate
+
+Exact base Comfy-Org/ComfyUI 0decb39ee5b5e17c200334589fc317dbbe98310e; upstream source keeps its existing GPL terms. Apply ComfyUI-Vulkan.patch. Opt-in --vulkan dispatches device/memory/dtype/synchronization to torchvulkan and disables CUDA-only streams, xformers and dynamic VRAM. Startup validates devices/conflicts and preserves CUDA/HIP visibility for Vulkan, including the Windows-only default guard. Device enumeration covers all backend indexes; multi-GPU hardware remains untested.
+
+Current edits incorporate actual earlier Claude/Gemini findings: unflagged Vulkan device naming, fp64 capability parity, None-device BF16/FP8 fallback, explicit async-offload forcing zero streams, and exact-pool-only cache-release heuristics. Seven focused source-level regressions pass; their mocked device/platform branches are not Windows or multi-device runtime claims. --force-non-blocking remains false for Vulkan. Explicit async-offload is safely disabled rather than rejected; the actual no-CUDA startup trap test validates zero streams.
+
+## Conservative memory contract
+
+An unchanged backend without memory_cached reports zero known reusable pool bytes. The paired torchvulkan V2 API reports exact same-rounded-bin DEVICE_ONLY cache bytes after synchronization. Only those bytes augment the driver free budget. Vulkan availability is then capped at current cgroup-aware host RAM availability minus the existing RAM-cache safety reserve (max of2GiB and half configured RAM cache headroom). Existing CPU-resident weights are already included in that measured host pressure. This cap applies to all Vulkan devices when topology is unknown and can underuse discrete VRAM; it is not an atomic global peak-memory guarantee. get_total_memory samples cache first (which flushes), then allocated bytes, avoiding the known queued-work transition ordering error; concurrent snapshots are still not atomic. Free reserved VMA arena fragments are NEVER counted: the V3 allocator_unused integration is removed, because permitted types do not guarantee VMA chooses them and large allocations may use dedicated memory. Cache bytes themselves remain a bin-constrained estimate, not a guarantee that arbitrary tensor shapes fit.
+
+VMA budget.usage is estimated PROGRAM usage, potentially including implicit/non-VMA allocations. Earlier descriptions calling it portable other-process usage were wrong. The backend reserved correction instead reports allocator-owned blockBytes for its selected VRAM heap, not a generic reclaimable-cache quantity.
+
+The conservative repeat-eviction limitation is real and retained: in the actual two32MiB-buffer test, one model unload exposes32MiB cached; cache trimming leaves the arena reserved; a repeated shortfall unloads the second model because that unproven arena capacity is not counted. This is a performance limitation, not a successfully fixed repeated-eviction test. Do not restore the unsafe capacity heuristic to make that assertion pass.
+
+## Evidence and scope
+
+Fresh validation includes35existing upstream CPU tests,8memory tests (including rejecting a supplied unsupported arena field),7review regressions, Ruff, actual FP32/FP16 tiny Comfy UNet CPU/GPU comparison on both forced PyTorch attention and actual default attention_sub_quad, and GPU capability checks through the conservative backend overlay. The actual device is native Linux Asahi Vulkan Apple M3 Pro with Torch2.15.0+cpu; it is not macOS/MoltenVK or CUDA. A CPU wheel label does not mean the Vulkan operation used CPU.
+
+A tiny8x8random UNet split-attention control benchmark recorded96get_free_memory calls in12runs: median9.639ms synchronizing versus9.602ms with a test-only static counter. The timing does not bound larger models, pending-work waits or arbitrary async concurrency. The benchmark-only control is not a proposed API or capacity correctness test.
+
+No trained model downloads or generation are part of this candidate's fresh test. Historical mixed CPU/GPU image smokes succeeded; video hit a host-memory guard. Production trained image/video, OOM recovery, CUDA-wheel coexistence, discrete GPUs, multiple GPU devices and Windows runtime remain unvalidated. No broad video support or universal production compatibility claim is made.
+
+## Credit and licensing
+
+Upstream ComfyUI source and patch hunks retain their existing GPL terms and notices, including model_management.py's GPL-3.0-or-later notice; COPYING.GPL-3.0 is preserved unchanged. The newly and independently written standalone tests and probes in tests/ use MIT, with their notice in LICENSE.TESTS.MIT. That test-source permission does not relicense upstream ComfyUI or other dependencies loaded by the tests. Prior community integration lineage remains credited: zainsharief/torchvulkan, hartmark's benchmark integration and softcookiepp's experimental integration. No backend/kernel authorship is claimed.
+
+Codex/OpenAI prepared isolated audit, fixes, tests and annotations for Tommy Johnsen. Actual prior-candidate Claude Opus5.5/Gemini3.8FlashHigh/Grok4.7Build static findings are recorded in FIX_LOG.json; provider scope does not imply approval of V4. All three actual prior-candidate reviews for both proposals have been received and triaged; these new bytes still require independent review. All current-byte independent reviews and human release approval remain pending. No live source/config/service changes, installs, commits, pushes or publication occurred.

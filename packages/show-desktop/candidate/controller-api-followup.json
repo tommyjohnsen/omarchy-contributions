@@ -1,0 +1,82 @@
+{
+  "hyprland_revision": "acc1aa0bfd4bd575dcb0f76c35ccf12b660a1ab9",
+  "context": {
+    "src/config/lua/bindings/LuaBindingsInternal.cpp": {
+      "sha256": "42a49e1ef3de996fb179bdd6dae0e4264e13947cf910bb629e04f6417fc70f0f",
+      "excerpts": [
+        {
+          "function": "Internal::windowSelectorFromLuaSelectorOrObject",
+          "line": 213,
+          "source": "std::optional<std::string> Internal::windowSelectorFromLuaSelectorOrObject(lua_State* L, int idx, const char* fnName) {\n    idx = lua_absindex(L, idx);\n\n    if (lua_isnil(L, idx))\n        return std::nullopt;\n\n    if (auto* ref = sc<PHLWINDOWREF*>(luaL_testudata(L, idx, LUA_WINDOW_MT)); ref) {\n        const auto w = ref->lock();\n        if (!w) {\n            Internal::configError(L, \"{}: window object is expired\", fnName);\n            return std::nullopt;\n        }\n\n        return std::format(\"address:0x{:x}\", reinterpret_cast<uintptr_t>(w.get()));\n    }\n\n    if (lua_isstring(L, idx) || lua_isnumber(L, idx))\n        return argStr(L, idx);\n\n    Internal::configError(L, \"{}: expected a window object or selector\", fnName);\n    return std::nullopt;\n}"
+        },
+        {
+          "function": "Internal::tableOptWindowSelector",
+          "line": 262,
+          "source": "std::optional<std::string> Internal::tableOptWindowSelector(lua_State* L, int idx, const char* field, const char* fnName) {\n    idx = lua_absindex(L, idx);\n    lua_getfield(L, idx, field);\n    if (lua_isnil(L, -1)) {\n        lua_pop(L, 1);\n        return std::nullopt;\n    }\n\n    auto selector = windowSelectorFromLuaSelectorOrObject(L, -1, fnName);\n    lua_pop(L, 1);\n    return selector;\n}"
+        },
+        {
+          "function": "Internal::pushSuccessResult",
+          "line": 367,
+          "source": "int Internal::pushSuccessResult(lua_State* L, const CA::SActionResult& r) {\n    lua_newtable(L);\n    lua_pushboolean(L, true);\n    lua_setfield(L, -2, \"ok\");\n    lua_pushboolean(L, r.passEvent);\n    lua_setfield(L, -2, \"pass_event\");\n    return 1;\n}"
+        },
+        {
+          "function": "Internal::pushErrorResult",
+          "line": 376,
+          "source": "int Internal::pushErrorResult(lua_State* L, const CA::SActionError& e) {\n    lua_newtable(L);\n    lua_pushboolean(L, false);\n    lua_setfield(L, -2, \"ok\");\n    lua_pushstring(L, e.message.c_str());\n    lua_setfield(L, -2, \"error\");\n    lua_pushstring(L, CA::toString(e.level));\n    lua_setfield(L, -2, \"level\");\n    lua_pushstring(L, CA::toString(e.code));\n    lua_setfield(L, -2, \"code\");\n    return 1;\n}"
+        },
+        {
+          "function": "Internal::checkResult",
+          "line": 426,
+          "source": "int Internal::checkResult(lua_State* L, const CA::ActionResult& r) {\n    if (!r) {\n        auto error    = r.error();\n        error.message = std::format(\"{}: {}\", getSourceInfo(L), std::move(error.message));\n        Internal::reportError(L, error);\n        return Internal::pushErrorResult(L, error);\n    }\n\n    return Internal::pushSuccessResult(L, *r);\n}"
+        },
+        {
+          "function": "Internal::dispatcherError",
+          "line": 500,
+          "source": "int Internal::dispatcherError(lua_State* L, std::string s, CA::eActionErrorLevel level, CA::eActionErrorCode code, int stackLevel) {\n    s = std::format(\"{}: {}\", getSourceInfo(L, stackLevel), std::move(s));\n\n    CA::SActionError error{std::move(s), level, code};\n    Internal::reportError(L, error);\n    return Internal::pushErrorResult(L, error);\n}"
+        }
+      ]
+    },
+    "src/config/lua/bindings/LuaBindingsToplevel.cpp": {
+      "sha256": "cda037666ed086e98027bd56fe35764cb841618347c721950c75bd0fcd475e24",
+      "excerpts": [
+        {
+          "function": "hlDispatch",
+          "line": 328,
+          "source": "static int hlDispatch(lua_State* L) {\n    if (const auto result = Internal::pushDispatcherFunction(L, 1); !result)\n        return Internal::configError(L, std::format(\"hl.dispatch: {}\", result.error()));\n\n    auto* caller = CLuaCaller::fromLuaState(L);\n    if (caller->guardedPCall(L, 0, 1, 0, CLuaCaller::LUA_TIMEOUT_DISPATCH_MS, \"hl.dispatch\") != LUA_OK) {\n        const auto ERR = caller->errorToString(L, -1);\n        lua_pop(L, 1);\n        return Internal::dispatcherError(L, std::format(\"hl.dispatch: {}\", ERR), Config::Actions::eActionErrorLevel::ERROR, Config::Actions::eActionErrorCode::LUA_ERROR);\n    }\n\n    if (lua_isnil(L, -1)) {\n        lua_pop(L, 1);\n        return Internal::pushSuccessResult(L);\n    }\n\n    return 1;\n}"
+        }
+      ]
+    },
+    "docs/hyprctl.1.rst": {
+      "sha256": "07cd73872e32ec59dcd1d51cc53e40a6318f25e577a63b6ce25f748f0e0ac166",
+      "excerpt": "**eval**)\n\n    Returns: *ok* on success, and an error message on failure.\n\n    Examples:\n        **hyprctl** *keyword bind SUPER,0,pseudo*\n\n        **hyprctl** *keyword general:border_size 10*\n"
+    },
+    "Omarchy/default/hypr/helpers.lua": {
+      "sha256": "91c0cbe9654e8cc2189664d53cd50ad22202a10071ef9a75c93eabdeb97cb857",
+      "first_lines": "-- Shared helpers for Hyprland Lua configuration.\n\nlocal paths = require(\"default.hypr.paths\")\n\no = o or {}\n\nlocal function shell_quote(value)\n  return \"'\" .. tostring(value):gsub(\"'\", \"'\\\\''\") .. \"'\""
+    }
+  },
+  "lifecycle_context": {
+    "src/config/lua/ConfigManager.cpp": {
+      "sha256": "776df9467b0f216b51e0acd1992308dc6ffc44a32b059bff59618304425bb1df",
+      "excerpts": [
+        {
+          "start_line": 474,
+          "source": "void CConfigManager::reinitLuaState() {\n    m_eventHandler.reset();\n\n    cleanTimers();\n    clearLuaLayoutProviders();\n\n    if (m_luaStateLifetime)\n        m_luaStateLifetime->state = nullptr;\n\n    m_caller.reset();\n\n    if (m_lua && m_ownsLuaState) {\n        lua_close(m_lua);\n    }\n    m_lua = nullptr;\n"
+        },
+        {
+          "start_line": 671,
+          "source": "        return;\n    }\n\n    // phase 2: syntax is valid, reset and load.\n    Config::animationTree()->reset();\n    Config::workspaceRuleMgr()->clear();\n    Config::monitorRuleMgr()->clear();\n    Desktop::Rule::ruleEngine()->clearAllRules();\n    g_pTrackpadGestures->clearGestures();\n    cleanTimers();\n    clearLuaLayoutProviders();\n    clearDeprecations();\n    m_luaWindowRules.clear();\n    m_luaLayerRules.clear();\n    m_errors.clear();\n    m_deviceConfigs.clear();\n    m_registeredPlugins.clear();\n    m_eventHandler->clearEvents();\n\n    if (Keybinds::mgr())\n        Keybinds::mgr()->clearBinds();\n\n    // refresh lua state so we get rid of any stale state\n    reinitLuaState();\n\n    // restart phase 1 load, because our state is gone now."
+        }
+      ]
+    },
+    "src/desktop/view/window/Window.cpp": {
+      "sha256": "bf8ae59ea2cb30e22be48a4e4d42d484fec3f6a15a11a07dc8676459e824d3a6",
+      "excerpts": [
+        {
+          "start_line": 450,
+          "source": "void CWindow::moveToWorkspace(PHLWORKSPACE pWorkspace) {\n    if (!pWorkspace || m_workspace == pWorkspace)\n        return;\n\n    syncInitialWorkspaceToken(pWorkspace);\n\n    static auto PCLOSEONLASTSPECIAL = CConfigValue<Config::INTEGER>(\"misc:close_special_on_empty\");\n\n    const auto  OLDWORKSPACE = m_workspace;\n\n    if (OLDWORKSPACE->visible()) {\n        m_presentation->alpha(WINDOW_ALPHA_MOVE_TO_WORKSPACE)->setValueAndWarp(1.F);\n        *m_presentation->alpha(WINDOW_ALPHA_MOVE_TO_WORKSPACE) = 0.F;\n        m_presentation->alpha(WINDOW_ALPHA_MOVE_TO_WORKSPACE)->setCallbackOnEnd([this](auto) {\n            m_presentation->alpha(WINDOW_ALPHA_MOVE_TO_WORKSPACE)->setValueAndWarp(1.F);\n            m_presentation->resetMonitorMovedFrom();\n        });\n        m_presentation->setMonitorMovedFrom(OLDWORKSPACE ? OLDWORKSPACE->monitorID() : -1);\n    }\n\n    m_workspace = pWorkspace;\n    updateFullscreenInputState();\n    *m_presentation->alpha(WINDOW_ALPHA_FULLSCREEN) = isBlockedByFullscreen() ? 0.F : 1.F;\n\n    m_presentation->setAnimationsToMove();\n\n    Desktop::globalWindowController()->updateAllWindowsDecorations();\n\n    if (valid(pWorkspace)) {\n        IPC::Socket2::sock()->postEvent({.event = \"movewindow\", .data = std::format(\"{:x},{}\", rc<uintptr_t>(this), pWorkspace->addressableName())});\n        IPC::Socket2::sock()->postEvent(\n            {.event = \"movewindowv2\", .data = std::format(\"{:x},{},{}\", rc<uintptr_t>(this), pWorkspace->addressableName(), pWorkspace->displayName())});\n        Event::bus()->m_events.window.moveToWorkspace.emit(m_self.lock(), pWorkspace);\n    }\n"
+        }
+      ]
+    }
+  }
+}

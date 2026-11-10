@@ -1,0 +1,33 @@
+{
+  "owner": "tommyjohnsen",
+  "version": "v0.1.0",
+  "release_type": "experimental source-and-patch prerelease",
+  "authorization": {
+    "date": "2026-11-10",
+    "source": "Direct instruction in Omarchy: Setup chat",
+    "text": "Ok, let's get them published under my GitHubb."
+  },
+  "published": false,
+  "human_publication_authorized": true,
+  "packages": [
+    "window-switcher",
+    "general-titlebar-policy",
+    "dock-pinned-only",
+    "macos-screenshots",
+    "dock-tooltips",
+    "omarchy-native-integration",
+    "torchvulkan-memory",
+    "show-desktop",
+    "native-minimize",
+    "comfyui-vulkan",
+    "immich-files"
+  ],
+  "checks": {
+    "staged_digest_checks": 391,
+    "recorded_review_response_hash_matches": 42
+  },
+  "reviewed_package_bytes_unchanged": true,
+  "blanket_license": null,
+  "upstream_submission": false,
+  "packaging_author": "Codex"
+}

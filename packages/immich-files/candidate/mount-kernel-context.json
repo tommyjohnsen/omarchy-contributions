@@ -1,0 +1,5 @@
+{
+  "source": "https://docs.kernel.org/filesystems/proc.html#proc-pid-mountinfo-information-about-mounts",
+  "paraphrase": "Field5 is the mountpoint in the process root; optional fields end at a separator followed by filesystem type,source,super options. Unknown optional fields must be ignored. The local bounded parser examines proc data without resolving mounted leaves.",
+  "limits": "Local-home Linux reference; not a cross-platform mount API"
+}

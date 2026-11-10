@@ -1,0 +1,95 @@
+{
+  "hyprland_revision": "acc1aa0bfd4bd575dcb0f76c35ccf12b660a1ab9",
+  "context": {
+    "src/config/lua/bindings/LuaBindingsQuery.cpp": {
+      "sha256": "84fc4dd91f2e11f3b631a3663ff6ce1092fc34a5c396e2c7f0d7cebebc4da7df",
+      "excerpts": [
+        {
+          "function": "hlGetWindows",
+          "line": 114,
+          "source": "static int hlGetWindows(lua_State* L) {\n    SWindowQuery query;\n    query.mapped = true;\n\n    if (lua_gettop(L) >= 1 && !lua_isnil(L, 1)) {\n        if (!lua_istable(L, 1))\n            return Internal::configError(L, \"hl.get_windows: expected no args or a table of filters\");\n\n        parseWindowQueryFromTable(L, 1, \"hl.get_windows\", query);\n    }\n\n    pushWindowsMatchingQuery(L, query);\n    return 1;\n}\n"
+        },
+        {
+          "function": "hlGetWorkspace",
+          "line": 175,
+          "source": "static int hlGetWorkspace(lua_State* L) {\n    const auto PWORKSPACE = Internal::workspaceFromLuaSelectorOrObject(L, 1, \"hl.get_workspace\");\n    if (!PWORKSPACE) {\n        lua_pushnil(L);\n        return 1;\n    }\n\n    Objects::CLuaWorkspace::push(L, PWORKSPACE);\n    return 1;\n}\n"
+        },
+        {
+          "function": "hlGetActiveWorkspace",
+          "line": 186,
+          "source": "static int hlGetActiveWorkspace(lua_State* L) {\n    const auto PMONITOR = monitorFromOptionalArg(L, 1, \"hl.get_active_workspace\");\n    if (!PMONITOR || !PMONITOR->m_activeWorkspace) {\n        lua_pushnil(L);\n        return 1;\n    }\n\n    Objects::CLuaWorkspace::push(L, PMONITOR->m_activeWorkspace);\n    return 1;\n}\n"
+        }
+      ]
+    },
+    "src/config/lua/bindings/LuaBindingsDispatchers.cpp": {
+      "sha256": "ffdc65811469685d0520cfcb70c2c4a4991c9b3625bfa9007da32893c18a16d3",
+      "excerpts": [
+        {
+          "function": "hlWindowMove",
+          "line": 802,
+          "source": "static int hlWindowMove(lua_State* L) {\n    if (!lua_istable(L, 1))\n        return Internal::configError(L, \"hl.window.move: expected a table, e.g. { direction = \\\"left\\\" }\");\n\n    auto dirStr = Internal::tableOptStr(L, 1, \"direction\");\n    if (dirStr) {\n        auto dir = Internal::parseDirectionStr(*dirStr);\n        if (dir == Math::DIRECTION_DEFAULT)\n            return Internal::configError(L, \"hl.window.move: invalid direction \\\"{}\\\" (expected left/right/up/down)\", *dirStr);\n\n        auto groupAware = Internal::tableOptBool(L, 1, \"group_aware\");\n        if (groupAware && *groupAware) {\n            lua_pushnumber(L, (int)dir);\n            Internal::pushWindowUpval(L, 1);\n            lua_pushcclosure(L, dsp_moveWindowOrGroup, 2);\n            return 1;\n        }\n\n        lua_pushnumber(L, (int)dir);\n        Internal::pushWindowUpval(L, 1);\n        lua_pushcclosure(L, dsp_moveInDirection, 2);\n        return 1;\n    }\n\n    auto x = Internal::tableOptNum(L, 1, \"x\");\n    auto y = Internal::tableOptNum(L, 1, \"y\");\n    if (x && y) {\n        bool relative = Internal::tableOptBool(L, 1, \"relative\").value_or(false);\n        lua_pushnumber(L, *x);\n        lua_pushnumber(L, *y);\n        lua_pushboolean(L, relative);\n        Internal::pushWindowUpval(L, 1);\n        lua_pushcclosure(L, dsp_move, 4);\n        return 1;\n    }\n\n    auto ws = Internal::tableOptWorkspaceSelector(L, 1, \"workspace\", \"hl.window.move\");\n    if (ws) {\n        auto follow = Internal::tableOptBool(L, 1, \"follow\");\n        bool silent = follow.has_value() && !*follow;\n        lua_pushstring(L, ws->c_str());\n        lua_pushboolean(L, silent);\n        Internal::pushWindowUpval(L, 1);\n        lua_pushcclosure(L, dsp_moveToWorkspace, 3);\n        return 1;\n    }\n\n    auto mon = Internal::tableOptMonitorSelector(L, 1, \"monitor\", \"hl.window.move\");\n    if (mon) {\n        auto follow = Internal::tableOptBool(L, 1, \"follow\");\n        bool silent = follow.has_value() && !*follow;\n        lua_pushstring(L, mon->c_str());\n        lua_pushboolean(L, silent);\n        Internal::pushWindowUpval(L, 1);\n        lua_pushcclosure(L, dsp_moveToMonitor, 3);\n        return 1;\n    }\n\n    auto intoGroup = Internal::tableOptStr(L, 1, \"into_group\");\n    if (intoGroup) {\n        auto dir = Internal::parseDirectionStr(*intoGroup);\n        if (dir == Math::DIRECTION_DEFAULT)\n            return Internal::configError(L, \"hl.window.move: invalid into_group direction \\\"{}\\\"\", *intoGroup);\n        lua_pushnumber(L, (int)dir);\n        Internal::pushWindowUpval(L, 1);\n        lua_pushcclosure(L, dsp_moveIntoGroup, 2);\n        return 1;\n    }\n\n    auto intoOrCreateGroup = Internal::tableOptStr(L, 1, \"into_or_create_group\");\n    if (intoOrCreateGroup) {\n        auto dir = Internal::parseDirectionStr(*intoOrCreateGroup);\n        if (dir == Math::DIRECTION_DEFAULT)\n            return Internal::configError(L, \"hl.window.move: invalid into_or_create_group direction \\\"{}\\\"\", *intoOrCreateGroup);\n        lua_pushnumber(L, (int)dir);\n        Internal::pushWindowUpval(L, 1);\n        lua_pushcclosure(L, dsp_moveIntoOrCreateGroup, 2);\n        return 1;\n    }\n\n    auto outOfGroup = Internal::tableOptStr(L, 1, \"out_of_group\");\n    if (outOfGroup) {\n        auto dir = Internal::parseDirectionStr(*outOfGroup);\n        lua_pushnumber(L, (int)dir);\n        Internal::pushWindowUpval(L, 1);\n        lua_pushcclosure(L, dsp_moveOutOfGroup, 2);\n        return 1;\n    }\n\n    auto outOfGroupBool = Internal::tableOptBool(L, 1, \"out_of_group\");\n    if (outOfGroupBool && *outOfGroupBool) {\n        lua_pushnumber(L, (int)Math::DIRECTION_DEFAULT);\n        Internal::pushWindowUpval(L, 1);\n        lua_pushcclosure(L, dsp_moveOutOfGroup, 2);\n        return 1;\n    }\n\n    return Internal::configError(L, \"hl.window.move: unrecognized arguments. Expected one of: direction, x+y(+relative), workspace, into_group, out_of_group\");\n}\n"
+        },
+        {
+          "function": "hlWindowTag",
+          "line": 978,
+          "source": "static int hlWindowTag(lua_State* L) {\n    if (!lua_istable(L, 1))\n        return Internal::configError(L, \"hl.window.tag: expected a table { tag, window? }\");\n\n    const auto tag = Internal::requireTableFieldStr(L, 1, \"tag\", \"hl.window.tag\");\n    lua_pushstring(L, tag.c_str());\n    Internal::pushWindowUpval(L, 1);\n    lua_pushcclosure(L, dsp_tagWindow, 2);\n    return 1;\n}\n"
+        },
+        {
+          "function": "hlWindowBringToTop",
+          "line": 1008,
+          "source": "static int hlWindowBringToTop(lua_State* L) {\n    lua_pushcclosure(L, dsp_bringToTop, 0);\n    return 1;\n}\n"
+        },
+        {
+          "function": "hlFocus",
+          "line": 1116,
+          "source": "static int hlFocus(lua_State* L) {\n    if (!lua_istable(L, 1))\n        return Internal::configError(L, \"hl.focus: expected a table, e.g. { direction = \\\"left\\\" }\");\n\n    auto dirStr = Internal::tableOptStr(L, 1, \"direction\");\n    if (dirStr) {\n        auto dir = Internal::parseDirectionStr(*dirStr);\n        if (dir == Math::DIRECTION_DEFAULT)\n            return Internal::configError(L, \"hl.focus: invalid direction \\\"{}\\\" (expected left/right/up/down)\", *dirStr);\n        lua_pushnumber(L, (int)dir);\n        lua_pushcclosure(L, dsp_moveFocus, 1);\n        return 1;\n    }\n\n    auto monStr = Internal::tableOptMonitorSelector(L, 1, \"monitor\", \"hl.focus\");\n    if (monStr) {\n        lua_pushstring(L, monStr->c_str());\n        lua_pushcclosure(L, dsp_focusMonitor, 1);\n        return 1;\n    }\n\n    auto wsStr = Internal::tableOptWorkspaceSelector(L, 1, \"workspace\", \"hl.focus\");\n    if (wsStr) {\n        auto onCurrentMon = Internal::tableOptBool(L, 1, \"on_current_monitor\");\n\n        lua_pushstring(L, wsStr->c_str());\n\n        if (onCurrentMon.value_or(false))\n            lua_pushcclosure(L, dsp_focusWorkspaceOnCurrentMonitor, 1);\n        else\n            lua_pushcclosure(L, dsp_changeWorkspace, 1);\n\n        return 1;\n    }\n\n    auto winStr = Internal::tableOptWindowSelector(L, 1, \"window\", \"hl.focus\");\n    if (winStr) {\n        lua_pushstring(L, winStr->c_str());\n        lua_pushcclosure(L, dsp_focusWindowBySelector, 1);\n        return 1;\n    }\n\n    auto urgent = Internal::tableOptBool(L, 1, \"urgent_or_last\");\n    if (urgent && *urgent) {\n        lua_pushcclosure(L, dsp_focusUrgentOrLast, 0);\n        return 1;\n    }\n\n    auto last = Internal::tableOptBool(L, 1, \"last\");\n    if (last && *last) {\n        lua_pushcclosure(L, dsp_focusCurrentOrLast, 0);\n        return 1;\n    }\n\n    return Internal::configError(L, \"hl.focus: unrecognized arguments. Expected one of: direction, monitor, window, urgent_or_last, last\");\n}\n"
+        }
+      ]
+    },
+    "src/config/lua/objects/LuaWindow.cpp": {
+      "sha256": "276c9ec4dcaa48de6e92c3c9478e06e2c28be0c3a1075470e514abf2a76d4fa9",
+      "excerpts": [
+        {
+          "line": 140,
+          "source": "    } else if (key == \"tags\") {\n        lua_newtable(L);\n\n        int i = 1;\n        for (const auto& tag : w->m_ruleApplicator->m_tagKeeper.getTags()) {\n            lua_pushstring(L, tag.c_str());\n            lua_rawseti(L, -2, i++);\n        }\n    } else if (key == \"swallowing\") {\n        const auto swallowee = w->swallowing().swallowee();"
+        }
+      ]
+    },
+    "src/config/lua/LuaEventHandler.cpp": {
+      "sha256": "f637b324d86a9dbafa8ee36468b4d627d177046b11fb85a187d181343724307b",
+      "excerpts": [
+        {
+          "line": 88,
+          "source": "    m_listeners.push_back(bus()->m_events.window.moveToWorkspace.listen([this](PHLWINDOW w, PHLWORKSPACE ws) {\n        dispatch(\"window.move_to_workspace\", 2, [&](lua_State* L) {\n            CLuaWindow::push(L, w);\n            CLuaWorkspace::push(L, ws);\n        });\n    }));\n    m_listeners.push_back("
+        }
+      ]
+    },
+    "stock-minimize": {
+      "sha256": "e6e275eb2e39e9bb64cba0cdce936362327d89424416eec67765c40d2575501f",
+      "excerpts": [
+        {
+          "line": 1,
+          "source": "#!/bin/bash\n\n# omarchy:summary=Minimize a window to the dock\n# omarchy:args=[window-address]\n\n# The active window when given no address. Minimized windows wait on a special\n# workspace, and the dock brings them back.\nif [[ -n ${1:-} ]]; then\n  ADDRESS=$1\n  WORKSPACE=$(hyprctl clients -j | jq -r --arg address \"$ADDRESS\" 'first(.[] | select(.address == $address) | .workspace.id) // empty')\nelse\n  read -r ADDRESS WORKSPACE < <(hyprctl activewindow -j | jq -r '\"\\(.address // \"\") \\(.workspace.id // \"\")\"')\nfi\n\n[[ -n $ADDRESS && $WORKSPACE =~ ^[0-9]+$ ]] || exit 1\n\n# Only floating workspaces have the dock to bring a window back from.\n[[ $(omarchy-hyprland-workspace-layout-current \"$WORKSPACE\") == \"floating\" ]] || exit 0\n\nremember_minimized_from() {\n  local address=$1 workspace=$2 clients tag\n  if clients=$(hyprctl clients -j); then\n    while read -r tag; do\n      [[ $tag =~ ^omarchy-minimized-from-[0-9]+$ && $tag != \"omarchy-minimized-from-$workspace\" ]] || continue\n      hyprctl dispatch \"hl.dsp.window.tag({ tag = \\\"-$tag\\\", window = \\\"address:$address\\\" })\" >/dev/null\n    done < <(jq -r --arg address \"$address\" '.[] | select(.address == $address) | (.tags // [])[]' <<<\"$clients\")\n  fi\n  hyprctl dispatch \"hl.dsp.window.tag({ tag = \\\"+omarchy-minimized-from-$workspace\\\", window = \\\"address:$address\\\" })\" >/dev/null\n}\n\nremember_minimized_from \"$ADDRESS\" \"$WORKSPACE\"\nhyprctl dispatch \"hl.dsp.window.move({ workspace = \\\"special:minimized\\\", follow = false, window = \\\"address:$ADDRESS\\\" })\" >/dev/null\n\n# Focus would otherwise stay with the minimized window, and the next window\n# opened would join it on the hidden workspace.\nhyprctl dispatch \"hl.dsp.focus({ workspace = \\\"$WORKSPACE\\\" })\" >/dev/null"
+        }
+      ]
+    },
+    "Dock.qml": {
+      "sha256": "6c0a6d09e20eb287a23b31a56135e71694d22b370aad885169f9f59898453b2b",
+      "excerpts": [
+        {
+          "line": 188,
+          "source": "  // minimized one first comes back to the workspace in front of the user.\n  function bringForward(window) {\n    var address = String(window.address || \"\")\n    if (!address) {\n      window.toplevel.activate()\n      return\n    }\n    if (address.indexOf(\"0x\") !== 0) address = \"0x\" + address\n    var target = \"window = \\\"address:\" + address + \"\\\"\"\n    var steps = []\n    var after = []\n    if (window.minimized) {\n      var monitor = Hyprland.focusedMonitor\n      var workspace = monitor && monitor.activeWorkspace ? monitor.activeWorkspace.id : -1\n      if (!(workspace >= 1)) return\n      // A restored window is simply there again, without animating in.\n      steps.push(\"hl.dsp.window.set_prop({ prop = \\\"no_anim\\\", value = \\\"1\\\", \" + target + \" })\")\n      steps.push(\"hl.dsp.window.move({ workspace = \\\"\" + workspace + \"\\\", \" + target + \" })\")\n      after.push(\"hl.dsp.window.set_prop({ prop = \\\"no_anim\\\", value = \\\"unset\\\", \" + target + \" })\")\n    }\n    steps.push(\"hl.dsp.focus({ \" + target + \" })\")\n    steps.push(\"hl.dsp.window.alter_zorder({ mode = \\\"top\\\", \" + target + \" })\")\n    var dispatch = function(step) { return \"hyprctl dispatch \" + Util.shellQuote(step) }\n    var command = steps.map(dispatch).join(\" && \")\n    if (after.length > 0) command += \"; sleep 0.4; \" + after.map(dispatch).join(\"; \")\n    Util.execDetached(command)\n  }\n\n  function quit(item) {\n    if (!item) return\n    var windows = item.windows.slice()\n    for (var i = 0; i < windows.length; i++) windows[i].toplevel.close()\n  }\n\n  function openApps() {\n    appGrid.open()\n  }\n\n  readonly property var pinnedKeys: root.pendingPins || DockModel.pinnedIds(root.dockConfig, root.defaultDockConfig)\n\n  function isPinned(key) {\n    return root.pinnedKeys.indexOf(key) >= 0\n  }\n\n  // Moves an app to a slot in the dock's order, pinning it there; the pins are\n  // saved in the new order. The index counts the slots once the app has left\n  // its own.\n  function placeAt(key, index) {\n    if (!key) return\n    root.order = DockModel.orderWithKeyAt(root.shownKeys(), key, index)\n    var pinned = {}\n    root.pinnedKeys.forEach(function(other) { pinned[other] = true })"
+        }
+      ]
+    },
+    "DockModel.js": {
+      "sha256": "d7d1dbb871e3fc2eff454775750811b80f54259ab51ca4e5653ac7f589285c87",
+      "excerpts": [
+        {
+          "line": 34,
+          "source": "// visible desktop entry, such as the agent window, and anything parked on a\n// special workspace, such as the scratchpad, stay out of it. A minimized window\n// always belongs, entry or not, since the dock is the only way back to it.\nfunction isDockWindow(window) {\n  if (!window || !window.key) return false\n  if (window.minimized === true) return true\n  return window.hasEntry === true && window.workspaceId >= 1\n}\n\n// Minimizing moves a window to this special workspace, and the dock brings it\n// back.\nvar MINIMIZED_WORKSPACE = \"special:minimized\"\n\nfunction isMinimizedWorkspace(name) {\n  return String(name || \"\") === MINIMIZED_WORKSPACE\n}\n\n// A terminal app's window carries the app id its launcher gave the terminal,"
+        }
+      ]
+    }
+  }
+}

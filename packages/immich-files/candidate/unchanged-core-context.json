@@ -1,0 +1,7 @@
+{
+  "source": "immich_files.py",
+  "sha256": "53e91b4f7d3fdd96aef52d2886546f23e8f5dc81e983fd0162b08c035efdd55d",
+  "scope": "Unchanged exactV6 source shared context for delta helper. All3 core reviews green; no new core implementation change.",
+  "PAGE": 250,
+  "keyring_key_source": "def keyring_key(store=None):\n    import gi\n    gi.require_version('Secret', '1')\n    from gi.repository import Secret\n    schema = Secret.Schema.new('org.example.ImmichFiles', Secret.SchemaFlags.NONE,\n                              {'server': Secret.SchemaAttributeType.STRING, 'account': Secret.SchemaAttributeType.STRING})\n    attributes = {'server': SERVER, 'account': ACCOUNT}\n    if store is not None:\n        return Secret.password_store_sync(schema, attributes, Secret.COLLECTION_DEFAULT, 'Immich Files read-only key', store, None)\n    service = Secret.Service.get_sync(Secret.ServiceFlags.OPEN_SESSION, None)\n    items = service.search_sync(schema, attributes, Secret.SearchFlags.ALL, None)\n    if not items: return None\n    if len(items) != 1 or items[0].get_locked():\n        raise RuntimeError('Unlock or resolve duplicate Immich keyring entries before connecting')\n    if not items[0].load_secret_sync(None): raise RuntimeError('Immich keyring item could not be unlocked or loaded')\n    secret = items[0].get_secret()\n    text=secret.get_text() if secret else None\n    if not text:raise RuntimeError('Immich keyring item has no usable secret')\n    return text\n"
+}

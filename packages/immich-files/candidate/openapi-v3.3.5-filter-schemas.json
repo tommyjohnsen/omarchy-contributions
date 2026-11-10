@@ -1,0 +1,97 @@
+{
+  "IdsFilter": {
+    "properties": {
+      "all": {
+        "items": {
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$",
+          "type": "string"
+        },
+        "minItems": 1,
+        "type": "array"
+      },
+      "any": {
+        "items": {
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$",
+          "type": "string"
+        },
+        "minItems": 1,
+        "type": "array"
+      },
+      "none": {
+        "items": {
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$",
+          "type": "string"
+        },
+        "minItems": 1,
+        "type": "array"
+      }
+    },
+    "type": "object"
+  },
+  "BoolFilter": {
+    "properties": {
+      "eq": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "eq"
+    ],
+    "type": "object"
+  },
+  "EnumFilterAssetVisibility": {
+    "properties": {
+      "eq": {
+        "$ref": "#/components/schemas/AssetVisibility"
+      },
+      "in": {
+        "items": {
+          "$ref": "#/components/schemas/AssetVisibility"
+        },
+        "minItems": 1,
+        "type": "array"
+      },
+      "ne": {
+        "$ref": "#/components/schemas/AssetVisibility"
+      },
+      "notIn": {
+        "items": {
+          "$ref": "#/components/schemas/AssetVisibility"
+        },
+        "minItems": 1,
+        "type": "array"
+      }
+    },
+    "type": "object"
+  },
+  "AssetOrder": {
+    "description": "Asset sort order",
+    "enum": [
+      "asc",
+      "desc"
+    ],
+    "type": "string"
+  },
+  "SearchOrderField": {
+    "enum": [
+      "fileCreatedAt",
+      "localDateTime",
+      "fileSizeInBytes",
+      "rating"
+    ],
+    "type": "string"
+  },
+  "AssetVisibility": {
+    "description": "Asset visibility",
+    "enum": [
+      "archive",
+      "timeline",
+      "hidden",
+      "locked"
+    ],
+    "type": "string"
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "binary_sha256": "d61d3844729494fac0f0a72345f54792d4fb84c1d12cad588f264ed587394813",
+  "nested_only": true,
+  "plugins_loaded": "no plugins loaded",
+  "protocol": "X11 WM_CHANGE_STATE via actual nested XWayland",
+  "cases": [
+    {
+      "request": "IconicState=3",
+      "lua_events": 1,
+      "socket2_events": 1,
+      "mapped": true,
+      "state": true,
+      "pass": true
+    },
+    {
+      "request": "NormalState=1",
+      "lua_events": 1,
+      "socket2_events": 1,
+      "mapped": true,
+      "state": false,
+      "pass": true
+    }
+  ],
+  "parent_focus_restore_requested": false,
+  "parent_ipc_mutation_performed": false,
+  "monitors": [
+    {
+      "id": 0,
+      "name": "WAYLAND-1",
+      "description": "",
+      "make": "",
+      "model": "",
+      "serial": "",
+      "width": 1508,
+      "height": 916,
+      "physicalWidth": 0,
+      "physicalHeight": 0,
+      "refreshRate": 60.0,
+      "x": 0,
+      "y": 0,
+      "activeWorkspace": {
+        "address": "1",
+        "id": 1,
+        "type": "normal",
+        "name": "1"
+      },
+      "specialWorkspace": {
+        "address": "",
+        "type": "",
+        "name": ""
+      },
+      "reserved": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "transform": 0,
+      "focused": true,
+      "dpmsStatus": true,
+      "vrr": false,
+      "solitary": "0",
+      "solitaryBlockedBy": [
+        "NOTIFICATION",
+        "WINDOWED",
+        "CANDIDATE"
+      ],
+      "activelyTearing": false,
+      "tearingBlockedBy": [
+        "NOT_TORN",
+        "USER",
+        "ZOOM",
+        "SUPPORT",
+        "CANDIDATE",
+        "HW_CURSOR"
+      ],
+      "directScanoutTo": "0",
+      "directScanoutBlockedBy": [
+        "USER",
+        "CANDIDATE"
+      ],
+      "disabled": false,
+      "currentFormat": "XRGB8888",
+      "mirrorOf": "none",
+      "availableModes": [
+        "1508x916@60.00Hz"
+      ],
+      "colorManagementPreset": "srgb",
+      "sdrBrightness": 1,
+      "sdrSaturation": 1,
+      "sdrMinLuminance": 0.2,
+      "sdrMaxLuminance": 80,
+      "hardwareCursorsInUse": true,
+      "hardwareDetails": {
+        "backend": "wayland",
+        "hdr": false,
+        "chroma": false,
+        "bt2020": false,
+        "vrrCapable": false
+      }
+    }
+  ],
+  "monitor_observations": [
+    {
+      "name": "WAYLAND-1",
+      "backend": "wayland"
+    }
+  ],
+  "requested_backend": "wayland",
+  "configerrors": "",
+  "missing_original_parent_windows": [],
+  "parent_geometry_unchanged": true,
+  "parent_focus_restored": true
+}

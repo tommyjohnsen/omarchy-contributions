@@ -1,0 +1,9 @@
+{
+  "card_nodes": [],
+  "render_nodes": [
+    "renderD128"
+  ],
+  "dev_input_present": false,
+  "system_bus_present": false,
+  "seatd_socket_present": false
+}

@@ -1,0 +1,91 @@
+{
+  "prior_reviews": [
+    {
+      "provider": "claude",
+      "package": "comfyui-vulkan",
+      "request_sha256": "a42374beb651dda345408706727e676939c0409e460af1adb38d8eae41a3141f",
+      "response_sha256": "e1b2427bd025ba877f341734f36cd65c8ba6882ae7facf560747644b63eed0b7",
+      "reported_models": [
+        "claude-opus-5-5"
+      ],
+      "selected_cli_model": null,
+      "scope": "actual static review of previous frozen candidate; no runtime executed by reviewer; no current-candidate approval"
+    },
+    {
+      "provider": "gemini",
+      "package": "comfyui-vulkan",
+      "request_sha256": "a42374beb651dda345408706727e676939c0409e460af1adb38d8eae41a3141f",
+      "response_sha256": "e0825b234334c357da22d76e0191a7666b04c4b0077087c2911b650317a465f1",
+      "reported_models": [],
+      "selected_cli_model": "gemini-3.8-flash-high",
+      "scope": "actual static review of previous frozen candidate; no runtime executed by reviewer; no current-candidate approval"
+    },
+    {
+      "provider": "claude",
+      "package": "torchvulkan-memory",
+      "request_sha256": "cc8a559ed7ad4414bfbbca742b7bd2c0c1a62084c15cc9fcf5a3d41dd67d043e",
+      "response_sha256": "e778ad4985965b2dd465953715ad8011904ee4d1ae83f2df77d116dcca426570",
+      "reported_models": [
+        "claude-opus-5-5"
+      ],
+      "selected_cli_model": null,
+      "scope": "actual static review of previous frozen candidate; no runtime executed by reviewer; no current-candidate approval"
+    },
+    {
+      "provider": "grok",
+      "package": "comfyui-vulkan",
+      "request_sha256": "a42374beb651dda345408706727e676939c0409e460af1adb38d8eae41a3141f",
+      "response_sha256": "0be2fc1da230b4ba9aa48cb375b0294a966462dbd3609028019bd93ea8fb6b73",
+      "reported_models": [
+        "grok-4.7-build"
+      ],
+      "selected_cli_model": null,
+      "scope": "actual static review of previous frozen candidate; no runtime executed by reviewer; no current-candidate approval"
+    },
+    {
+      "provider": "gemini",
+      "package": "torchvulkan-memory",
+      "request_sha256": "cc8a559ed7ad4414bfbbca742b7bd2c0c1a62084c15cc9fcf5a3d41dd67d043e",
+      "response_sha256": "659430f220f700caaab5e3b3e76bca9f83bedd166dac29b24960ca9ebad5b221",
+      "reported_models": [],
+      "selected_cli_model": "gemini-3.8-flash-high",
+      "scope": "actual static review of previous frozen candidate; no runtime executed by reviewer; no current-candidate approval"
+    },
+    {
+      "provider": "grok",
+      "package": "torchvulkan-memory",
+      "request_sha256": "cc8a559ed7ad4414bfbbca742b7bd2c0c1a62084c15cc9fcf5a3d41dd67d043e",
+      "response_sha256": "bf15fe2ebf8bc51ff9e168b686500aee15b9cf0669e5ddd6a664c0a5a646ae98",
+      "reported_models": [
+        "grok-4.7-build"
+      ],
+      "selected_cli_model": null,
+      "scope": "actual static review of previous frozen candidate; no runtime executed by reviewer; no current-candidate approval"
+    }
+  ],
+  "comfy_confirmed_fixes": [
+    "pool-only cache-release heuristic",
+    "guard unflagged Vulkan name",
+    "fp64 capability parity",
+    "disable explicit async streams",
+    "None-device dtype/cast fallback",
+    "enumerate all Vulkan device indexes",
+    "preserve Windows CUDA visibility",
+    "cap Vulkan availability with existing host RAM safety reserve",
+    "sample allocated bytes after cache synchronization"
+  ],
+  "backend_confirmed_fix": "remove unsupported arena-capacity API/probe/helper; retain exact matching-bin cache and reserved correction",
+  "backend_secondary_fixes": [
+    "Linux/POSIX guarded peer test, DEVNULL stderr, close pipes",
+    "obsolete header fixture removed with helper",
+    "Grok per-query probe/GIL findings made inapplicable by removing that entire path; no blanket external-sync/driver-GIL premise endorsed",
+    "remove across-heap reserved>=allocated assertion"
+  ],
+  "unsupported_review_claims": [
+    "Cached>0 is exercised in real paired backend and now explicit eviction intermediate samples.",
+    "Submicrosecond idle call cost independently reproduced with perf_counter_ns over70000calls; pending queue latency still unbounded.",
+    "Gemini backend green verdict repeated OS-wide usage and safe arena assumptions that are contradicted by exact VMA source; removal retained despite that verdict."
+  ],
+  "known_remaining": "real conservative repeated-eviction limitation after pool trim remains; no claim fixed",
+  "pending": "all new-candidate reviews and human release approval"
+}

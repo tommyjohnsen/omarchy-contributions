@@ -1,0 +1,66 @@
+{
+  "wayland/nested-minimize-test.py": {
+    "source": "native-validation/evidence-v6/public/nested-minimize-test.py",
+    "sha256": "22042dc2c68f3440ffa3ea5a7a5440d71f6a2fc2edb85c2f56d0622080826b46"
+  },
+  "wayland/run-sandboxed.py": {
+    "source": "native-validation/evidence-v6/public/run-sandboxed.py",
+    "sha256": "3a638f53eb569aff9ae9891db0c922351b1df1d361da684cb3db247a1de19962"
+  },
+  "wayland/premap-client.c": {
+    "source": "native-validation/evidence-v6/public/premap-client.c",
+    "sha256": "d2d762c467c6cdfda48a8d883f264240ee505994a559167a68382e04087ba3f4"
+  },
+  "wayland/negative-fixtures.json": {
+    "source": "native-validation/evidence-v6/public/negative-fixtures.json",
+    "sha256": "203b4e8a730760dc6a2699364ccd13ff2e12def94758e9f7f8c0de2eba4bff5e"
+  },
+  "wayland/render-only-v4-premap-0-result.json": {
+    "source": "native-validation/evidence-v6/public/render-only-v4-premap-0-result.json",
+    "sha256": "6f0746d15939911af77adcad049d59acd05ca37c1316014295a75f2402177eac"
+  },
+  "wayland/nested-client.wire.log": {
+    "source": "native-validation/evidence-v6/public/nested-client.wire.log",
+    "sha256": "1bd63637cf5463b26bd3f62c6a808bfe08be95a35c2e4fd08d027eb18743f935"
+  },
+  "wayland/premap-client.wire.log": {
+    "source": "native-validation/evidence-v6/public/premap-client.wire.log",
+    "sha256": "4929c5e516e3bb817a0d4506090f80c065e514f60b961a75b3e0e4170678ad88"
+  },
+  "wayland/SOURCE_CONTEXT.json": {
+    "source": "native-validation/evidence-v6/public/SOURCE_CONTEXT.json",
+    "sha256": "e03541d7c5b323879c199170b9bde212a39a7d193c6313ffce91ed1e08d55323"
+  },
+  "WAYLAND_SCOPE.md": {
+    "source": "native-validation/evidence-v6/public/README.md",
+    "sha256": "8e902daf193c870f33a01409e46e0541090efe117e47f432ff02aa42bd1aed86"
+  },
+  "LICENSE.MIT": {
+    "source": "native-validation/evidence-v6/public/LICENSE.MIT",
+    "sha256": "e15f0ad830693560afc2c1444dee5c978ee243b905dea596a76cc6b77944787c"
+  },
+  "UPSTREAM-LICENSE.BSD3": {
+    "source": "native-validation/evidence-v6/public/UPSTREAM-LICENSE.BSD3",
+    "sha256": "e01df754903af0ab26babb317b5f5a62dd95f770b733c5275414dd3245d00ae7"
+  },
+  "core/candidate.patch": {
+    "source": "native-validation/public-evidence-v4/candidate.patch",
+    "sha256": "d5c44e88d9bf57abe139d04ad8ce0e6fdedd6a400e57173c2371885b8d429825"
+  },
+  "core/API_CONTEXT.json": {
+    "source": "reviews/context-gpu-next/native-api.json",
+    "sha256": "a2c0f510d0ca672403accbef598fd75d0452d4e2cba9dc879d2fde4b16172880"
+  },
+  "historical-x11/results.json": {
+    "source": "desktop/runtime-tests/xwayland-native-core-r5/public/historical-observed-backend-result.json",
+    "sha256": "41a9a1b17509bb355a2cc09508014703ca2935f736e90e560e5782f18926ee90"
+  },
+  "historical-x11/client.c": {
+    "source": "desktop/runtime-tests/xwayland-native-core-r5/public/client.c",
+    "sha256": "e8fa4786f2e1e8af5ee86f6798c3555e86c8b4c145a2b1a29aeb9b86f9fc025e"
+  },
+  "historical-x11/SOURCE_CONTEXT.json": {
+    "source": "desktop/runtime-tests/xwayland-native-core-r5/public/SOURCE_CONTEXT.json",
+    "sha256": "3fd25d2c9a65ffa380f082d3acdd10b3564cd118ab3d2791bb50b8c61c4936ea"
+  }
+}

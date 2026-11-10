@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "final_candidate_file_count": 44,
+  "checks": [
+    "Every final file matches selected source digest",
+    "Every final file covered by exact unchanged base hash or reviewed delta hash",
+    "Actual frozen base packet files/request hashes verified",
+    "All9 actual response status/raw digest/verdict checks passed",
+    "Exact upstream AGPL body hash and notice verified"
+  ],
+  "runtime_tests_run_by_this_packaging": "none",
+  "release_approved": false
+}
